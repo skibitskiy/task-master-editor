@@ -7,8 +7,5 @@
     "types": ["node", "electron"],
     "lib": ["ES2021", "DOM"]
   },
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts"]
 }
-

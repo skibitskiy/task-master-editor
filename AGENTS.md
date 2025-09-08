@@ -82,40 +82,33 @@ Task Master provides an MCP server that Claude Code can connect to. Configure in
 
 ```json
 {
-	"mcpServers": {
-		"task-master-ai": {
-			"type": "stdio",
-			"command": "npx",
-			"args": [
-				"-y",
-				"--package=task-master-ai",
-				"task-master-ai"
-			],
-			"env": {
-				"ANTHROPIC_API_KEY": "YOUR_ANTHROPIC_API_KEY_HERE",
-				"OPENAI_API_KEY": "YOUR_OPENAI_KEY_HERE",
-				"GOOGLE_API_KEY": "YOUR_GOOGLE_KEY_HERE",
-				"XAI_API_KEY": "YOUR_XAI_KEY_HERE",
-				"OPENROUTER_API_KEY": "YOUR_OPENROUTER_KEY_HERE",
-				"MISTRAL_API_KEY": "YOUR_MISTRAL_KEY_HERE",
-				"AZURE_OPENAI_API_KEY": "YOUR_AZURE_KEY_HERE",
-				"OLLAMA_API_KEY": "YOUR_OLLAMA_API_KEY_HERE"
-			}
-		},
-		"context7": {
-			"type": "stdio",
-			"command": "npx",
-			"args": [
-				"-y",
-				"@upstash/context7-mcp"
-			]
-		},
-		"playwright": {
-			"type": "stdio",
-			"command": "npx",
-			"args": ["@playwright/mcp@latest"]
-		}
-	}
+  "mcpServers": {
+    "task-master-ai": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "--package=task-master-ai", "task-master-ai"],
+      "env": {
+        "ANTHROPIC_API_KEY": "YOUR_ANTHROPIC_API_KEY_HERE",
+        "OPENAI_API_KEY": "YOUR_OPENAI_KEY_HERE",
+        "GOOGLE_API_KEY": "YOUR_GOOGLE_KEY_HERE",
+        "XAI_API_KEY": "YOUR_XAI_KEY_HERE",
+        "OPENROUTER_API_KEY": "YOUR_OPENROUTER_KEY_HERE",
+        "MISTRAL_API_KEY": "YOUR_MISTRAL_KEY_HERE",
+        "AZURE_OPENAI_API_KEY": "YOUR_AZURE_KEY_HERE",
+        "OLLAMA_API_KEY": "YOUR_OLLAMA_API_KEY_HERE"
+      }
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    }
+  }
 }
 ```
 

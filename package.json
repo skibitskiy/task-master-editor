@@ -10,7 +10,12 @@
     "dev": "concurrently -k -n RENDERER,MAIN -c cyan,magenta \"npm --workspace @app/renderer run dev\" \"npm --workspace @app/electron run dev\"",
     "build": "npm -ws run build",
     "typecheck": "npm -ws run typecheck",
-    "test": "npm -ws run test",
+    "test": "npm -ws run test && playwright test",
+    "test:unit": "npm -ws run test",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings=0",
+    "format": "prettier -w .",
+    "format:check": "prettier -c .",
     "start": "npm --workspace @app/electron run start"
   },
   "keywords": [
@@ -22,6 +27,12 @@
   "author": "",
   "license": "UNLICENSED",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@playwright/test": "^1.47.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3"
   }
 }

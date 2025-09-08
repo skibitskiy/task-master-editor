@@ -1,6 +1,7 @@
 # Task Master Editor (Electron + TypeScript + Vite)
 
 Secure Electron skeleton with:
+
 - Strict TypeScript
 - Secure BrowserWindow defaults: `contextIsolation: true`, `sandbox: true`, `nodeIntegration: false`
 - `electron-log` for main-process logging
@@ -37,4 +38,3 @@ npm run start
 
 - Navigation outside the app is blocked by default; only allow-listed origins in `electron/security.ts` open via `shell.openExternal()`.
 - Renderer has no Node access. Use `preload` + `contextBridge` to expose minimal, typed APIs (to be implemented in Task 2).
-

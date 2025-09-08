@@ -6,9 +6,21 @@ const security = require('../dist/security.js');
 const main = require('../dist/main.js');
 
 function testSecurityAllowList() {
-  assert.strictEqual(security.isUrlAllowed('https://github.com/openai'), true, 'github should be allowed');
-  assert.strictEqual(security.isUrlAllowed('https://openai.com/blog'), true, 'openai should be allowed');
-  assert.strictEqual(security.isUrlAllowed('https://example.com'), false, 'example.com should be blocked');
+  assert.strictEqual(
+    security.isUrlAllowed('https://github.com/openai'),
+    true,
+    'github should be allowed',
+  );
+  assert.strictEqual(
+    security.isUrlAllowed('https://openai.com/blog'),
+    true,
+    'openai should be allowed',
+  );
+  assert.strictEqual(
+    security.isUrlAllowed('https://example.com'),
+    false,
+    'example.com should be blocked',
+  );
   assert.strictEqual(security.isUrlAllowed('notaurl'), false, 'invalid URL should be blocked');
 }
 
@@ -28,4 +40,3 @@ function run() {
 }
 
 run();
-

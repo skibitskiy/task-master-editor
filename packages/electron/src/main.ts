@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, WebContents, BrowserWindowConstructorOptions } from 'electron';
+import { BrowserWindow, shell, WebContents, BrowserWindowConstructorOptions } from 'electron';
 import * as path from 'node:path';
 import log from 'electron-log/main';
 import { isUrlAllowed } from './security';
@@ -37,8 +37,8 @@ export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
       contextIsolation: true,
       sandbox: true,
       nodeIntegration: false,
-      preload: path.join(__dirname, 'preload.js')
-    }
+      preload: path.join(__dirname, 'preload.js'),
+    },
   };
 }
 
@@ -59,4 +59,3 @@ export function createWindow() {
 
   return win;
 }
- 
