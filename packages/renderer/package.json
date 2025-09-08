@@ -7,11 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vite build && echo Renderer build OK"
+    "test": "vite build && vitest run"
   },
   "devDependencies": {
+    "@app/shared": "*",
     "typescript": "^5.4.5",
     "vite": "^5.2.0",
-    "@app/shared": "*"
+    "vitest": "^2.1.9"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.9.0"
   }
 }

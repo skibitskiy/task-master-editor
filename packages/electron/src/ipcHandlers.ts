@@ -1,5 +1,5 @@
 import electron from 'electron';
-const { ipcMain, dialog } = electron;
+const { ipcMain, dialog, app } = electron;
 import { promises as fs } from 'node:fs';
 import log from 'electron-log/main.js';
 import {
@@ -10,7 +10,40 @@ import {
   validateFileReadResult,
   validateFileWriteInput,
   validateFileWriteResult,
+  validateSettingsData,
+  validateSettingsGetResult,
+  validateSettingsUpdateInput,
+  validateSettingsUpdateResult,
 } from '@app/shared';
+import type { SettingsData } from '@app/shared';
+
+type InternalSettings = SettingsData;
+
+let cachedSettings: InternalSettings | null = null;
+async function settingsPath(): Promise<string> {
+  const dir = app.getPath('userData');
+  return `${dir}/settings.json`;
+}
+
+async function loadSettings(): Promise<InternalSettings> {
+  if (cachedSettings) return cachedSettings;
+  try {
+    const p = await settingsPath();
+    const raw = await fs.readFile(p, 'utf-8');
+    cachedSettings = validateSettingsData(JSON.parse(raw));
+  } catch {
+    cachedSettings = { recentPaths: [], preferences: {} };
+  }
+  return cachedSettings!;
+}
+
+async function saveSettings(s: InternalSettings): Promise<void> {
+  const p = await settingsPath();
+  const data = JSON.stringify(s, null, 2);
+  await fs.mkdir(p.substring(0, p.lastIndexOf('/')), { recursive: true });
+  await fs.writeFile(p, data, 'utf-8');
+  cachedSettings = s;
+}
 
 export function registerIpcHandlers() {
   ipcMain.handle(Channels.workspaceSelect, async (_event: unknown, rawOptions: unknown) => {
@@ -53,5 +86,21 @@ export function registerIpcHandlers() {
       log.error('file:write error', err);
       throw new Error(`file:write validation/error: ${msg}`);
     }
+  });
+
+  ipcMain.handle(Channels.settingsGet, async () => {
+    const settings = await loadSettings();
+    return validateSettingsGetResult({ settings });
+  });
+
+  ipcMain.handle(Channels.settingsUpdate, async (_event: unknown, rawInput: unknown) => {
+    const input = validateSettingsUpdateInput(rawInput);
+    const current = await loadSettings();
+    const merged: InternalSettings = {
+      recentPaths: input.settings.recentPaths ?? current.recentPaths,
+      preferences: input.settings.preferences ?? current.preferences ?? {},
+    };
+    await saveSettings(merged);
+    return validateSettingsUpdateResult({ settings: merged });
   });
 }

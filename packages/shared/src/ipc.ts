@@ -2,6 +2,8 @@ export const Channels = {
   workspaceSelect: 'workspace:select',
   fileRead: 'file:read',
   fileWrite: 'file:write',
+  settingsGet: 'settings:get',
+  settingsUpdate: 'settings:update',
 } as const;
 
 // Types
@@ -33,6 +35,24 @@ export interface FileWriteResult {
   ok: true;
 }
 
+// Settings
+export interface SettingsData {
+  recentPaths: string[];
+  preferences?: Record<string, unknown>;
+}
+
+export interface SettingsGetInput { }
+export interface SettingsGetResult {
+  settings: SettingsData;
+}
+
+export interface SettingsUpdateInput {
+  settings: Partial<SettingsData>;
+}
+export interface SettingsUpdateResult {
+  settings: SettingsData;
+}
+
 export interface PreloadAPI {
   workspace: {
     select: (options?: Partial<WorkspaceSelectOptions>) => Promise<WorkspaceSelectResult>;
@@ -40,6 +60,10 @@ export interface PreloadAPI {
   file: {
     read: (input: FileReadInput) => Promise<FileReadResult>;
     write: (input: FileWriteInput) => Promise<FileWriteResult>;
+  };
+  settings: {
+    get: (input?: SettingsGetInput) => Promise<SettingsGetResult>;
+    update: (input: SettingsUpdateInput) => Promise<SettingsUpdateResult>;
   };
 }
 // Runtime validators with defaults
@@ -90,4 +114,35 @@ export function validateFileWriteResult(raw: unknown): FileWriteResult {
   const ok = (o as Record<string, unknown>).ok;
   if (ok !== true) throw new Error('ok must be true');
   return { ok: true };
+}
+
+export function validateSettingsData(raw: unknown): SettingsData {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const recentPaths = Array.isArray(o.recentPaths) ? (o.recentPaths as unknown[]) : [];
+  if (!recentPaths.every((p: unknown) => typeof p === 'string')) throw new Error('recentPaths must be string[]');
+  const preferences = (o.preferences as Record<string, unknown> | undefined) ?? undefined;
+  return { recentPaths: recentPaths as string[], preferences };
+}
+
+export function validateSettingsGetResult(raw: unknown): SettingsGetResult {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  return { settings: validateSettingsData(o.settings) };
+}
+
+export function validateSettingsUpdateInput(raw: unknown): SettingsUpdateInput {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const partial = {} as Partial<SettingsData>;
+  if ('recentPaths' in o) {
+    partial.recentPaths = validateSettingsData({ recentPaths: o.recentPaths }).recentPaths;
+  }
+  if ('preferences' in o) {
+    const prefs = o.preferences as Record<string, unknown>;
+    if (prefs != null && typeof prefs !== 'object') throw new Error('preferences must be object');
+    partial.preferences = prefs;
+  }
+  return { settings: partial };
+}
+
+export function validateSettingsUpdateResult(raw: unknown): SettingsUpdateResult {
+  return validateSettingsGetResult(raw);
 }

@@ -8,6 +8,7 @@ import {
   validateFileReadResult,
   validateFileWriteInput,
   validateFileWriteResult,
+  validateSettingsUpdateInput,
   type PreloadAPI,
   type WorkspaceSelectOptions,
   type FileReadInput,
@@ -33,6 +34,17 @@ const api: PreloadAPI = {
       const parsed = validateFileWriteInput(input);
       const res = await ipcRenderer.invoke(Channels.fileWrite, parsed);
       return validateFileWriteResult(res);
+    },
+  },
+  settings: {
+    async get() {
+      const res = await ipcRenderer.invoke(Channels.settingsGet, {});
+      return res; // validated in main
+    },
+    async update(input) {
+      const parsed = validateSettingsUpdateInput(input);
+      const res = await ipcRenderer.invoke(Channels.settingsUpdate, parsed);
+      return res; // validated in main
     },
   },
 };
