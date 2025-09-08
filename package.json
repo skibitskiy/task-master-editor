@@ -1,0 +1,27 @@
+{
+  "name": "task-master-editor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Task Master Editor monorepo",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n RENDERER,MAIN -c cyan,magenta \"npm --workspace @app/renderer run dev\" \"npm --workspace @app/electron run dev\"",
+    "build": "npm -ws run build",
+    "typecheck": "npm -ws run typecheck",
+    "test": "npm -ws run test",
+    "start": "npm --workspace @app/electron run start"
+  },
+  "keywords": [
+    "electron",
+    "typescript",
+    "vite",
+    "workspaces"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
