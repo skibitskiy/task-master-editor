@@ -1,6 +1,5 @@
 import { _electron as electron, test, expect } from '@playwright/test';
 import path from 'node:path';
-import fs from 'node:fs';
 
 test.beforeAll(async () => {
   // ensure prod assets exist
