@@ -1,8 +1,8 @@
-import * as electron from 'electron';
+import electron from 'electron';
 const { BrowserWindow, shell } = electron;
-type WebContents = electron.WebContents;
-type BrowserWindowConstructorOptions = electron.BrowserWindowConstructorOptions;
+import type { WebContents, BrowserWindowConstructorOptions } from 'electron';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import log from 'electron-log/main.js';
 import { isUrlAllowed } from './security.js';
 // IPC handlers are registered in ipcHandlers.ts
@@ -32,6 +32,9 @@ export function setupSecurityHandlers(contents: WebContents) {
   });
 }
 
+// Resolve dirname for both ESM (tsc) and bundled CJS (webpack)
+const __DIRNAME = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+
 export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
   return {
     width: 1024,
@@ -41,7 +44,7 @@ export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
       contextIsolation: true,
       sandbox: true,
       nodeIntegration: false,
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__DIRNAME, 'preload.cjs'),
     },
   };
 }
@@ -56,7 +59,7 @@ export function createWindow() {
     log.info('Loading dev URL:', devUrl);
     void win.loadURL(devUrl);
   } else {
-    const indexHtml = path.resolve(__dirname, '../../renderer/dist/index.html');
+    const indexHtml = path.resolve(__DIRNAME, '../../renderer/dist/index.html');
     log.info('Loading production file:', indexHtml);
     void win.loadFile(indexHtml);
   }

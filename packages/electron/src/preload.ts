@@ -1,65 +1,19 @@
-import * as electron from 'electron';
+import electron from 'electron';
 const { contextBridge, ipcRenderer } = electron;
-import type {
-  PreloadAPI,
-  WorkspaceSelectOptions,
-  FileReadInput,
-  FileWriteInput,
-  WorkspaceSelectResult,
-  FileReadResult,
-  FileWriteResult,
+import {
+  Channels,
+  validateWorkspaceSelectOptions,
+  validateWorkspaceSelectResult,
+  validateFileReadInput,
+  validateFileReadResult,
+  validateFileWriteInput,
+  validateFileWriteResult,
+  type PreloadAPI,
+  type WorkspaceSelectOptions,
+  type FileReadInput,
+  type FileWriteInput,
 } from '@app/shared';
 
-// Inline the minimal runtime definitions to avoid preload-time resolution issues
-const Channels = {
-  workspaceSelect: 'workspace:select',
-  fileRead: 'file:read',
-  fileWrite: 'file:write',
-} as const;
-
-function validateWorkspaceSelectOptions(raw: unknown): WorkspaceSelectOptions {
-  const o = (raw ?? {}) as Record<string, unknown>;
-  const type = (o.type as unknown) ?? 'directory';
-  if (type !== 'directory' && type !== 'file') throw new Error('type must be "directory" or "file"');
-  const multiple = (o.multiple as unknown) ?? false;
-  if (typeof multiple !== 'boolean') throw new Error('multiple must be boolean');
-  return { type, multiple };
-}
-function validateWorkspaceSelectResult(raw: unknown): WorkspaceSelectResult {
-  const o = (raw ?? {}) as Record<string, unknown>;
-  const paths = Array.isArray(o.paths) ? (o.paths as unknown[]) : [];
-  if (!paths.every((p: unknown) => typeof p === 'string')) throw new Error('paths must be string[]');
-  return { paths: paths as string[] };
-}
-function validateFileReadInput(raw: unknown): FileReadInput {
-  const o = (raw ?? {}) as Record<string, unknown>;
-  const path = o.path as unknown;
-  if (typeof path !== 'string' || path.length < 1) throw new Error('path must be non-empty string');
-  const encoding = (o.encoding as unknown) ?? 'utf-8';
-  if (encoding !== 'utf-8') throw new Error('encoding must be "utf-8"');
-  return { path, encoding };
-}
-function validateFileReadResult(raw: unknown): FileReadResult {
-  const o = (raw ?? {}) as Record<string, unknown>;
-  if (typeof o.data !== 'string') throw new Error('data must be string');
-  return { data: o.data };
-}
-function validateFileWriteInput(raw: unknown): FileWriteInput {
-  const o = (raw ?? {}) as Record<string, unknown>;
-  const path = o.path as unknown;
-  const data = o.data as unknown;
-  if (typeof path !== 'string' || path.length < 1) throw new Error('path must be non-empty string');
-  if (typeof data !== 'string') throw new Error('data must be string');
-  const encoding = (o.encoding as unknown) ?? 'utf-8';
-  if (encoding !== 'utf-8') throw new Error('encoding must be "utf-8"');
-  return { path, data, encoding };
-}
-function validateFileWriteResult(raw: unknown): FileWriteResult {
-  const o = (raw ?? {}) as Record<string, unknown>;
-  const ok = (o as Record<string, unknown>).ok;
-  if (ok !== true) throw new Error('ok must be true');
-  return { ok: true };
-}
 
 const api: PreloadAPI = {
   workspace: {

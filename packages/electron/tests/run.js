@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
-const assert = require('node:assert');
+import assert from 'node:assert';
 
-// Load compiled CommonJS modules
-const security = require('../dist/security.js');
-const main = require('../dist/main.js');
+// Load compiled ESM modules from tsc output (NodeNext)
+import * as security from '../dist/security.js';
+import * as main from '../dist/main.js';
 
 function testSecurityAllowList() {
   assert.strictEqual(
