@@ -1,8 +1,8 @@
+import type { PreloadAPI } from '@app/shared';
+
 declare global {
   interface Window {
-    api?: {
-      ping: () => boolean;
-    };
+    api?: PreloadAPI;
   }
 }
 export {};

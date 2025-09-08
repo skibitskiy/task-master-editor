@@ -1,9 +1,14 @@
-import { app, BrowserWindow } from 'electron';
-import log from 'electron-log/main';
-import { createWindow } from './main';
+import * as electron from 'electron';
+const { app, BrowserWindow } = electron;
+import log from 'electron-log/main.js';
+import { createWindow } from './main.js';
+import { registerIpcHandlers } from './ipcHandlers.js';
 
 log.initialize();
 log.info('Task Master Editor starting');
+
+// Register IPC handlers early
+registerIpcHandlers();
 
 app.on('ready', () => {
   createWindow();

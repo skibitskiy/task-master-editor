@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 const assert = require('node:assert');
 
-// Load compiled modules
+// Load compiled CommonJS modules
 const security = require('../dist/security.js');
 const main = require('../dist/main.js');
 

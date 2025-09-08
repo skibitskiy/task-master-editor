@@ -12,7 +12,8 @@
     "test": "npm run build && node tests/run.js"
   },
   "dependencies": {
-    "electron-log": "^5.1.4"
+    "electron-log": "^5.1.4",
+    "@app/shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",

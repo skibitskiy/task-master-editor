@@ -1,5 +1,6 @@
 import { _electron as electron, test, expect } from '@playwright/test';
 import path from 'node:path';
+import electronPath from 'electron';
 
 test.beforeAll(async () => {
   // ensure prod assets exist
@@ -13,9 +14,10 @@ test('Electron opens window and shows skeleton UI', async () => {
   execSync('npm run build', { stdio: 'inherit', cwd: path.resolve(__dirname, '../..') });
 
   const electronApp = await electron.launch({
-    args: ['.'],
+    executablePath: electronPath as unknown as string,
+    args: ['--no-sandbox', '.'],
     cwd: path.resolve(__dirname, '../../packages/electron'),
-    env: { APP_AUTO_QUIT: '0' },
+    env: { APP_AUTO_QUIT: '0', ELECTRON_ENABLE_LOGGING: '1', ELECTRON_DISABLE_GPU: '1' },
   });
 
   const window = await electronApp.firstWindow();
@@ -27,6 +29,30 @@ test('Electron opens window and shows skeleton UI', async () => {
   console.log('E2E body:', bodyText.slice(0, 200));
   await window.waitForSelector('h1:has-text("Task Master Editor")', { timeout: 25000 });
   await window.waitForSelector('text=Renderer is running', { timeout: 25000 });
+
+  // Security assertions: no Node in renderer
+  const hasProcess = await window.evaluate(() => 'process' in (window as Record<string, unknown>));
+  const hasRequire = await window.evaluate(() => 'require' in (window as Record<string, unknown>));
+  expect(hasProcess).toBe(false);
+  expect(hasRequire).toBe(false);
+
+  // Preload API signature exists
+  const apiShape = await window.evaluate(() => {
+    const w = window as unknown as {
+      api?: {
+        workspace?: { select?: unknown };
+        file?: { read?: unknown; write?: unknown };
+      };
+    };
+    return {
+      workspaceSelect: typeof w.api?.workspace?.select,
+      fileRead: typeof w.api?.file?.read,
+      fileWrite: typeof w.api?.file?.write,
+    };
+  });
+  expect(apiShape.workspaceSelect).toBe('function');
+  expect(apiShape.fileRead).toBe('function');
+  expect(apiShape.fileWrite).toBe('function');
 
   await electronApp.close();
 });

@@ -5,13 +5,9 @@ app.innerHTML = `
     <h1>Task Master Editor</h1>
     <p>Renderer is running.</p>
     <p style="font-size: 12px; color: #666;">Secure defaults: nodeIntegration=false, contextIsolation=true, sandbox=true.</p>
-    <button id="ping">Ping Preload</button>
     <div id="result" style="margin-top: 8px; color: #0a0;">&nbsp;</div>
   </main>
 `;
 
-document.getElementById('ping')?.addEventListener('click', () => {
-  const ok = window.api?.ping?.();
-  const el = document.getElementById('result');
-  if (el) el.textContent = ok ? 'Preload API OK' : 'No API available';
-});
+const el = document.getElementById('result');
+if (el) el.textContent = window.api ? 'Preload API OK' : 'No API available';
