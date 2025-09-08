@@ -1,0 +1,133 @@
+@import '@gravity-ui/uikit/styles/styles.css';
+
+.app {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--g-color-base-background);
+}
+
+.app-layout {
+  height: 100%;
+  width: 100%;
+}
+
+.app-sidebar {
+  width: 320px;
+  min-width: 280px;
+  max-width: 480px;
+  height: 100%;
+  border-right: 1px solid var(--g-color-line-generic);
+  background: var(--g-color-base-background);
+  overflow-y: auto;
+  resize: horizontal;
+}
+
+.app-content {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--g-color-base-background);
+  overflow: hidden;
+}
+
+/* Responsive design for narrow screens */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+  
+  .app-sidebar {
+    width: 100%;
+    max-width: 100%;
+    height: 40%;
+    min-height: 200px;
+    max-height: 60%;
+    border-right: none;
+    border-bottom: 1px solid var(--g-color-line-generic);
+    resize: vertical;
+  }
+  
+  .app-content {
+    height: auto;
+    flex: 1;
+  }
+}
+
+/* Task list styles */
+.task-list {
+  padding: var(--g-spacing-3);
+}
+
+.task-list-header {
+  padding: var(--g-spacing-3) var(--g-spacing-4);
+  border-bottom: 1px solid var(--g-color-line-generic);
+  position: sticky;
+  top: 0;
+  background: var(--g-color-base-background);
+  z-index: 1;
+}
+
+.task-item {
+  padding: var(--g-spacing-3) var(--g-spacing-4);
+  border-bottom: 1px solid var(--g-color-line-generic-hover);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.task-item:hover {
+  background: var(--g-color-base-simple-hover);
+}
+
+.task-item.selected {
+  background: var(--g-color-base-selection);
+}
+
+.task-item-title {
+  font-weight: 500;
+  margin-bottom: var(--g-spacing-1);
+}
+
+.task-item-description {
+  color: var(--g-color-text-secondary);
+  font-size: var(--g-text-body-2-font-size);
+  line-height: var(--g-text-body-2-line-height);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Editor panel styles */
+.editor-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-header {
+  padding: var(--g-spacing-3) var(--g-spacing-4);
+  border-bottom: 1px solid var(--g-color-line-generic);
+  background: var(--g-color-base-background);
+}
+
+.editor-content {
+  flex: 1;
+  overflow: auto;
+  padding: var(--g-spacing-4);
+}
+
+.editor-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--g-color-text-secondary);
+}
+
+.markdown-editor-wrapper {
+  height: 100%;
+  min-height: 400px;
+}

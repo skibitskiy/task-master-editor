@@ -6,6 +6,7 @@
     "lib": ["ES2021", "DOM"],
     "types": ["vite/client"],
     "rootDir": ".",
+    "jsx": "react-jsx"
   },
   "include": ["src/**/*", "tests/**/*", "index.html"]
 }
