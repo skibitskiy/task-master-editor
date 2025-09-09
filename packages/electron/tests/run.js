@@ -4,6 +4,10 @@ import assert from 'node:assert';
 // Load compiled ESM modules from tsc output (NodeNext)
 import * as security from '../dist/security.js';
 import * as main from '../dist/main.js';
+import { atomicWriteTasksJsonWithBackup } from '../dist/fsAtomic.js';
+import { promises as fs } from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 
 function testSecurityAllowList() {
   assert.strictEqual(
@@ -33,10 +37,40 @@ function testWindowPreferences() {
   assert.strictEqual(wp.sandbox, true, 'sandbox=true');
 }
 
-function run() {
+async function run() {
   testSecurityAllowList();
   testWindowPreferences();
   console.log('OK: security allow-list and window preferences pass');
+  await testAtomicWrite();
 }
 
-run();
+async function testAtomicWrite() {
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tm-editor-'));
+  const file = path.join(tmpDir, 'tasks.json');
+  const bak = `${file}.bak`;
+
+  await assert.rejects(() => atomicWriteTasksJsonWithBackup(file, '{oops'), /Invalid JSON/);
+
+  const v1 = JSON.stringify({ master: { tasks: [{ id: 1, title: 'A' }] } }, null, 2);
+  await atomicWriteTasksJsonWithBackup(file, v1);
+  assert.equal(JSON.parse(await fs.readFile(file, 'utf-8')).master.tasks[0].title, 'A');
+
+  const before = await fs.readFile(file, 'utf-8');
+  await assert.rejects(
+    () => atomicWriteTasksJsonWithBackup(file, JSON.stringify({ not: 'tasks' })),
+    /Invalid schema/,
+  );
+  assert.equal(await fs.readFile(file, 'utf-8'), before);
+
+  const v2 = JSON.stringify({ master: { tasks: [{ id: 1, title: 'B' }] } }, null, 2);
+  await atomicWriteTasksJsonWithBackup(file, v2);
+  const hasBak = await fs
+    .stat(bak)
+    .then(() => true)
+    .catch(() => false);
+  assert.ok(hasBak, 'backup should exist');
+  assert.equal(JSON.parse(await fs.readFile(file, 'utf-8')).master.tasks[0].title, 'B');
+  console.log('OK: atomic write with backup works');
+}
+
+void run();

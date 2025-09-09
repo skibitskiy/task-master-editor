@@ -10,11 +10,13 @@ import {
   validateFileReadResult,
   validateFileWriteInput,
   validateFileWriteResult,
+  parseTasksJson,
   validateSettingsData,
   validateSettingsGetResult,
   validateSettingsUpdateInput,
   validateSettingsUpdateResult,
 } from '@app/shared';
+import { atomicWriteTasksJsonWithBackup } from './fsAtomic.js';
 import type { SettingsData } from '@app/shared';
 
 type InternalSettings = SettingsData;
@@ -67,7 +69,15 @@ export function registerIpcHandlers() {
   ipcMain.handle(Channels.fileRead, async (_event: unknown, rawInput: unknown) => {
     try {
       const input = validateFileReadInput(rawInput);
-      const data = await fs.readFile(input.path, { encoding: input.encoding });
+      const fileEncoding: BufferEncoding = 'utf8';
+      const data = await fs.readFile(input.path, { encoding: fileEncoding });
+      // validate JSON and schema for tasks file
+      try {
+        parseTasksJson(data);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        throw new Error(msg);
+      }
       return validateFileReadResult({ data });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
@@ -79,7 +89,7 @@ export function registerIpcHandlers() {
   ipcMain.handle(Channels.fileWrite, async (_event: unknown, rawInput: unknown) => {
     try {
       const input = validateFileWriteInput(rawInput);
-      await fs.writeFile(input.path, input.data, { encoding: input.encoding });
+      await atomicWriteTasksJsonWithBackup(input.path, input.data);
       return validateFileWriteResult({ ok: true });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
