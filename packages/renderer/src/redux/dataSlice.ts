@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import type { Task, TasksFile } from '@app/shared';
-import { collectTaskErrors, safeParseTasksFile, validateTask } from './helpers.js';
+import { parseTasksJson } from '@app/shared';
+import { collectTaskErrors, validateTask } from './helpers.js';
 
 export interface DataState {
   filePath: string | null;
@@ -22,8 +23,13 @@ export const loadFromPath = createAsyncThunk(
     try {
       const res = await window.api?.file.read({ path });
       if (!res) throw new Error('No preload API');
-      const parsed = JSON.parse(res.data);
-      const { tasksFile, errors } = safeParseTasksFile(parsed);
+      
+      // Use proper Zod validation from shared package
+      const tasksFile = parseTasksJson(res.data);
+      
+      // Still collect task-level validation errors for the UI
+      const errors = collectTaskErrors(tasksFile);
+      
       return { path, tasksFile, errors };
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to load file';
