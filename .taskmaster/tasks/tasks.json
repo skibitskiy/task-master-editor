@@ -72,7 +72,7 @@
           1,
           5
         ],
-        "status": "pending"
+        "status": "done"
       },
       {
         "id": 7,
@@ -259,7 +259,7 @@
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-08T20:06:42.898Z",
+      "updated": "2025-09-09T07:57:04.463Z",
       "description": "Tasks for master context"
     }
   }

@@ -33,8 +33,7 @@ test('Electron opens window and shows skeleton UI', async () => {
   const bodyText = await window.evaluate(() => document.body?.innerText || '');
   console.log('E2E title:', title);
   console.log('E2E body:', bodyText.slice(0, 200));
-  await window.waitForSelector('h1:has-text("Task Master Editor")', { timeout: 25000 });
-  await window.waitForSelector('text=Renderer is running', { timeout: 25000 });
+  await window.waitForSelector('text=Задачи', { timeout: 25000 });
 
   // Security assertions: no Node in renderer
   const hasProcess = await window.evaluate(() => 'process' in (window as Record<string, unknown>));

@@ -17,6 +17,9 @@ const mainConfig = {
   resolve: {
     extensions: ['.ts', '.js'],
     extensionAlias: { '.js': ['.ts', '.js'] },
+    alias: {
+      '@app/shared': path.resolve(__dirname, '../shared/dist'),
+    },
   },
   module: {
     rules: [
@@ -29,6 +32,7 @@ const mainConfig = {
   },
   externals: {
     electron: 'commonjs2 electron',
+    'electron-log': 'commonjs2 electron-log',
     'electron-log/main.js': 'commonjs2 electron-log/main.js',
   },
   devtool: 'source-map',
@@ -51,6 +55,9 @@ const preloadConfig = {
   resolve: {
     extensions: ['.ts', '.js'],
     extensionAlias: { '.js': ['.ts', '.js'] },
+    alias: {
+      '@app/shared': path.resolve(__dirname, '../shared/dist'),
+    },
   },
   module: {
     rules: [
@@ -63,6 +70,7 @@ const preloadConfig = {
   },
   externals: {
     electron: 'commonjs2 electron',
+    'electron-log': 'commonjs2 electron-log',
     'electron-log/main.js': 'commonjs2 electron-log/main.js',
   },
   devtool: 'source-map',

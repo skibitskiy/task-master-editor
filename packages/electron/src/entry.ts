@@ -1,14 +1,30 @@
 import * as electron from 'electron';
-const { app, BrowserWindow } = electron;
-import log from 'electron-log/main.js';
+const { app, BrowserWindow, ipcMain } = electron;
+import { logger } from './logger.js';
 import { createWindow } from './main.js';
 import { registerIpcHandlers } from './ipcHandlers.js';
 
-log.initialize();
-log.info('Task Master Editor starting');
+logger.info('Task Master Editor starting');
 
 // Register IPC handlers early
 registerIpcHandlers();
+
+// Register logging IPC handlers
+ipcMain.on('log:debug', (_event, message, ...args) => {
+  logger.debug(`[Renderer] ${message}`, ...args);
+});
+
+ipcMain.on('log:info', (_event, message, ...args) => {
+  logger.info(`[Renderer] ${message}`, ...args);
+});
+
+ipcMain.on('log:warn', (_event, message, ...args) => {
+  logger.warn(`[Renderer] ${message}`, ...args);
+});
+
+ipcMain.on('log:error', (_event, message, ...args) => {
+  logger.error(`[Renderer] ${message}`, ...args);
+});
 
 app.on('ready', () => {
   createWindow();
@@ -27,10 +43,4 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-process.on('uncaughtException', (err) => {
-  log.error('Uncaught exception', err);
-});
-
-process.on('unhandledRejection', (reason) => {
-  log.error('Unhandled rejection', reason);
-});
+// Process error handlers are already set up in logger.ts

@@ -49,4 +49,19 @@ const api: PreloadAPI = {
   },
 };
 
+// Expose logger to renderer process
+const loggerApi = {
+  debug: (message: string, ...args: unknown[]) => 
+    ipcRenderer.send('log:debug', message, ...args),
+  info: (message: string, ...args: unknown[]) => 
+    ipcRenderer.send('log:info', message, ...args),
+  warn: (message: string, ...args: unknown[]) => 
+    ipcRenderer.send('log:warn', message, ...args),
+  error: (message: string, ...args: unknown[]) => 
+    ipcRenderer.send('log:error', message, ...args),
+};
+
 contextBridge.exposeInMainWorld('api', api);
+contextBridge.exposeInMainWorld('electron', {
+  log: loggerApi,
+});
