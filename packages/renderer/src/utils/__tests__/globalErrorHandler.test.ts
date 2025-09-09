@@ -1,10 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { 
-  setupGlobalErrorHandlers,
-  logError,
-  logWarning,
-  logInfo,
-} from '../globalErrorHandler';
+import { setupGlobalErrorHandlers, logError, logWarning, logInfo } from '../globalErrorHandler';
 import * as notify from '../notify';
 
 vi.mock('../notify', () => ({
@@ -44,10 +39,7 @@ describe('globalErrorHandler', () => {
       const result = window.onerror!('Test error', 'test.js', 10, 5, error);
 
       expect(result).toBe(true);
-      expect(notify.notifyError).toHaveBeenCalledWith(
-        'Произошла ошибка',
-        'Test error'
-      );
+      expect(notify.notifyError).toHaveBeenCalledWith('Произошла ошибка', 'Test error');
       expect(window.electron!.log.error).toHaveBeenCalled();
     });
 
@@ -61,7 +53,7 @@ describe('globalErrorHandler', () => {
         'Unhandled error',
         expect.objectContaining({
           message: 'Error with email [MASKED]',
-        })
+        }),
       );
     });
 
@@ -69,9 +61,10 @@ describe('globalErrorHandler', () => {
       setupGlobalErrorHandlers();
 
       // Get the handler that was registered
-      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls;
+      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock
+        .calls;
       const unhandledRejectionCall = addEventListenerCalls.find(
-        (call: unknown[]) => call[0] === 'unhandledrejection'
+        (call: unknown[]) => call[0] === 'unhandledrejection',
       );
       const handler = unhandledRejectionCall?.[1];
 
@@ -85,7 +78,7 @@ describe('globalErrorHandler', () => {
 
       expect(notify.notifyWarning).toHaveBeenCalledWith(
         'Необработанное отклонение',
-        'Promise rejection'
+        'Promise rejection',
       );
       expect(preventDefault).toHaveBeenCalled();
     });
@@ -93,9 +86,10 @@ describe('globalErrorHandler', () => {
     it('should handle string rejection reasons', () => {
       setupGlobalErrorHandlers();
 
-      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls;
+      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock
+        .calls;
       const unhandledRejectionCall = addEventListenerCalls.find(
-        (call: unknown[]) => call[0] === 'unhandledrejection'
+        (call: unknown[]) => call[0] === 'unhandledrejection',
       );
       const handler = unhandledRejectionCall?.[1];
 
@@ -108,16 +102,17 @@ describe('globalErrorHandler', () => {
 
       expect(notify.notifyWarning).toHaveBeenCalledWith(
         'Необработанное отклонение',
-        'String rejection'
+        'String rejection',
       );
     });
 
     it('should handle object rejection reasons with message', () => {
       setupGlobalErrorHandlers();
 
-      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls;
+      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock
+        .calls;
       const unhandledRejectionCall = addEventListenerCalls.find(
-        (call: unknown[]) => call[0] === 'unhandledrejection'
+        (call: unknown[]) => call[0] === 'unhandledrejection',
       );
       const handler = unhandledRejectionCall?.[1];
 
@@ -130,7 +125,7 @@ describe('globalErrorHandler', () => {
 
       expect(notify.notifyWarning).toHaveBeenCalledWith(
         'Необработанное отклонение',
-        'Object rejection'
+        'Object rejection',
       );
     });
   });
@@ -143,7 +138,7 @@ describe('globalErrorHandler', () => {
         'Application error',
         expect.objectContaining({
           message: 'Error with email: [MASKED]',
-        })
+        }),
       );
     });
 
@@ -154,7 +149,7 @@ describe('globalErrorHandler', () => {
         'Application error',
         expect.objectContaining({
           message: 'Card number: [MASKED]',
-        })
+        }),
       );
     });
 
@@ -165,7 +160,7 @@ describe('globalErrorHandler', () => {
         'Application error',
         expect.objectContaining({
           message: '[MASKED]',
-        })
+        }),
       );
     });
 
@@ -176,7 +171,7 @@ describe('globalErrorHandler', () => {
         'Application error',
         expect.objectContaining({
           message: '[MASKED]',
-        })
+        }),
       );
     });
 
@@ -188,7 +183,7 @@ describe('globalErrorHandler', () => {
 
       const callArgs = (window.electron!.log.error as ReturnType<typeof vi.fn>).mock.calls[0];
       const context = callArgs[1].context;
-      
+
       expect(JSON.stringify(context)).toContain('[MASKED]');
       expect(JSON.stringify(context)).not.toContain('user@example.com');
     });
@@ -212,7 +207,9 @@ describe('globalErrorHandler', () => {
 
       logWarning('Warning message', { key: 'value' });
 
-      expect(consoleSpy).toHaveBeenCalledWith('Application warning:', 'Warning message', { key: 'value' });
+      expect(consoleSpy).toHaveBeenCalledWith('Application warning:', 'Warning message', {
+        key: 'value',
+      });
       expect(window.electron!.log.warn).toHaveBeenCalled();
 
       consoleSpy.mockRestore();
@@ -223,7 +220,9 @@ describe('globalErrorHandler', () => {
 
       logInfo('Info message', { key: 'value' });
 
-      expect(consoleSpy).toHaveBeenCalledWith('Application info:', 'Info message', { key: 'value' });
+      expect(consoleSpy).toHaveBeenCalledWith('Application info:', 'Info message', {
+        key: 'value',
+      });
       expect(window.electron!.log.info).toHaveBeenCalled();
 
       consoleSpy.mockRestore();

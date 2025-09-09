@@ -26,7 +26,7 @@ function maskSensitiveInfo(text: string): string {
   ];
 
   let maskedText = text;
-  patterns.forEach(pattern => {
+  patterns.forEach((pattern) => {
     maskedText = maskedText.replace(pattern, '[MASKED]');
   });
 
@@ -37,7 +37,7 @@ export function setupGlobalErrorHandlers(): void {
   window.onerror = (message, source, lineno, colno, error) => {
     const errorMessage = typeof message === 'string' ? message : 'Unknown error';
     const maskedMessage = maskSensitiveInfo(errorMessage);
-    
+
     console.error('Global error handler:', {
       message: maskedMessage,
       source,
@@ -48,7 +48,7 @@ export function setupGlobalErrorHandlers(): void {
 
     notifyError(
       'Произошла ошибка',
-      maskedMessage.length > 100 ? maskedMessage.substring(0, 100) + '...' : maskedMessage
+      maskedMessage.length > 100 ? maskedMessage.substring(0, 100) + '...' : maskedMessage,
     );
 
     if (window.electron?.log) {
@@ -69,7 +69,7 @@ export function setupGlobalErrorHandlers(): void {
   window.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason;
     let errorMessage = 'Необработанное отклонение промиса';
-    
+
     if (reason instanceof Error) {
       errorMessage = reason.message;
     } else if (typeof reason === 'string') {
@@ -84,7 +84,7 @@ export function setupGlobalErrorHandlers(): void {
 
     notifyWarning(
       'Необработанное отклонение',
-      maskedMessage.length > 100 ? maskedMessage.substring(0, 100) + '...' : maskedMessage
+      maskedMessage.length > 100 ? maskedMessage.substring(0, 100) + '...' : maskedMessage,
     );
 
     if (window.electron?.log) {
@@ -107,7 +107,7 @@ export function logError(error: Error | string, context?: Record<string, unknown
   console.error('Application error:', error, context);
 
   if (window.electron?.log) {
-    const maskedContext = context 
+    const maskedContext = context
       ? JSON.parse(maskSensitiveInfo(JSON.stringify(context)))
       : undefined;
 
@@ -122,11 +122,11 @@ export function logError(error: Error | string, context?: Record<string, unknown
 
 export function logWarning(message: string, context?: Record<string, unknown>): void {
   const maskedMessage = maskSensitiveInfo(message);
-  
+
   console.warn('Application warning:', message, context);
 
   if (window.electron?.log) {
-    const maskedContext = context 
+    const maskedContext = context
       ? JSON.parse(maskSensitiveInfo(JSON.stringify(context)))
       : undefined;
 
@@ -140,11 +140,11 @@ export function logWarning(message: string, context?: Record<string, unknown>): 
 
 export function logInfo(message: string, context?: Record<string, unknown>): void {
   const maskedMessage = maskSensitiveInfo(message);
-  
+
   console.info('Application info:', message, context);
 
   if (window.electron?.log) {
-    const maskedContext = context 
+    const maskedContext = context
       ? JSON.parse(maskSensitiveInfo(JSON.stringify(context)))
       : undefined;
 

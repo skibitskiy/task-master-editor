@@ -41,7 +41,7 @@ export interface SettingsData {
   preferences?: Record<string, unknown>;
 }
 
-export interface SettingsGetInput { }
+export interface SettingsGetInput {}
 export interface SettingsGetResult {
   settings: SettingsData;
 }
@@ -70,7 +70,8 @@ export interface PreloadAPI {
 export function validateWorkspaceSelectOptions(raw: unknown): WorkspaceSelectOptions {
   const o = (raw ?? {}) as Record<string, unknown>;
   const type = (o.type as unknown) ?? 'directory';
-  if (type !== 'directory' && type !== 'file') throw new Error('type must be "directory" or "file"');
+  if (type !== 'directory' && type !== 'file')
+    throw new Error('type must be "directory" or "file"');
   const multiple = (o.multiple as unknown) ?? false;
   if (typeof multiple !== 'boolean') throw new Error('multiple must be boolean');
   return { type, multiple };
@@ -79,7 +80,8 @@ export function validateWorkspaceSelectOptions(raw: unknown): WorkspaceSelectOpt
 export function validateWorkspaceSelectResult(raw: unknown): WorkspaceSelectResult {
   const o = (raw ?? {}) as Record<string, unknown>;
   const paths = Array.isArray(o.paths) ? (o.paths as unknown[]) : [];
-  if (!paths.every((p: unknown) => typeof p === 'string')) throw new Error('paths must be string[]');
+  if (!paths.every((p: unknown) => typeof p === 'string'))
+    throw new Error('paths must be string[]');
   return { paths: paths as string[] };
 }
 
@@ -119,7 +121,8 @@ export function validateFileWriteResult(raw: unknown): FileWriteResult {
 export function validateSettingsData(raw: unknown): SettingsData {
   const o = (raw ?? {}) as Record<string, unknown>;
   const recentPaths = Array.isArray(o.recentPaths) ? (o.recentPaths as unknown[]) : [];
-  if (!recentPaths.every((p: unknown) => typeof p === 'string')) throw new Error('recentPaths must be string[]');
+  if (!recentPaths.every((p: unknown) => typeof p === 'string'))
+    throw new Error('recentPaths must be string[]');
   const preferences = (o.preferences as Record<string, unknown> | undefined) ?? undefined;
   return { recentPaths: recentPaths as string[], preferences };
 }

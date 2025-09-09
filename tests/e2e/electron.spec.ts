@@ -22,7 +22,10 @@ test('Electron opens window and shows skeleton UI', async () => {
       env: { APP_AUTO_QUIT: '0', ELECTRON_ENABLE_LOGGING: '1', ELECTRON_DISABLE_GPU: '1' },
     });
   } catch (err) {
-    test.skip(true, `Electron failed to launch in this environment: ${err instanceof Error ? err.message : String(err)}`);
+    test.skip(
+      true,
+      `Electron failed to launch in this environment: ${err instanceof Error ? err.message : String(err)}`,
+    );
     throw err;
   }
 
@@ -33,7 +36,7 @@ test('Electron opens window and shows skeleton UI', async () => {
   const bodyText = await window.evaluate(() => document.body?.innerText || '');
   console.log('E2E title:', title);
   console.log('E2E body:', bodyText.slice(0, 200));
-  await window.waitForSelector('text=Задачи', { timeout: 25000 });
+  await window.waitForSelector('text=Выберите файл задач', { timeout: 25000 });
 
   // Security assertions: no Node in renderer
   const hasProcess = await window.evaluate(() => 'process' in (window as Record<string, unknown>));

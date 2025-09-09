@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Flex, Text, Button } from '@gravity-ui/uikit';
-import {
-  useMarkdownEditor,
-  MarkdownEditorView,
-} from '@gravity-ui/markdown-editor';
+import { useMarkdownEditor, MarkdownEditorView } from '@gravity-ui/markdown-editor';
 import { FloppyDisk, Eye, Code } from '@gravity-ui/icons';
 import type { RootState } from '../redux/store';
 
@@ -15,10 +12,10 @@ interface EditorPanelProps {
 
 export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
-  
+
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
-  const task = taskId ? tasksFile?.master.tasks.find(t => String(t.id) === taskId) : null;
-  
+  const task = taskId ? tasksFile?.master.tasks.find((t) => String(t.id) === taskId) : null;
+
   const editor = useMarkdownEditor({});
 
   const handleSave = React.useCallback(() => {
@@ -57,16 +54,10 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
               size="m"
               onClick={() => setActiveTab(activeTab === 'editor' ? 'preview' : 'editor')}
             >
-              <Button.Icon>
-                {activeTab === 'editor' ? <Eye /> : <Code />}
-              </Button.Icon>
+              <Button.Icon>{activeTab === 'editor' ? <Eye /> : <Code />}</Button.Icon>
               {activeTab === 'editor' ? 'Предпросмотр' : 'Редактор'}
             </Button>
-            <Button
-              view="action"
-              size="m"
-              onClick={handleSave}
-            >
+            <Button view="action" size="m" onClick={handleSave}>
               <Button.Icon>
                 <FloppyDisk />
               </Button.Icon>
@@ -75,14 +66,10 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
           </Flex>
         </Flex>
       </div>
-      
+
       <div className="editor-content">
         <div className="markdown-editor-wrapper">
-          <MarkdownEditorView
-            editor={editor}
-            autofocus
-            stickyToolbar
-          />
+          <MarkdownEditorView editor={editor} autofocus stickyToolbar />
         </div>
       </div>
     </div>

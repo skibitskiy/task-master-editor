@@ -12,12 +12,13 @@ interface TaskListProps {
 export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask }) => {
   const [searchQuery, setSearchQuery] = React.useState('');
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
-  
+
   const tasks = tasksFile?.master.tasks || [];
-  
-  const filteredTasks = tasks.filter(task => 
-    task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    task.description?.toLowerCase().includes(searchQuery.toLowerCase())
+
+  const filteredTasks = tasks.filter(
+    (task) =>
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task.description?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
@@ -26,11 +27,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
         <Flex direction="column" gap={3}>
           <Flex alignItems="center" justifyContent="space-between">
             <Text variant="header-1">Задачи</Text>
-            <Button 
-              view="action" 
-              size="s"
-              title="Добавить задачу"
-            >
+            <Button view="action" size="s" title="Добавить задачу">
               <Button.Icon>
                 <Plus />
               </Button.Icon>
@@ -46,29 +43,21 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
           />
         </Flex>
       </div>
-      
+
       <Flex direction="column" grow>
         {filteredTasks.length === 0 ? (
           <div className="editor-placeholder">
-            <Text color="secondary">
-              {searchQuery ? 'Задачи не найдены' : 'Нет задач'}
-            </Text>
+            <Text color="secondary">{searchQuery ? 'Задачи не найдены' : 'Нет задач'}</Text>
           </div>
         ) : (
-          filteredTasks.map(task => (
+          filteredTasks.map((task) => (
             <div
               key={task.id}
               className={`task-item ${selectedTaskId === String(task.id) ? 'selected' : ''}`}
               onClick={() => onSelectTask(String(task.id))}
             >
-              <div className="task-item-title">
-                {task.title}
-              </div>
-              {task.description && (
-                <div className="task-item-description">
-                  {task.description}
-                </div>
-              )}
+              <div className="task-item-title">{task.title}</div>
+              {task.description && <div className="task-item-description">{task.description}</div>}
             </div>
           ))
         )}

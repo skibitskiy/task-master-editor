@@ -63,8 +63,9 @@ export function parseTasksJson(json: string): TasksFile {
     return validateTasksFile(obj);
   } catch (e) {
     if (e && typeof e === 'object' && 'issues' in e) {
-      const issues = (e as { issues?: Array<{ path: (string|number)[]; message: string }> }).issues ?? [];
-      const detail = issues.map(i => `${i.path.join('.')}: ${i.message}`).join('; ');
+      const issues =
+        (e as { issues?: Array<{ path: (string | number)[]; message: string }> }).issues ?? [];
+      const detail = issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ');
       throw new Error(`Invalid schema: ${detail}`);
     }
     const msg = e instanceof Error ? e.message : String(e);

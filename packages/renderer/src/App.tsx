@@ -14,6 +14,7 @@ import { loadFromPath } from './redux/dataSlice';
 import { TaskList } from './components/TaskList';
 import { EditorPanel } from './components/EditorPanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { FileSelectionScreen } from './components/FileSelectionScreen';
 import { setToasterInstance, notifySuccess, notifyError } from './utils/notify';
 import { setupGlobalErrorHandlers } from './utils/globalErrorHandler';
 import { withIPCErrorHandling } from './utils/ipcErrorMapper';
@@ -26,6 +27,7 @@ export const App: React.FC = () => {
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isLoading, setIsLoading] = useState(true);
+  const [hasValidFile, setHasValidFile] = useState(false);
 
   useEffect(() => {
     // Setup global error handlers
@@ -39,20 +41,27 @@ export const App: React.FC = () => {
         const prefs = state.settings.data.preferences as Record<string, unknown> | undefined;
         const mruEnabled = prefs?.mruEnabled ?? true;
         const last = state.settings.data.recentPaths[0];
-        
+
         if (mruEnabled && typeof last === 'string' && last.length > 0) {
           const result = await withIPCErrorHandling(
             async () => {
-              await store.dispatch(loadFromPath(last));
-              if (last) await store.dispatch(updateMRU(last));
-              return true;
+              const loadResult = await store.dispatch(loadFromPath(last));
+              if (loadResult.meta.requestStatus === 'fulfilled') {
+                await store.dispatch(updateMRU(last));
+                setHasValidFile(true);
+                return true;
+              }
+              return false;
             },
             'Загрузка последнего файла',
-            true // Show warning only, don't block app startup
+            true, // Show warning only, don't block app startup
           );
-          
+
           if (!result) {
-            notifyError('Не удалось загрузить последний файл', 'Файл может быть перемещен или удален');
+            notifyError(
+              'Не удалось загрузить последний файл',
+              'Файл может быть перемещен или удален',
+            );
           }
         }
       } catch (error) {
@@ -70,6 +79,30 @@ export const App: React.FC = () => {
     setTheme(prefersDark ? 'dark' : 'light');
   }, []);
 
+  const handleFileSelected = async (filePath: string) => {
+    setIsLoading(true);
+    try {
+      const result = await withIPCErrorHandling(async () => {
+        const loadResult = await store.dispatch(loadFromPath(filePath));
+        if (loadResult.meta.requestStatus === 'fulfilled') {
+          await store.dispatch(updateMRU(filePath));
+          setHasValidFile(true);
+          notifySuccess('Файл загружен', `Открыт файл: ${filePath.split('/').pop()}`);
+          return true;
+        }
+        return false;
+      }, 'Загрузка файла задач');
+
+      if (!result) {
+        notifyError('Ошибка загрузки', 'Выбранный файл не является корректным файлом tasks.json');
+      }
+    } catch (error) {
+      notifyError('Ошибка загрузки файла', 'Не удалось загрузить выбранный файл');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
@@ -80,19 +113,18 @@ export const App: React.FC = () => {
                 <Flex centerContent width="100%" height="100vh">
                   <Loader size="l" />
                 </Flex>
+              ) : !hasValidFile ? (
+                <FileSelectionScreen onFileSelected={handleFileSelected} />
               ) : (
                 <Flex className="app-layout" grow>
                   <div className="app-sidebar">
                     <ErrorBoundary>
-                      <TaskList 
-                        selectedTaskId={selectedTaskId}
-                        onSelectTask={setSelectedTaskId}
-                      />
+                      <TaskList selectedTaskId={selectedTaskId} onSelectTask={setSelectedTaskId} />
                     </ErrorBoundary>
                   </div>
                   <div className="app-content">
                     <ErrorBoundary>
-                      <EditorPanel 
+                      <EditorPanel
                         taskId={selectedTaskId}
                         onSave={() => {
                           notifySuccess('Сохранено', 'Изменения успешно сохранены');

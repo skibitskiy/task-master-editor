@@ -56,7 +56,7 @@ function maskSensitiveInfo(text: string): string {
   }
 
   let maskedText = text;
-  SENSITIVE_PATTERNS.forEach(pattern => {
+  SENSITIVE_PATTERNS.forEach((pattern) => {
     maskedText = maskedText.replace(pattern, '[MASKED]');
   });
 
@@ -67,11 +67,11 @@ function maskSensitiveInfo(text: string): string {
  * Processes log arguments to mask sensitive information
  */
 function processLogArgs(args: unknown[]): unknown[] {
-  return args.map(arg => {
+  return args.map((arg) => {
     if (typeof arg === 'string') {
       return maskSensitiveInfo(arg);
     }
-    
+
     if (typeof arg === 'object' && arg !== null) {
       try {
         const jsonStr = JSON.stringify(arg);
@@ -81,7 +81,7 @@ function processLogArgs(args: unknown[]): unknown[] {
         return arg;
       }
     }
-    
+
     return arg;
   });
 }
@@ -92,14 +92,17 @@ export const logger = {
   info: (...args: unknown[]) => log.info(...processLogArgs(args)),
   warn: (...args: unknown[]) => log.warn(...processLogArgs(args)),
   error: (...args: unknown[]) => log.error(...processLogArgs(args)),
-  
+
   // Original unmasked logger for development only
-  raw: process.env.NODE_ENV === 'development' ? log : {
-    debug: () => {},
-    info: () => {},
-    warn: () => {},
-    error: () => {},
-  },
+  raw:
+    process.env.NODE_ENV === 'development'
+      ? log
+      : {
+          debug: () => {},
+          info: () => {},
+          warn: () => {},
+          error: () => {},
+        },
 };
 
 // Set up uncaught exception handler

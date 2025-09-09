@@ -16,8 +16,12 @@ describe('settingsSlice: init and MRU', () => {
         write: async () => ({ ok: true as const }),
       },
       settings: {
-        get: async (): Promise<SettingsGetResult> => ({ settings: { recentPaths: [], preferences: {} } }),
-        update: async (): Promise<SettingsUpdateResult> => ({ settings: { recentPaths: [], preferences: {} } }),
+        get: async (): Promise<SettingsGetResult> => ({
+          settings: { recentPaths: [], preferences: {} },
+        }),
+        update: async (): Promise<SettingsUpdateResult> => ({
+          settings: { recentPaths: [], preferences: {} },
+        }),
       },
     };
     (globalThis as unknown as { window: { api: PreloadAPI } }).window = { api };
@@ -25,14 +29,18 @@ describe('settingsSlice: init and MRU', () => {
 
   it('initSettings loads settings or defaults', async () => {
     const store = makeStore();
-    const getMock: () => Promise<SettingsGetResult> = vi.fn(async () => ({ settings: { recentPaths: ['/a'], preferences: { mruEnabled: true } } }));
+    const getMock: () => Promise<SettingsGetResult> = vi.fn(async () => ({
+      settings: { recentPaths: ['/a'], preferences: { mruEnabled: true } },
+    }));
     (globalThis as unknown as { window: { api: PreloadAPI } }).window.api.settings.get = getMock;
     await store.dispatch(initSettings());
     expect(store.getState().settings.data.recentPaths).toEqual(['/a']);
 
     // with empty response -> defaults
     const store2 = makeStore();
-    const getEmpty: () => Promise<SettingsGetResult> = vi.fn(async () => ({ settings: { recentPaths: [], preferences: {} } }));
+    const getEmpty: () => Promise<SettingsGetResult> = vi.fn(async () => ({
+      settings: { recentPaths: [], preferences: {} },
+    }));
     (globalThis as unknown as { window: { api: PreloadAPI } }).window.api.settings.get = getEmpty;
     await store2.dispatch(initSettings());
     expect(store2.getState().settings.data.recentPaths).toEqual([]);
@@ -41,10 +49,22 @@ describe('settingsSlice: init and MRU', () => {
   it('updateMRU dedups, prepends and limits to 10', async () => {
     const store = makeStore();
     // seed state
-    store.dispatch({ type: 'settings/setSettings', payload: { recentPaths: ['/b', '/c'], preferences: {} } });
-    const updateMock: ({ settings }: { settings: { recentPaths?: string[]; preferences?: Record<string, unknown> } }) => Promise<SettingsUpdateResult> =
-      vi.fn(async ({ settings }) => ({ settings: { recentPaths: settings.recentPaths ?? [], preferences: settings.preferences ?? {} } }));
-    (globalThis as unknown as { window: { api: PreloadAPI } }).window.api.settings.update = updateMock;
+    store.dispatch({
+      type: 'settings/setSettings',
+      payload: { recentPaths: ['/b', '/c'], preferences: {} },
+    });
+    const updateMock: ({
+      settings,
+    }: {
+      settings: { recentPaths?: string[]; preferences?: Record<string, unknown> };
+    }) => Promise<SettingsUpdateResult> = vi.fn(async ({ settings }) => ({
+      settings: {
+        recentPaths: settings.recentPaths ?? [],
+        preferences: settings.preferences ?? {},
+      },
+    }));
+    (globalThis as unknown as { window: { api: PreloadAPI } }).window.api.settings.update =
+      updateMock;
 
     await store.dispatch(updateMRU('/a'));
     expect(store.getState().settings.data.recentPaths).toEqual(['/a', '/b', '/c']);

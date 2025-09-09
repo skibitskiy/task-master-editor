@@ -33,7 +33,8 @@ export function setupSecurityHandlers(contents: WebContents) {
 }
 
 // Resolve dirname for both ESM (tsc) and bundled CJS (webpack)
-const __DIRNAME = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const __DIRNAME =
+  typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
   return {

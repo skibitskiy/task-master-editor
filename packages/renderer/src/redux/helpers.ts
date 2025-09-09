@@ -4,7 +4,8 @@ export function validateTask(t: unknown): string[] {
   const errs: string[] = [];
   const o = (t ?? {}) as Record<string, unknown>;
   if (o.id == null) errs.push('id is required');
-  if (typeof o.title !== 'string' || o.title.length === 0) errs.push('title must be non-empty string');
+  if (typeof o.title !== 'string' || o.title.length === 0)
+    errs.push('title must be non-empty string');
   if (o.dependencies && !Array.isArray(o.dependencies)) errs.push('dependencies must be array');
   return errs;
 }
@@ -18,7 +19,10 @@ export function collectTaskErrors(tf: TasksFile): Record<string, string[]> {
   return map;
 }
 
-export function safeParseTasksFile(raw: unknown): { tasksFile: TasksFile; errors: Record<string, string[]> } {
+export function safeParseTasksFile(raw: unknown): {
+  tasksFile: TasksFile;
+  errors: Record<string, string[]>;
+} {
   const root = (raw ?? {}) as Record<string, unknown>;
   const master = (root.master as Record<string, unknown>) ?? {};
   const tasksRaw = Array.isArray(master.tasks) ? (master.tasks as unknown[]) : [];
@@ -39,7 +43,12 @@ export function safeParseTasksFile(raw: unknown): { tasksFile: TasksFile; errors
       details: typeof o.details === 'string' ? o.details : undefined,
       status: ((): Task['status'] => {
         const s = o.status as string | undefined;
-        return s === 'pending' || s === 'in-progress' || s === 'done' || s === 'deferred' || s === 'cancelled' || s === 'blocked'
+        return s === 'pending' ||
+          s === 'in-progress' ||
+          s === 'done' ||
+          s === 'deferred' ||
+          s === 'cancelled' ||
+          s === 'blocked'
           ? (s as Task['status'])
           : undefined;
       })(),
@@ -54,6 +63,8 @@ export function safeParseTasksFile(raw: unknown): { tasksFile: TasksFile; errors
     tasks.push(tLoose as unknown as Task);
   }
 
-  const tf: TasksFile = { master: { tasks, metadata: (master.metadata as TasksFile['master']['metadata']) } };
+  const tf: TasksFile = {
+    master: { tasks, metadata: master.metadata as TasksFile['master']['metadata'] },
+  };
   return { tasksFile: tf, errors };
 }

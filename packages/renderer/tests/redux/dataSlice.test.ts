@@ -1,7 +1,20 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { configureStore } from '@reduxjs/toolkit';
-import dataReducer, { updateTask, replaceTasksFile, loadFromPath, saveFile } from '../../src/redux/dataSlice';
-import type { PreloadAPI, FileReadInput, FileReadResult, FileWriteInput, FileWriteResult, TasksFile, Task } from '@app/shared';
+import dataReducer, {
+  updateTask,
+  replaceTasksFile,
+  loadFromPath,
+  saveFile,
+} from '../../src/redux/dataSlice';
+import type {
+  PreloadAPI,
+  FileReadInput,
+  FileReadResult,
+  FileWriteInput,
+  FileWriteResult,
+  TasksFile,
+  Task,
+} from '@app/shared';
 
 function makeStore() {
   return configureStore({ reducer: { data: dataReducer } });
@@ -18,7 +31,12 @@ describe('dataSlice: dirty, load/save, reducers', () => {
       },
       settings: {
         get: async () => ({ settings: { recentPaths: [], preferences: {} } }),
-        update: async ({ settings }) => ({ settings: { recentPaths: settings.recentPaths ?? [], preferences: settings.preferences ?? {} } }),
+        update: async ({ settings }) => ({
+          settings: {
+            recentPaths: settings.recentPaths ?? [],
+            preferences: settings.preferences ?? {},
+          },
+        }),
       },
     };
     (globalThis as unknown as { window: { api: PreloadAPI } }).window = { api };
@@ -38,7 +56,9 @@ describe('dataSlice: dirty, load/save, reducers', () => {
   it('loadFromPath loads JSON and resets dirty; collects task errors', async () => {
     const store = makeStore();
     const json = JSON.stringify({ master: { tasks: [{ id: 1, title: '' }] } });
-    const readMock: (input: FileReadInput) => Promise<FileReadResult> = vi.fn(async (_input) => ({ data: json }));
+    const readMock: (input: FileReadInput) => Promise<FileReadResult> = vi.fn(async (_input) => ({
+      data: json,
+    }));
     (globalThis as unknown as { window: { api: PreloadAPI } }).window.api.file.read = readMock;
 
     await store.dispatch(loadFromPath('/tmp/tasks.json'));
@@ -67,7 +87,9 @@ describe('dataSlice: dirty, load/save, reducers', () => {
     // mark path and dirty
     store.dispatch({ type: 'data/setFilePath', payload: '/tmp/x.json' });
     // mock write
-    const writeOk: (input: FileWriteInput) => Promise<FileWriteResult> = vi.fn(async (_input) => ({ ok: true as const }));
+    const writeOk: (input: FileWriteInput) => Promise<FileWriteResult> = vi.fn(async (_input) => ({
+      ok: true as const,
+    }));
     (globalThis as unknown as { window: { api: PreloadAPI } }).window.api.file.write = writeOk;
     await store.dispatch(saveFile());
     expect(store.getState().data.dirty.file).toBe(false);

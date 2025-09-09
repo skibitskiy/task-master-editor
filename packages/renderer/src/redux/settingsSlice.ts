@@ -25,7 +25,7 @@ export const updateMRU = createAsyncThunk(
     const recentPaths = list.slice(0, 10);
     const res = await window.api?.settings.update({ settings: { recentPaths } });
     return res?.settings ?? { recentPaths, preferences: state.settings.data.preferences };
-  }
+  },
 );
 
 const settingsSlice = createSlice({
@@ -50,4 +50,3 @@ const settingsSlice = createSlice({
 
 export const { setSettings } = settingsSlice.actions;
 export default settingsSlice.reducer;
-

@@ -37,7 +37,7 @@
   .app-layout {
     flex-direction: column;
   }
-  
+
   .app-sidebar {
     width: 100%;
     max-width: 100%;
@@ -48,7 +48,7 @@
     border-bottom: 1px solid var(--g-color-line-generic);
     resize: vertical;
   }
-  
+
   .app-content {
     height: auto;
     flex: 1;

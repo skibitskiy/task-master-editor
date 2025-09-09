@@ -26,14 +26,14 @@ export function notify(options: NotifyOptions): void {
   }
 
   const name = `notification-${Date.now()}-${Math.random()}`;
-  
+
   const toastOptions: ToastProps = {
     name,
     title: options.title,
     content: options.message,
     theme: options.theme || 'normal',
     autoHiding: options.autoHiding !== undefined ? options.autoHiding : 5000,
-    actions: options.actions?.map(action => ({
+    actions: options.actions?.map((action) => ({
       label: action.label,
       onClick: action.onClick,
       view: 'outlined' as const,
@@ -44,14 +44,14 @@ export function notify(options: NotifyOptions): void {
   toasterInstance.add(toastOptions);
 }
 
-export const notifySuccess = (title: string, message?: string) => 
+export const notifySuccess = (title: string, message?: string) =>
   notify({ title, message, theme: 'success', autoHiding: 3000 });
 
-export const notifyError = (title: string, message?: string) => 
+export const notifyError = (title: string, message?: string) =>
   notify({ title, message, theme: 'danger', autoHiding: false });
 
-export const notifyWarning = (title: string, message?: string) => 
+export const notifyWarning = (title: string, message?: string) =>
   notify({ title, message, theme: 'warning', autoHiding: 5000 });
 
-export const notifyInfo = (title: string, message?: string) => 
+export const notifyInfo = (title: string, message?: string) =>
   notify({ title, message, theme: 'info', autoHiding: 5000 });

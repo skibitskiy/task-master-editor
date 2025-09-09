@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Toaster } from '@gravity-ui/uikit';
-import { 
-  setToasterInstance, 
-  notify, 
-  notifySuccess, 
-  notifyError, 
-  notifyWarning, 
-  notifyInfo 
+import {
+  setToasterInstance,
+  notify,
+  notifySuccess,
+  notifyError,
+  notifyWarning,
+  notifyInfo,
 } from '../notify';
 
 describe('notify utility', () => {
@@ -36,7 +36,7 @@ describe('notify utility', () => {
           content: 'Test Message',
           theme: 'info',
           autoHiding: 3000,
-        })
+        }),
       );
     });
 
@@ -54,9 +54,7 @@ describe('notify utility', () => {
       const onClick = vi.fn();
       notify({
         title: 'Test',
-        actions: [
-          { label: 'Action 1', onClick },
-        ],
+        actions: [{ label: 'Action 1', onClick }],
       });
 
       expect(addSpy).toHaveBeenCalledWith(
@@ -69,7 +67,7 @@ describe('notify utility', () => {
               removeAfterClick: true,
             }),
           ],
-        })
+        }),
       );
     });
 
@@ -81,7 +79,7 @@ describe('notify utility', () => {
 
       expect(addSpy).not.toHaveBeenCalled();
       expect(consoleSpy).toHaveBeenCalledWith(
-        'Toaster instance not initialized. Call setToasterInstance first.'
+        'Toaster instance not initialized. Call setToasterInstance first.',
       );
 
       consoleSpy.mockRestore();
@@ -98,7 +96,7 @@ describe('notify utility', () => {
           content: 'Success message',
           theme: 'success',
           autoHiding: 3000,
-        })
+        }),
       );
     });
 
@@ -111,7 +109,7 @@ describe('notify utility', () => {
           content: 'Error message',
           theme: 'danger',
           autoHiding: false,
-        })
+        }),
       );
     });
 
@@ -124,7 +122,7 @@ describe('notify utility', () => {
           content: 'Warning message',
           theme: 'warning',
           autoHiding: 5000,
-        })
+        }),
       );
     });
 
@@ -137,7 +135,7 @@ describe('notify utility', () => {
           content: 'Info message',
           theme: 'info',
           autoHiding: 5000,
-        })
+        }),
       );
     });
   });

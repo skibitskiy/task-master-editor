@@ -25,10 +25,10 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
-    
+
     notifyError(
       'Произошла ошибка приложения',
-      'Приложение обнаружило неожиданную ошибку. Попробуйте перезагрузить страницу.'
+      'Приложение обнаружило неожиданную ошибку. Попробуйте перезагрузить страницу.',
     );
 
     if (window.electron?.log) {
@@ -38,7 +38,7 @@ export class ErrorBoundary extends Component<Props, State> {
         componentStack: errorInfo.componentStack,
       });
     }
-    
+
     this.setState({ errorInfo });
   }
 
@@ -67,14 +67,16 @@ export class ErrorBoundary extends Component<Props, State> {
                 {this.state.error && (
                   <details style={{ marginTop: '10px' }}>
                     <summary>Подробности ошибки</summary>
-                    <pre style={{ 
-                      fontSize: '12px', 
-                      padding: '10px', 
-                      backgroundColor: 'var(--g-color-base-generic)',
-                      borderRadius: '4px',
-                      overflow: 'auto',
-                      maxHeight: '200px'
-                    }}>
+                    <pre
+                      style={{
+                        fontSize: '12px',
+                        padding: '10px',
+                        backgroundColor: 'var(--g-color-base-generic)',
+                        borderRadius: '4px',
+                        overflow: 'auto',
+                        maxHeight: '200px',
+                      }}
+                    >
                       {this.state.error.message}
                       {'\n\n'}
                       {this.state.error.stack}
