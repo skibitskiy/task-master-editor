@@ -2,19 +2,19 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ThemeProvider } from '@gravity-ui/uikit';
-import { FileSelectionScreen } from '../FileSelectionScreen';
+import { FileSelectionScreen } from '../../file-selection-screen';
 
 // Mock the IPC and notification modules
-vi.mock('../../utils/ipcErrorMapper', () => ({
+vi.mock('../../../utils/ipcErrorMapper', () => ({
   withIPCErrorHandling: vi.fn((fn) => fn()),
 }));
 
-vi.mock('../../utils/notify', () => ({
+vi.mock('../../../utils/notify', () => ({
   notifyError: vi.fn(),
 }));
 
 // Import the mocked module to access the mock functions
-import * as notifyModule from '../../utils/notify';
+import * as notifyModule from '../../../utils/notify';
 
 // Mock the window.api
 const mockWorkspaceSelect = vi.fn();

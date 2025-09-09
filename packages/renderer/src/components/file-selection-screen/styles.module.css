@@ -1,0 +1,47 @@
+/* FileSelectionScreen CSS Module */
+
+.container {
+  background: var(--g-color-base-background);
+}
+
+.card {
+  padding: 40px;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 20px;
+}
+
+.iconContainer {
+  padding: 20px;
+  border-radius: 50%;
+  background-color: var(--g-color-base-info-light);
+  color: var(--g-color-text-info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  text-align: center;
+}
+
+.description {
+  text-align: center;
+  max-width: 360px;
+}
+
+.selectButton {
+  min-width: 160px;
+}
+
+.loadingContainer {
+  position: relative;
+  bottom: -2px;
+  display: inline-flex;
+  padding-right: 8px;
+}
+
+.helpText {
+  text-align: center;
+  max-width: 360px;
+}

@@ -1,0 +1,93 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Component Structure
+
+## General Structure
+
+Each component should have the following folder and file structure:
+
+```
+component-name/
+├── ui.tsx              # Main component
+├── index.ts            # Component export
+├── styles.module.css   # CSS modules for styles (optional)
+└── lib/                # Utilities and hooks (optional)
+    ├── utility-name.ts
+    ├── hook-name.ts
+    └── types.ts
+```
+
+## File Descriptions
+
+### ui.tsx
+- Main file with component implementation
+- Contains logic, JSX markup and imports
+- Component name should match folder name in PascalCase
+- **One component per file** - only one main component allowed in ui.tsx
+
+### index.ts
+- File for component export
+- Minimalistic, usually contains only `export { ComponentName } from './ui';`
+
+### styles.module.css
+- CSS modules for component styling
+- Created only when local styles are needed
+- Imported in ui.tsx as `import styles from './styles.module.css'`
+
+### lib/
+Directory for component helper files:
+
+#### lib/ Organization Principles:
+- **Utilities** - stored as separate files
+- **Hooks** - stored as separate files  
+- **Types** - in types.ts file
+- **DO NOT create** utils or hooks folders
+- **DO NOT group** files in subfolders, only separate files
+
+#### Examples of files in lib/:
+- `get-iso-string.ts` - utility function
+- `use-form-validation.ts` - custom hook
+- `types.ts` - types and interfaces
+- `constants.ts` - constants
+- `validators.ts` - validators
+
+## Structure Example
+
+Based on `application-form` component:
+
+```
+application-form/
+├── ui.tsx
+├── index.ts  
+├── styles.module.css
+└── lib/
+    ├── get-iso-string.ts
+    ├── types.ts
+    └── validators.ts
+```
+
+## Naming Rules
+
+- Component folders: `kebab-case`
+- Files: `kebab-case.ts/.tsx` 
+- Components in code: `PascalCase`
+- Functions and variables: `camelCase`
+
+## Imports
+
+```typescript
+// Export from index.ts
+export { ApplicationForm } from './ui';
+
+// Import component
+import { ApplicationForm } from '@/shared/ui/application-form';
+```
+
+This structure provides:
+- Code readability and navigation
+- Separation of concerns  
+- Reusability of utilities and hooks
+- Project consistency

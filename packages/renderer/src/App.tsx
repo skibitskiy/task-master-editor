@@ -7,7 +7,7 @@ import { loadFromPath } from './redux/dataSlice';
 import { TaskList } from './components/TaskList';
 import { EditorPanel } from './components/EditorPanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { FileSelectionScreen } from './components/FileSelectionScreen';
+import { FileSelectionScreen } from './components/file-selection-screen';
 import { setToasterInstance, notifySuccess, notifyError } from './utils/notify';
 import { setupGlobalErrorHandlers } from './utils/globalErrorHandler';
 import { withIPCErrorHandling } from './utils/ipcErrorMapper';

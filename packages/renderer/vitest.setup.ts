@@ -6,6 +6,18 @@ import React from 'react';
 vi.mock('@gravity-ui/uikit/styles/fonts.css', () => ({}));
 vi.mock('@gravity-ui/uikit/styles/styles.css', () => ({}));
 
+// Mock CSS modules - return identity object for CSS module imports
+vi.mock('*.module.css', () => {
+  return new Proxy({}, {
+    get: (target, prop) => {
+      if (typeof prop === 'string') {
+        return prop; // Return the class name as-is for testing
+      }
+      return undefined;
+    }
+  });
+});
+
 // Mock problematic Gravity UI components that import CSS
 vi.mock('@gravity-ui/uikit', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) =>

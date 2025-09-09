@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Flex, Card, Button, Text, Icon, Spin } from '@gravity-ui/uikit';
-import { withIPCErrorHandling } from '../utils/ipcErrorMapper';
-import { notifyError } from '../utils/notify';
 import { File as FileIcon } from '@gravity-ui/icons';
+import { withIPCErrorHandling } from '../../utils/ipcErrorMapper';
+import { notifyError } from '../../utils/notify';
+import styles from './styles.module.css';
+
 interface FileSelectionScreenProps {
   onFileSelected: (filePath: string) => void;
 }
@@ -43,44 +45,31 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
       width="100%"
       height="100vh"
       direction="column"
-      style={{
-        background: 'var(--g-color-base-background)',
-      }}
+      className={styles.container}
     >
       <Card
         view="outlined"
         type="container"
         size="l"
-        style={{
-          padding: '40px',
-          maxWidth: '480px',
-          width: '100%',
-          margin: '0 20px',
-        }}
+        className={styles.card}
       >
         <Flex direction="column" centerContent gap={6}>
           {/* Icon */}
-          <div
-            style={{
-              padding: '20px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--g-color-base-info-light)',
-              color: 'var(--g-color-text-info)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className={styles.iconContainer}>
             <FileIcon />
           </div>
 
           {/* Title */}
-          <Text variant="header-2" style={{ textAlign: 'center' }}>
+          <Text variant="header-2" className={styles.title}>
             Выберите файл задач
           </Text>
 
           {/* Description */}
-          <Text variant="body-2" color="secondary" style={{ textAlign: 'center', maxWidth: '360px' }}>
+          <Text
+            variant="body-2"
+            color="secondary"
+            className={styles.description}
+          >
             Для начала работы выберите существующий файл tasks.json или создайте новый проект с помощью Task Master CLI
           </Text>
 
@@ -90,16 +79,11 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
             size="l"
             onClick={handleSelectFile}
             disabled={isSelecting}
-            style={{ minWidth: '160px' }}
+            className={styles.selectButton}
           >
             {isSelecting ? (
               <Flex
-                style={{
-                  position: 'relative',
-                  bottom: '-2px',
-                  display: 'inline-flex',
-                  paddingRight: '8px',
-                }}
+                className={styles.loadingContainer}
                 justifyContent="center"
                 alignItems="center"
               >
@@ -112,7 +96,7 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
           </Button>
 
           {/* Help text */}
-          <Text variant="caption-2" color="hint" style={{ textAlign: 'center', maxWidth: '360px' }}>
+          <Text variant="caption-2" color="hint" className={styles.helpText}>
             Поддерживаются файлы tasks.json, созданные с помощью Task Master CLI
           </Text>
         </Flex>
