@@ -14,7 +14,7 @@ vi.mock('@gravity-ui/uikit', () => ({
   ToasterComponent: () => React.createElement('div', { 'data-testid': 'toaster-component' }),
   ToasterProvider: ({ children }: { children: React.ReactNode }) =>
     React.createElement('div', { 'data-testid': 'toaster-provider' }, children),
-  Flex: ({ children, ...props }: { children: React.ReactNode }) =>
+  Flex: ({ children, ...props }: { children: React.ReactNode; }) =>
     React.createElement('div', { ...props, 'data-testid': 'flex' }, children),
   Card: ({ children, ...props }: { children: React.ReactNode }) =>
     React.createElement('div', { ...props, 'data-testid': 'card' }, children),
@@ -67,12 +67,15 @@ vi.mock('@gravity-ui/uikit', () => ({
     React.createElement('span', { ...props, 'data-testid': 'icon' }, '🔍'),
   Loader: ({ size: _size, ...props }: { size?: string }) =>
     React.createElement('div', { ...props, 'data-testid': 'loader' }, 'Loading...'),
+  Spin: ({ size: _size, ...props }: { size?: string }) =>
+    React.createElement('div', { ...props, 'data-testid': 'spin' }, '⏳'),
 }));
 
 // Mock icons
 vi.mock('@gravity-ui/icons', () => ({
   Plus: () => React.createElement('span', { 'data-testid': 'plus-icon' }, '+'),
   Magnifier: () => React.createElement('span', { 'data-testid': 'magnifier-icon' }, '🔍'),
+  File: () => React.createElement('span', { 'data-testid': 'file-icon' }, '📄'),
 }));
 
 // Mock window.matchMedia
