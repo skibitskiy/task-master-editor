@@ -18,4 +18,3 @@ export function collectTaskErrors(tf: TasksFile): Record<string, string[]> {
   }
   return map;
 }
-

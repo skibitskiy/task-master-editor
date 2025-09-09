@@ -39,7 +39,7 @@ describe('dataSlice validation', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Reset window.api mock for each test
     Object.defineProperty(global, 'window', {
       value: {
@@ -51,7 +51,7 @@ describe('dataSlice validation', () => {
       },
       writable: true,
     });
-    
+
     store = configureStore({
       reducer: {
         data: dataReducer,
@@ -103,7 +103,7 @@ describe('dataSlice validation', () => {
 
     it('should handle invalid JSON with user-friendly error', async () => {
       const invalidJson = '{ invalid json';
-      
+
       mockFileRead.mockResolvedValue({ data: invalidJson });
       mockParseTasksJson.mockImplementation(() => {
         throw new Error('Invalid JSON: Unexpected token i in JSON at position 2');
@@ -117,7 +117,9 @@ describe('dataSlice validation', () => {
       }
 
       const state = store.getState().data;
-      expect(state.errors.general).toContain('Invalid JSON: Unexpected token i in JSON at position 2');
+      expect(state.errors.general).toContain(
+        'Invalid JSON: Unexpected token i in JSON at position 2',
+      );
     });
 
     it('should handle invalid schema with detailed error information', async () => {
@@ -135,7 +137,9 @@ describe('dataSlice validation', () => {
 
       mockFileRead.mockResolvedValue({ data: JSON.stringify(invalidSchema) });
       mockParseTasksJson.mockImplementation(() => {
-        throw new Error('Invalid schema: master.tasks.0.id: Required; master.tasks.0.title: String must contain at least 1 character(s); master.tasks.0.status: Invalid enum value');
+        throw new Error(
+          'Invalid schema: master.tasks.0.id: Required; master.tasks.0.title: String must contain at least 1 character(s); master.tasks.0.status: Invalid enum value',
+        );
       });
 
       const result = await store.dispatch(loadFromPath('/path/to/invalid-schema.json'));
@@ -144,7 +148,9 @@ describe('dataSlice validation', () => {
       if (loadFromPath.rejected.match(result)) {
         expect(result.payload).toContain('Invalid schema:');
         expect(result.payload).toContain('master.tasks.0.id: Required');
-        expect(result.payload).toContain('master.tasks.0.title: String must contain at least 1 character');
+        expect(result.payload).toContain(
+          'master.tasks.0.title: String must contain at least 1 character',
+        );
       }
     });
 
@@ -257,7 +263,7 @@ describe('dataSlice validation', () => {
         ...partiallyValidFile,
         master: {
           ...partiallyValidFile.master,
-          tasks: partiallyValidFile.master.tasks.map(task => ({
+          tasks: partiallyValidFile.master.tasks.map((task) => ({
             ...task,
             priority: task.priority === 'urgent' ? undefined : task.priority, // Zod coercion
           })),
@@ -271,7 +277,9 @@ describe('dataSlice validation', () => {
 
       expect(result.meta.requestStatus).toBe('fulfilled');
       if (loadFromPath.fulfilled.match(result)) {
-        expect(result.payload.errors['2']).toContain('Priority "urgent" is not valid, using default');
+        expect(result.payload.errors['2']).toContain(
+          'Priority "urgent" is not valid, using default',
+        );
       }
     });
   });

@@ -59,6 +59,8 @@ export function createWindow() {
     const devUrl = process.env.VITE_DEV_SERVER_URL ?? 'http://localhost:5173';
     log.info('Loading dev URL:', devUrl);
     void win.loadURL(devUrl);
+    // Open DevTools in development
+    win.webContents.openDevTools();
   } else {
     const indexHtml = path.resolve(__DIRNAME, '../../renderer/dist/index.html');
     log.info('Loading production file:', indexHtml);

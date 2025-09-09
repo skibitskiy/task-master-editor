@@ -82,17 +82,24 @@
 
 .task-item.selected {
   background: var(--g-color-base-selection);
+  border-left: 3px solid var(--g-color-text-info);
+}
+
+.task-item-header {
+  margin-bottom: var(--g-spacing-1);
 }
 
 .task-item-title {
   font-weight: 500;
-  margin-bottom: var(--g-spacing-1);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .task-item-description {
-  color: var(--g-color-text-secondary);
-  font-size: var(--g-text-body-2-font-size);
-  line-height: var(--g-text-body-2-line-height);
+  margin-top: var(--g-spacing-1);
+  margin-left: calc(var(--g-spacing-5) + var(--g-spacing-2)); /* Align with title after ID */
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;

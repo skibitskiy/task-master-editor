@@ -23,13 +23,13 @@ export const loadFromPath = createAsyncThunk(
     try {
       const res = await window.api?.file.read({ path });
       if (!res) throw new Error('No preload API');
-      
+
       // Use proper Zod validation from shared package
       const tasksFile = parseTasksJson(res.data);
-      
+
       // Still collect task-level validation errors for the UI
       const errors = collectTaskErrors(tasksFile);
-      
+
       return { path, tasksFile, errors };
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to load file';

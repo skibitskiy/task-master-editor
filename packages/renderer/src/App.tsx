@@ -52,9 +52,15 @@ export const App: React.FC = () => {
                 return true;
               } else if (loadResult.meta.requestStatus === 'rejected') {
                 // Handle validation errors during app startup
-                const errorMessage = typeof loadResult.payload === 'string' ? loadResult.payload : 'Неизвестная ошибка';
-                
-                if (errorMessage.includes('Invalid JSON') || errorMessage.includes('Invalid schema')) {
+                const errorMessage =
+                  typeof loadResult.payload === 'string'
+                    ? loadResult.payload
+                    : 'Неизвестная ошибка';
+
+                if (
+                  errorMessage.includes('Invalid JSON') ||
+                  errorMessage.includes('Invalid schema')
+                ) {
                   notifyError(
                     'Поврежденный файл задач',
                     'Последний файл tasks.json поврежден или имеет неверный формат. Выберите другой файл.',
@@ -99,15 +105,25 @@ export const App: React.FC = () => {
           return true;
         } else if (loadResult.meta.requestStatus === 'rejected') {
           // Handle validation errors with more specific messages
-          const errorMessage = typeof loadResult.payload === 'string' ? loadResult.payload : 'Неизвестная ошибка';
-          
+          const errorMessage =
+            typeof loadResult.payload === 'string' ? loadResult.payload : 'Неизвестная ошибка';
+
           if (errorMessage.includes('Invalid JSON')) {
-            notifyError('Неверный формат файла', 'Файл содержит некорректный JSON. Пожалуйста, проверьте синтаксис файла.');
+            notifyError(
+              'Неверный формат файла',
+              'Файл содержит некорректный JSON. Пожалуйста, проверьте синтаксис файла.',
+            );
           } else if (errorMessage.includes('Invalid schema')) {
             const details = errorMessage.replace('Invalid schema: ', '');
-            notifyError('Неверная структура файла', `Файл не соответствует схеме tasks.json: ${details}`);
+            notifyError(
+              'Неверная структура файла',
+              `Файл не соответствует схеме tasks.json: ${details}`,
+            );
           } else if (errorMessage.includes('No preload API')) {
-            notifyError('Ошибка системы', 'Нет доступа к файловой системе. Попробуйте перезапустить приложение.');
+            notifyError(
+              'Ошибка системы',
+              'Нет доступа к файловой системе. Попробуйте перезапустить приложение.',
+            );
           } else {
             notifyError('Ошибка загрузки файла', errorMessage);
           }

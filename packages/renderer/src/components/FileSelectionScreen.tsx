@@ -1,33 +1,11 @@
 import React, { useState } from 'react';
-import { Flex, Card, Button, Text, Icon, Loader } from '@gravity-ui/uikit';
+import { Flex, Card, Button, Text, Icon, Spin } from '@gravity-ui/uikit';
 import { withIPCErrorHandling } from '../utils/ipcErrorMapper';
 import { notifyError } from '../utils/notify';
-
+import { File as FileIcon } from '@gravity-ui/icons';
 interface FileSelectionScreenProps {
   onFileSelected: (filePath: string) => void;
 }
-
-// File icon SVG - simple document icon
-const FileIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
-    <path
-      d="m14,2 l0,6 l6,0"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      fill="none"
-    />
-  </svg>
-);
 
 export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFileSelected }) => {
   const [isSelecting, setIsSelecting] = useState(false);
@@ -80,7 +58,7 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
           margin: '0 20px',
         }}
       >
-        <Flex direction="column" centerContent space="6">
+        <Flex direction="column" centerContent gap={6}>
           {/* Icon */}
           <div
             style={{
@@ -120,16 +98,22 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
             style={{ minWidth: '160px' }}
           >
             {isSelecting ? (
-              <Flex alignItems="center" space="2">
-                <Loader size="s" />
-                <Text>Выбор файла...</Text>
+              <Flex
+                style={{
+                  position: 'relative',
+                  bottom: '-2px',
+                  display: 'inline-flex',
+                  paddingRight: '8px',
+                }}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Spin size="xs" />
               </Flex>
             ) : (
-              <>
-                <Icon data={FileIcon} size={18} />
-                Выбрать файл
-              </>
+              <Icon data={FileIcon} size={18} />
             )}
+            {isSelecting ? <Text>Выбор файла...</Text> : <Text>Выбрать файл</Text>}
           </Button>
 
           {/* Help text */}

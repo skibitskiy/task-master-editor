@@ -57,13 +57,13 @@ describe('dataSlice: dirty, load/save, reducers', () => {
     const store = makeStore();
     // Use a valid file that passes Zod validation but has task-level validation issues
     // (e.g., dependencies that point to non-existent tasks)
-    const json = JSON.stringify({ 
-      master: { 
+    const json = JSON.stringify({
+      master: {
         tasks: [
           { id: 1, title: 'Valid Task' },
-          { id: 2, title: 'Task with bad deps', dependencies: [999] }  // references non-existent task 999
-        ] 
-      } 
+          { id: 2, title: 'Task with bad deps', dependencies: [999] }, // references non-existent task 999
+        ],
+      },
     });
     const readMock: (input: FileReadInput) => Promise<FileReadResult> = vi.fn(async (_input) => ({
       data: json,
