@@ -49,9 +49,7 @@ describe('FileSelectionScreen', () => {
     renderComponent();
 
     expect(screen.getByText('Выберите файл задач')).toBeInTheDocument();
-    expect(
-      screen.getByText(/Для начала работы выберите существующий файл tasks.json/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Для начала работы выберите существующий файл tasks.json/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Выбрать файл/ })).toBeInTheDocument();
     expect(screen.getByText(/Поддерживаются файлы tasks.json/)).toBeInTheDocument();
   });

@@ -1,10 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-  mapIPCError,
-  handleIPCError,
-  createIPCErrorHandler,
-  withIPCErrorHandling,
-} from '../ipcErrorMapper';
+import { mapIPCError, handleIPCError, createIPCErrorHandler, withIPCErrorHandling } from '../ipcErrorMapper';
 import * as notify from '../notify';
 import * as globalErrorHandler from '../globalErrorHandler';
 
@@ -34,9 +29,7 @@ describe('ipcErrorMapper', () => {
     });
 
     it('should return the error message if code is unknown', () => {
-      expect(mapIPCError({ code: 'UNKNOWN_CODE', message: 'Custom error', details: null })).toBe(
-        'Custom error',
-      );
+      expect(mapIPCError({ code: 'UNKNOWN_CODE', message: 'Custom error', details: null })).toBe('Custom error');
     });
 
     it('should handle Error objects', () => {

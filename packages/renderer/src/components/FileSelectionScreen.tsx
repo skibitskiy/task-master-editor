@@ -80,13 +80,8 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
           </Text>
 
           {/* Description */}
-          <Text
-            variant="body-2"
-            color="secondary"
-            style={{ textAlign: 'center', maxWidth: '360px' }}
-          >
-            Для начала работы выберите существующий файл tasks.json или создайте новый проект с
-            помощью Task Master CLI
+          <Text variant="body-2" color="secondary" style={{ textAlign: 'center', maxWidth: '360px' }}>
+            Для начала работы выберите существующий файл tasks.json или создайте новый проект с помощью Task Master CLI
           </Text>
 
           {/* Select button */}

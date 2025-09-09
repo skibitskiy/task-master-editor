@@ -107,9 +107,7 @@ export function logError(error: Error | string, context?: Record<string, unknown
   console.error('Application error:', error, context);
 
   if (window.electron?.log) {
-    const maskedContext = context
-      ? JSON.parse(maskSensitiveInfo(JSON.stringify(context)))
-      : undefined;
+    const maskedContext = context ? JSON.parse(maskSensitiveInfo(JSON.stringify(context))) : undefined;
 
     window.electron.log.error('Application error', {
       message: maskedMessage,
@@ -126,9 +124,7 @@ export function logWarning(message: string, context?: Record<string, unknown>): 
   console.warn('Application warning:', message, context);
 
   if (window.electron?.log) {
-    const maskedContext = context
-      ? JSON.parse(maskSensitiveInfo(JSON.stringify(context)))
-      : undefined;
+    const maskedContext = context ? JSON.parse(maskSensitiveInfo(JSON.stringify(context))) : undefined;
 
     window.electron.log.warn('Application warning', {
       message: maskedMessage,
@@ -144,9 +140,7 @@ export function logInfo(message: string, context?: Record<string, unknown>): voi
   console.info('Application info:', message, context);
 
   if (window.electron?.log) {
-    const maskedContext = context
-      ? JSON.parse(maskSensitiveInfo(JSON.stringify(context)))
-      : undefined;
+    const maskedContext = context ? JSON.parse(maskSensitiveInfo(JSON.stringify(context))) : undefined;
 
     window.electron.log.info('Application info', {
       message: maskedMessage,

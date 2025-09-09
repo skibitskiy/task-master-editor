@@ -1,7 +1,4 @@
-export const ALLOWED_EXTERNAL_ORIGINS = new Set<string>([
-  'https://github.com',
-  'https://openai.com',
-]);
+export const ALLOWED_EXTERNAL_ORIGINS = new Set<string>(['https://github.com', 'https://openai.com']);
 
 export function isUrlAllowed(url: string): boolean {
   try {

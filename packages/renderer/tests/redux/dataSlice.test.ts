@@ -1,11 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { configureStore } from '@reduxjs/toolkit';
-import dataReducer, {
-  updateTask,
-  replaceTasksFile,
-  loadFromPath,
-  saveFile,
-} from '../../src/redux/dataSlice';
+import dataReducer, { updateTask, replaceTasksFile, loadFromPath, saveFile } from '../../src/redux/dataSlice';
 import type {
   PreloadAPI,
   FileReadInput,

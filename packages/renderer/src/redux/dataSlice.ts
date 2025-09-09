@@ -17,43 +17,37 @@ const initialState: DataState = {
   errors: { general: [], byTaskId: {} },
 };
 
-export const loadFromPath = createAsyncThunk(
-  'data/loadFromPath',
-  async (path: string, { rejectWithValue }) => {
-    try {
-      const res = await window.api?.file.read({ path });
-      if (!res) throw new Error('No preload API');
+export const loadFromPath = createAsyncThunk('data/loadFromPath', async (path: string, { rejectWithValue }) => {
+  try {
+    const res = await window.api?.file.read({ path });
+    if (!res) throw new Error('No preload API');
 
-      // Use proper Zod validation from shared package
-      const tasksFile = parseTasksJson(res.data);
+    // Use proper Zod validation from shared package
+    const tasksFile = parseTasksJson(res.data);
 
-      // Still collect task-level validation errors for the UI
-      const errors = collectTaskErrors(tasksFile);
+    // Still collect task-level validation errors for the UI
+    const errors = collectTaskErrors(tasksFile);
 
-      return { path, tasksFile, errors };
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to load file';
-      return rejectWithValue(msg);
-    }
-  },
-);
+    return { path, tasksFile, errors };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Failed to load file';
+    return rejectWithValue(msg);
+  }
+});
 
-export const saveFile = createAsyncThunk(
-  'data/saveFile',
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { data: DataState };
-    if (!state.data.filePath || !state.data.tasksFile) return rejectWithValue('No file to save');
-    try {
-      const data = JSON.stringify(state.data.tasksFile, null, 2);
-      const res = await window.api?.file.write({ path: state.data.filePath, data });
-      if (!res?.ok) throw new Error('Write failed');
-      return true;
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to save file';
-      return rejectWithValue(msg);
-    }
-  },
-);
+export const saveFile = createAsyncThunk('data/saveFile', async (_, { getState, rejectWithValue }) => {
+  const state = getState() as { data: DataState };
+  if (!state.data.filePath || !state.data.tasksFile) return rejectWithValue('No file to save');
+  try {
+    const data = JSON.stringify(state.data.tasksFile, null, 2);
+    const res = await window.api?.file.write({ path: state.data.filePath, data });
+    if (!res?.ok) throw new Error('Write failed');
+    return true;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Failed to save file';
+    return rejectWithValue(msg);
+  }
+});
 
 const dataSlice = createSlice({
   name: 'data',
@@ -111,6 +105,5 @@ const dataSlice = createSlice({
   },
 });
 
-export const { updateTask, replaceTasksFile, setFilePath, addGeneralError, clearGeneralErrors } =
-  dataSlice.actions;
+export const { updateTask, replaceTasksFile, setFilePath, addGeneralError, clearGeneralErrors } = dataSlice.actions;
 export default dataSlice.reducer;

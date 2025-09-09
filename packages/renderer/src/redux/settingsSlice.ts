@@ -16,17 +16,14 @@ export const initSettings = createAsyncThunk('settings/init', async () => {
   return res?.settings ?? { recentPaths: [], preferences: {} };
 });
 
-export const updateMRU = createAsyncThunk(
-  'settings/updateMRU',
-  async (path: string, { getState }) => {
-    const state = getState() as { settings: SettingsState };
-    const list = state.settings.data.recentPaths.filter((p) => p !== path);
-    list.unshift(path);
-    const recentPaths = list.slice(0, 10);
-    const res = await window.api?.settings.update({ settings: { recentPaths } });
-    return res?.settings ?? { recentPaths, preferences: state.settings.data.preferences };
-  },
-);
+export const updateMRU = createAsyncThunk('settings/updateMRU', async (path: string, { getState }) => {
+  const state = getState() as { settings: SettingsState };
+  const list = state.settings.data.recentPaths.filter((p) => p !== path);
+  list.unshift(path);
+  const recentPaths = list.slice(0, 10);
+  const res = await window.api?.settings.update({ settings: { recentPaths } });
+  return res?.settings ?? { recentPaths, preferences: state.settings.data.preferences };
+});
 
 const settingsSlice = createSlice({
   name: 'settings',

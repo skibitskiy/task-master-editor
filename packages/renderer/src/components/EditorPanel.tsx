@@ -34,9 +34,7 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
             <Text variant="header-2" color="secondary">
               Выберите задачу для редактирования
             </Text>
-            <Text color="secondary">
-              Выберите задачу из списка слева, чтобы начать редактирование
-            </Text>
+            <Text color="secondary">Выберите задачу из списка слева, чтобы начать редактирование</Text>
           </Flex>
         </div>
       </div>

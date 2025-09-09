@@ -91,11 +91,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
                 className={`task-item ${isSelected ? 'selected' : ''}`}
                 onClick={() => onSelectTask(String(task.id))}
               >
-                <Flex
-                  alignItems="center"
-                  justifyContent="space-between"
-                  className="task-item-header"
-                >
+                <Flex alignItems="center" justifyContent="space-between" className="task-item-header">
                   <Flex alignItems="center" gap={2}>
                     <Text variant="caption-1" color="secondary">
                       #{task.id}

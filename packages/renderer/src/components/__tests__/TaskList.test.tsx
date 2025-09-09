@@ -88,8 +88,7 @@ const renderTaskList = (tasksFile: TasksFile | null, props = {}) => {
     ),
     store,
     onSelectTask:
-      (props as { onSelectTask?: typeof defaultProps.onSelectTask }).onSelectTask ||
-      defaultProps.onSelectTask,
+      (props as { onSelectTask?: typeof defaultProps.onSelectTask }).onSelectTask || defaultProps.onSelectTask,
   };
 };
 

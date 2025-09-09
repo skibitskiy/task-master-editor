@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  ThemeProvider,
-  Toaster,
-  ToasterComponent,
-  ToasterProvider,
-  Flex,
-  Loader,
-} from '@gravity-ui/uikit';
+import { ThemeProvider, Toaster, ToasterComponent, ToasterProvider, Flex, Loader } from '@gravity-ui/uikit';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { initSettings, updateMRU } from './redux/settingsSlice';
@@ -52,24 +45,15 @@ export const App: React.FC = () => {
                 return true;
               } else if (loadResult.meta.requestStatus === 'rejected') {
                 // Handle validation errors during app startup
-                const errorMessage =
-                  typeof loadResult.payload === 'string'
-                    ? loadResult.payload
-                    : 'Неизвестная ошибка';
+                const errorMessage = typeof loadResult.payload === 'string' ? loadResult.payload : 'Неизвестная ошибка';
 
-                if (
-                  errorMessage.includes('Invalid JSON') ||
-                  errorMessage.includes('Invalid schema')
-                ) {
+                if (errorMessage.includes('Invalid JSON') || errorMessage.includes('Invalid schema')) {
                   notifyError(
                     'Поврежденный файл задач',
                     'Последний файл tasks.json поврежден или имеет неверный формат. Выберите другой файл.',
                   );
                 } else {
-                  notifyError(
-                    'Не удалось загрузить последний файл',
-                    'Файл может быть перемещен, удален или поврежден',
-                  );
+                  notifyError('Не удалось загрузить последний файл', 'Файл может быть перемещен, удален или поврежден');
                 }
               }
               return false;
@@ -105,8 +89,7 @@ export const App: React.FC = () => {
           return true;
         } else if (loadResult.meta.requestStatus === 'rejected') {
           // Handle validation errors with more specific messages
-          const errorMessage =
-            typeof loadResult.payload === 'string' ? loadResult.payload : 'Неизвестная ошибка';
+          const errorMessage = typeof loadResult.payload === 'string' ? loadResult.payload : 'Неизвестная ошибка';
 
           if (errorMessage.includes('Invalid JSON')) {
             notifyError(
@@ -115,15 +98,9 @@ export const App: React.FC = () => {
             );
           } else if (errorMessage.includes('Invalid schema')) {
             const details = errorMessage.replace('Invalid schema: ', '');
-            notifyError(
-              'Неверная структура файла',
-              `Файл не соответствует схеме tasks.json: ${details}`,
-            );
+            notifyError('Неверная структура файла', `Файл не соответствует схеме tasks.json: ${details}`);
           } else if (errorMessage.includes('No preload API')) {
-            notifyError(
-              'Ошибка системы',
-              'Нет доступа к файловой системе. Попробуйте перезапустить приложение.',
-            );
+            notifyError('Ошибка системы', 'Нет доступа к файловой системе. Попробуйте перезапустить приложение.');
           } else {
             notifyError('Ошибка загрузки файла', errorMessage);
           }

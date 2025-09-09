@@ -63,8 +63,7 @@ describe('settingsSlice: init and MRU', () => {
         preferences: settings.preferences ?? {},
       },
     }));
-    (globalThis as unknown as { window: { api: PreloadAPI } }).window.api.settings.update =
-      updateMock;
+    (globalThis as unknown as { window: { api: PreloadAPI } }).window.api.settings.update = updateMock;
 
     await store.dispatch(updateMRU('/a'));
     expect(store.getState().settings.data.recentPaths).toEqual(['/a', '/b', '/c']);

@@ -117,9 +117,7 @@ describe('dataSlice validation', () => {
       }
 
       const state = store.getState().data;
-      expect(state.errors.general).toContain(
-        'Invalid JSON: Unexpected token i in JSON at position 2',
-      );
+      expect(state.errors.general).toContain('Invalid JSON: Unexpected token i in JSON at position 2');
     });
 
     it('should handle invalid schema with detailed error information', async () => {
@@ -148,9 +146,7 @@ describe('dataSlice validation', () => {
       if (loadFromPath.rejected.match(result)) {
         expect(result.payload).toContain('Invalid schema:');
         expect(result.payload).toContain('master.tasks.0.id: Required');
-        expect(result.payload).toContain(
-          'master.tasks.0.title: String must contain at least 1 character',
-        );
+        expect(result.payload).toContain('master.tasks.0.title: String must contain at least 1 character');
       }
     });
 
@@ -277,9 +273,7 @@ describe('dataSlice validation', () => {
 
       expect(result.meta.requestStatus).toBe('fulfilled');
       if (loadFromPath.fulfilled.match(result)) {
-        expect(result.payload.errors['2']).toContain(
-          'Priority "urgent" is not valid, using default',
-        );
+        expect(result.payload.errors['2']).toContain('Priority "urgent" is not valid, using default');
       }
     });
   });

@@ -66,10 +66,7 @@ const createMockStore = (tasksFile?: TasksFile) => {
   });
 };
 
-const renderComponent = (
-  props: Partial<React.ComponentProps<typeof EditorPanel>> = {},
-  tasksFile?: TasksFile,
-) => {
+const renderComponent = (props: Partial<React.ComponentProps<typeof EditorPanel>> = {}, tasksFile?: TasksFile) => {
   const defaultProps = {
     taskId: null,
     onSave: vi.fn(),
@@ -97,9 +94,7 @@ describe('EditorPanel', () => {
       renderComponent({ taskId: null }, mockTasksFile);
 
       expect(screen.getByText('Выберите задачу для редактирования')).toBeInTheDocument();
-      expect(
-        screen.getByText('Выберите задачу из списка слева, чтобы начать редактирование'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Выберите задачу из списка слева, чтобы начать редактирование')).toBeInTheDocument();
     });
 
     it('hides tabs when no task is selected', () => {
@@ -167,9 +162,7 @@ describe('EditorPanel', () => {
 
       // Check that the placeholder text uses proper typography
       const headerElement = screen.getByText('Выберите задачу для редактирования');
-      const descriptionElement = screen.getByText(
-        'Выберите задачу из списка слева, чтобы начать редактирование',
-      );
+      const descriptionElement = screen.getByText('Выберите задачу из списка слева, чтобы начать редактирование');
 
       expect(headerElement).toBeInTheDocument();
       expect(descriptionElement).toBeInTheDocument();

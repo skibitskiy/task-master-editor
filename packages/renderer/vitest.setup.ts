@@ -28,12 +28,7 @@ vi.mock('@gravity-ui/uikit', () => ({
       children: React.ReactNode;
       onClick?: () => void;
       disabled?: boolean;
-    }) =>
-      React.createElement(
-        'button',
-        { ...props, onClick, disabled, 'data-testid': 'button' },
-        children,
-      ),
+    }) => React.createElement('button', { ...props, onClick, disabled, 'data-testid': 'button' }, children),
     {
       Icon: ({ children }: { children: React.ReactNode }) =>
         React.createElement('span', { 'data-testid': 'button-icon' }, children),
@@ -66,21 +61,8 @@ vi.mock('@gravity-ui/uikit', () => ({
       'data-testid': 'text-input',
     });
   },
-  Label: ({
-    children,
-    theme,
-    size: _size,
-    ...props
-  }: {
-    children: React.ReactNode;
-    theme?: string;
-    size?: string;
-  }) =>
-    React.createElement(
-      'span',
-      { ...props, className: `label-${theme}`, 'data-testid': 'label' },
-      children,
-    ),
+  Label: ({ children, theme, size: _size, ...props }: { children: React.ReactNode; theme?: string; size?: string }) =>
+    React.createElement('span', { ...props, className: `label-${theme}`, 'data-testid': 'label' }, children),
   Icon: ({ data: _data, size: _size, ...props }: { data?: React.ComponentType; size?: number }) =>
     React.createElement('span', { ...props, 'data-testid': 'icon' }, '🔍'),
   Loader: ({ size: _size, ...props }: { size?: string }) =>

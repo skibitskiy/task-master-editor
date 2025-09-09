@@ -26,19 +26,13 @@ async function fsyncDir(dirPath: string): Promise<void> {
   }
 }
 
-export async function atomicWriteTasksJsonWithBackup(
-  targetPath: string,
-  jsonData: string,
-): Promise<void> {
+export async function atomicWriteTasksJsonWithBackup(targetPath: string, jsonData: string): Promise<void> {
   // validate JSON and schema first
   parseTasksJson(jsonData);
 
   const dir = path.dirname(targetPath);
   const base = path.basename(targetPath);
-  const tmpPath = path.join(
-    dir,
-    `.${base}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`,
-  );
+  const tmpPath = path.join(dir, `.${base}.${Date.now()}.${Math.random().toString(16).slice(2)}.tmp`);
   const bakPath = `${targetPath}.bak`;
 
   // write tmp file and fsync

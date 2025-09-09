@@ -61,11 +61,8 @@ describe('globalErrorHandler', () => {
       setupGlobalErrorHandlers();
 
       // Get the handler that was registered
-      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock
-        .calls;
-      const unhandledRejectionCall = addEventListenerCalls.find(
-        (call: unknown[]) => call[0] === 'unhandledrejection',
-      );
+      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls;
+      const unhandledRejectionCall = addEventListenerCalls.find((call: unknown[]) => call[0] === 'unhandledrejection');
       const handler = unhandledRejectionCall?.[1];
 
       const preventDefault = vi.fn();
@@ -76,21 +73,15 @@ describe('globalErrorHandler', () => {
 
       handler?.(event);
 
-      expect(notify.notifyWarning).toHaveBeenCalledWith(
-        'Необработанное отклонение',
-        'Promise rejection',
-      );
+      expect(notify.notifyWarning).toHaveBeenCalledWith('Необработанное отклонение', 'Promise rejection');
       expect(preventDefault).toHaveBeenCalled();
     });
 
     it('should handle string rejection reasons', () => {
       setupGlobalErrorHandlers();
 
-      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock
-        .calls;
-      const unhandledRejectionCall = addEventListenerCalls.find(
-        (call: unknown[]) => call[0] === 'unhandledrejection',
-      );
+      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls;
+      const unhandledRejectionCall = addEventListenerCalls.find((call: unknown[]) => call[0] === 'unhandledrejection');
       const handler = unhandledRejectionCall?.[1];
 
       const event = {
@@ -100,20 +91,14 @@ describe('globalErrorHandler', () => {
 
       handler?.(event);
 
-      expect(notify.notifyWarning).toHaveBeenCalledWith(
-        'Необработанное отклонение',
-        'String rejection',
-      );
+      expect(notify.notifyWarning).toHaveBeenCalledWith('Необработанное отклонение', 'String rejection');
     });
 
     it('should handle object rejection reasons with message', () => {
       setupGlobalErrorHandlers();
 
-      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock
-        .calls;
-      const unhandledRejectionCall = addEventListenerCalls.find(
-        (call: unknown[]) => call[0] === 'unhandledrejection',
-      );
+      const addEventListenerCalls = (window.addEventListener as ReturnType<typeof vi.fn>).mock.calls;
+      const unhandledRejectionCall = addEventListenerCalls.find((call: unknown[]) => call[0] === 'unhandledrejection');
       const handler = unhandledRejectionCall?.[1];
 
       const event = {
@@ -123,10 +108,7 @@ describe('globalErrorHandler', () => {
 
       handler?.(event);
 
-      expect(notify.notifyWarning).toHaveBeenCalledWith(
-        'Необработанное отклонение',
-        'Object rejection',
-      );
+      expect(notify.notifyWarning).toHaveBeenCalledWith('Необработанное отклонение', 'Object rejection');
     });
   });
 

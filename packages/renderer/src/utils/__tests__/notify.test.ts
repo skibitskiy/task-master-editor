@@ -1,13 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Toaster } from '@gravity-ui/uikit';
-import {
-  setToasterInstance,
-  notify,
-  notifySuccess,
-  notifyError,
-  notifyWarning,
-  notifyInfo,
-} from '../notify';
+import { setToasterInstance, notify, notifySuccess, notifyError, notifyWarning, notifyInfo } from '../notify';
 
 describe('notify utility', () => {
   let mockToaster: Toaster;
@@ -78,9 +71,7 @@ describe('notify utility', () => {
       notify({ title: 'Test' });
 
       expect(addSpy).not.toHaveBeenCalled();
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Toaster instance not initialized. Call setToasterInstance first.',
-      );
+      expect(consoleSpy).toHaveBeenCalledWith('Toaster instance not initialized. Call setToasterInstance first.');
 
       consoleSpy.mockRestore();
     });
