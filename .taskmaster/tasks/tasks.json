@@ -119,8 +119,10 @@
         "details": "• Типографика @gravity-ui/uikit для подсказки. \n• Tabs скрыты, пока нет активной задачи.",
         "testStrategy": "1) До выбора задачи отображается плейсхолдер. \n2) Вкладки не видны без активной задачи.",
         "priority": "medium",
-        "dependencies": [5],
-        "status": "pending"
+        "dependencies": [
+          5
+        ],
+        "status": "done"
       },
       {
         "id": 13,
@@ -205,7 +207,7 @@
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-09T17:40:08.782Z",
+      "updated": "2025-09-09T17:39:20.022Z",
       "description": "Tasks for master context"
     }
   }
