@@ -17,13 +17,6 @@ vi.mock('@gravity-ui/markdown-editor', () => ({
   MarkdownEditorView: () => <div data-testid="markdown-editor">Markdown Editor</div>,
 }));
 
-// Mock @gravity-ui/icons
-vi.mock('@gravity-ui/icons', () => ({
-  FloppyDisk: () => <div data-testid="floppy-disk-icon">💾</div>,
-  Eye: () => <div data-testid="eye-icon">👁</div>,
-  Code: () => <div data-testid="code-icon">💻</div>,
-}));
-
 const mockTask: Task = {
   id: '1',
   title: 'Test Task',

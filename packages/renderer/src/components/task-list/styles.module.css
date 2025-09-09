@@ -1,0 +1,51 @@
+/* Task list styles */
+.taskList {
+  padding: var(--g-spacing-3);
+}
+
+.taskListHeader {
+  padding: var(--g-spacing-3) var(--g-spacing-4);
+  border-bottom: 1px solid var(--g-color-line-generic);
+  position: sticky;
+  top: 0;
+  background: var(--g-color-base-background);
+  z-index: 1;
+}
+
+.taskItem {
+  padding: var(--g-spacing-3) var(--g-spacing-4);
+  border-bottom: 1px solid var(--g-color-line-generic-hover);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.taskItem:hover {
+  background: var(--g-color-base-simple-hover);
+}
+
+.taskItem.selected {
+  background: var(--g-color-base-selection);
+  border-left: 3px solid var(--g-color-text-info);
+}
+
+.taskItemHeader {
+  margin-bottom: var(--g-spacing-1);
+}
+
+.taskItemTitle {
+  font-weight: 500;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskItemDescription {
+  margin-top: var(--g-spacing-1);
+  margin-left: calc(var(--g-spacing-5) + var(--g-spacing-2)); /* Align with title after ID */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}

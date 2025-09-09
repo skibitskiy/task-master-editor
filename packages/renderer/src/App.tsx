@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import { initSettings, updateMRU } from './redux/settingsSlice';
 import { loadFromPath } from './redux/dataSlice';
-import { TaskList } from './components/TaskList';
+import { TaskList } from './components/task-list';
 import { EditorPanel } from './components/EditorPanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { FileSelectionScreen } from './components/file-selection-screen';

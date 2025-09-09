@@ -1,11 +1,16 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
 
-// Plugin to handle CSS imports in tests
+// Plugin to handle all CSS imports
 function cssPlugin() {
   return {
     name: 'css-mock',
-    load(id) {
+    resolveId(id: string) {
+      if (id.endsWith('.css')) {
+        return id;
+      }
+    },
+    load(id: string) {
       if (id.endsWith('.css')) {
         return 'export default {};';
       }
@@ -18,8 +23,16 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     include: ['tests/**/*.{ts,tsx,js}', 'src/**/__tests__/*.{ts,tsx,js}'],
-    setupFiles: './vitest.setup.ts',
+    setupFiles: './vitest.setup.tsx',
     globals: true,
+    mockReset: false,
+    restoreMocks: false,
+    isolate: true,
+    server: {
+      deps: {
+        inline: ['@gravity-ui/uikit'],
+      },
+    },
   },
   resolve: {
     alias: {

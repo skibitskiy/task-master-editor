@@ -40,19 +40,8 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
   };
 
   return (
-    <Flex
-      centerContent
-      width="100%"
-      height="100vh"
-      direction="column"
-      className={styles.container}
-    >
-      <Card
-        view="outlined"
-        type="container"
-        size="l"
-        className={styles.card}
-      >
+    <Flex centerContent width="100%" height="100vh" direction="column" className={styles.container}>
+      <Card view="outlined" type="container" size="l" className={styles.card}>
         <Flex direction="column" centerContent gap={6}>
           {/* Icon */}
           <div className={styles.iconContainer}>
@@ -65,11 +54,7 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
           </Text>
 
           {/* Description */}
-          <Text
-            variant="body-2"
-            color="secondary"
-            className={styles.description}
-          >
+          <Text variant="body-2" color="secondary" className={styles.description}>
             Для начала работы выберите существующий файл tasks.json или создайте новый проект с помощью Task Master CLI
           </Text>
 
@@ -82,11 +67,7 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
             className={styles.selectButton}
           >
             {isSelecting ? (
-              <Flex
-                className={styles.loadingContainer}
-                justifyContent="center"
-                alignItems="center"
-              >
+              <Flex className={styles.loadingContainer} justifyContent="center" alignItems="center">
                 <Spin size="xs" />
               </Flex>
             ) : (
