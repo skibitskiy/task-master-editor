@@ -22,8 +22,9 @@
     "test:unit": "npm -ws run test",
     "test:e2e": "playwright test",
     "lint": "eslint . --ext .ts,.tsx --max-warnings=0",
-    "format": "prettier -w .",
-    "format:check": "prettier -c .",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "format": "eslint . --ext .ts,.tsx --fix",
+    "format:check": "eslint . --ext .ts,.tsx",
     "start": "npm --workspace @app/electron run start"
   },
   "keywords": [
@@ -35,13 +36,14 @@
   "author": "",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron-builder": "^24.13.3",
     "@playwright/test": "^1.47.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "concurrently": "^8.2.2",
+    "electron-builder": "^24.13.3",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.3.3"
   },
   "build": {
