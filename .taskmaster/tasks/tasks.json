@@ -18,7 +18,9 @@
         "details": "• Каналы: workspace:select, file:read, file:write.\n• Валидация payload через zod/valibot.\n• contextBridge.exposeInMainWorld с минимальным API.",
         "testStrategy": "1) Все IPC-запросы/ответы валидируются и некорректные данные отклоняются с понятной ошибкой. \n2) Renderer не имеет прямого доступа к fs/process. \n3) API preload соответствует описанной спецификации (названия и сигнатуры).",
         "priority": "high",
-        "dependencies": [1],
+        "dependencies": [
+          1
+        ],
         "status": "done"
       },
       {
@@ -28,7 +30,10 @@
         "details": "• Типы: Task, TasksFile ({ master: { tasks: Task[] } }).\n• React Context/Reducer или легковесный стор.\n• electron-store для настроек (MRU, предпочтения).",
         "testStrategy": "1) Парсинг валидного файла формирует корректное состояние. \n2) Частично битые поля не роняют UI — задачи с ошибками помечаются/игнорируются. \n3) Dirty-статусы корректно обновляются на уровне задачи и файла. \n4) MRU хранит и возвращает последний путь, если опция включена.",
         "priority": "high",
-        "dependencies": [1, 2],
+        "dependencies": [
+          1,
+          2
+        ],
         "status": "done"
       },
       {
@@ -38,8 +43,11 @@
         "details": "• Схема zod для TasksFile. \n• fs/promises: временный файл + fsync + атомарный rename. \n• Автобэкап и откат при сбое.",
         "testStrategy": "1) Невалидный JSON/схема — понятная ошибка и возможность выбрать другой файл. \n2) При сбое записи исходный файл остаётся цел. \n3) Бэкап доступен и может быть восстановлен. \n4) Успешная запись не теряет данные (проверка чтением).",
         "priority": "high",
-        "dependencies": [2, 3],
-        "status": "pending"
+        "dependencies": [
+          2,
+          3
+        ],
+        "status": "done"
       },
       {
         "id": 5,
@@ -48,7 +56,9 @@
         "details": "• @gravity-ui/uikit: Layout/Flex, Tabs, Toaster. \n• @gravity-ui/markdown-editor для правой панели. \n• Адаптив: при узком экране переключение вида.",
         "testStrategy": "1) При старте без выбранной задачи справа виден плейсхолдер. \n2) Лейаут устойчив к ресайзу окна. \n3) Toaster доступен из любой части renderer.",
         "priority": "high",
-        "dependencies": [1],
+        "dependencies": [
+          1
+        ],
         "status": "done"
       },
       {
@@ -58,7 +68,10 @@
         "details": "• React ErrorBoundary, window.onerror/unhandledrejection. \n• Утилита notify() на базе @gravity-ui/uikit Toaster. \n• electron-log с маскированием PII.",
         "testStrategy": "1) Неуправляемые исключения не закрывают окно — пользователь видит понятный тост. \n2) Ошибки IPC маппятся в человекочитаемые сообщения. \n3) Логи пишутся и не содержат PII.",
         "priority": "medium",
-        "dependencies": [1, 5],
+        "dependencies": [
+          1,
+          5
+        ],
         "status": "done"
       },
       {
@@ -68,7 +81,9 @@
         "details": "• ESLint + Prettier. \n• Vitest/Jest для юнитов (парсинг, сериализация). \n• Playwright (Electron) smoke: окно открывается, UI-скелет виден.",
         "testStrategy": "1) Линт без ошибок, автоформат работает. \n2) Юнит-тесты зелёные, покрытие парсинга/записи ≥80%. \n3) Smoke E2E подтверждает рендер списка и плейсхолдера.",
         "priority": "medium",
-        "dependencies": [1],
+        "dependencies": [
+          1
+        ],
         "status": "done"
       },
       {
@@ -78,7 +93,9 @@
         "details": "• electron-builder или Forge. \n• Env-профили, версионирование, генерация артефактов. \n• Sourcemaps для prod-диагностики.",
         "testStrategy": "1) Генерируется устанавливаемый пакет для целевой ОС. \n2) Prod-сборка запускается и повторяет UX dev-версии. \n3) Sourcemaps доступны для стека ошибок.",
         "priority": "medium",
-        "dependencies": [1],
+        "dependencies": [
+          1
+        ],
         "status": "done"
       },
       {
@@ -88,7 +105,11 @@
         "details": "• Electron dialog.showOpenDialog (file). \n• IPC: workspace:select.\n• Экран «Выберите файл задач» при отмене.",
         "testStrategy": "1) При старте отображается диалог выбора файла. \n2) Отмена — остаёмся на экране выбора без ошибок. \n3) Выбор валидного файла приводит к главному экрану.",
         "priority": "high",
-        "dependencies": [2, 3, 5],
+        "dependencies": [
+          2,
+          3,
+          5
+        ],
         "status": "done"
       },
       {
@@ -96,7 +117,11 @@
         "title": "Чтение и валидация tasks.json",
         "description": "Загрузка файла, проверка схемы и наполнение стора.",
         "status": "done",
-        "dependencies": [9, 4, 3],
+        "dependencies": [
+          9,
+          4,
+          3
+        ],
         "priority": "high",
         "details": "• IPC: file:read. \n• Валидация схемой zod. \n• Ошибки — через Toaster с понятным текстом.",
         "testStrategy": "1) Валидный файл корректно отображает список задач. \n2) Невалидный файл выдаёт тост с описанием и предлагает выбрать другой. \n3) Частичные ошибки не роняют приложение.",
@@ -109,7 +134,10 @@
         "details": "• @gravity-ui/uikit: List/Table, Badge для статуса. \n• Стабильная сортировка по id. \n• Заглушка «Задач нет» при пустом массиве.",
         "testStrategy": "1) Список отображается и отсортирован по id. \n2) Клик по задаче активирует её и подсвечивает. \n3) При пустом списке видна заглушка.",
         "priority": "high",
-        "dependencies": [5, 10],
+        "dependencies": [
+          5,
+          10
+        ],
         "status": "done"
       },
       {
@@ -131,7 +159,10 @@
         "details": "• @gravity-ui/uikit Tabs. \n• По умолчанию активна description. \n• Отсутствующие поля скрываются.",
         "testStrategy": "1) Tabs отображают только доступные поля. \n2) Переключение вкладок не теряет несохранённые правки. \n3) По умолчанию активна вкладка description.",
         "priority": "high",
-        "dependencies": [5, 11],
+        "dependencies": [
+          5,
+          11
+        ],
         "status": "pending"
       },
       {
@@ -141,7 +172,9 @@
         "details": "• @gravity-ui/uikit TextInput для title. \n• @gravity-ui/markdown-editor для description и details. \n• Предпросмотр Markdown.",
         "testStrategy": "1) Изменения отражаются в сторе в реальном времени. \n2) Markdown редактируется и предварительно просматривается. \n3) Изменённые вкладки показывают индикатор несохранённости.",
         "priority": "high",
-        "dependencies": [13],
+        "dependencies": [
+          13
+        ],
         "status": "pending"
       },
       {
@@ -151,7 +184,11 @@
         "details": "• Toolbar над редактором с кнопкой «Сохранить». \n• IPC: file:write. \n• Атомарная запись из задачи 4.",
         "testStrategy": "1) Успешное сохранение — тост «Сохранено», все dirty-индикаторы сброшены. \n2) Ошибка записи — тост с причиной, данные в сторе не теряются. \n3) Повторное открытие файла отражает внесённые изменения.",
         "priority": "high",
-        "dependencies": [4, 2, 14],
+        "dependencies": [
+          4,
+          2,
+          14
+        ],
         "status": "pending"
       },
       {
@@ -161,7 +198,11 @@
         "details": "• Маркеры «●» на вкладках и в списке. \n• Диалог подтверждения при выходе при наличии несохранённых изменений.",
         "testStrategy": "1) Любое изменение включает индикаторы на вкладке и в списке. \n2) Сохранение сбрасывает индикаторы. \n3) Попытка закрыть приложение с несохранёнными изменениями вызывает подтверждение.",
         "priority": "medium",
-        "dependencies": [3, 14, 15],
+        "dependencies": [
+          3,
+          14,
+          15
+        ],
         "status": "pending"
       },
       {
@@ -171,7 +212,10 @@
         "details": "• Единый источник данных в renderer. \n• Мгновенный ререндер списка при изменении title активной задачи.",
         "testStrategy": "1) Изменение title сразу видно в списке. \n2) Текущая выборка и скролл не сбрасываются.",
         "priority": "medium",
-        "dependencies": [11, 14],
+        "dependencies": [
+          11,
+          14
+        ],
         "status": "pending"
       },
       {
@@ -181,7 +225,12 @@
         "details": "• Electron Menu, globalShortcut/accelerators. \n• Cmd/Ctrl+O, Cmd/Ctrl+S. \n• Переоткрытие файла — замена текущего документа и состояния.",
         "testStrategy": "1) «Открыть…» повторяет сценарий выбора и загружает новый файл. \n2) «Сохранить» активна только при dirty-state. \n3) Шорткаты работают в фокусе приложения.",
         "priority": "medium",
-        "dependencies": [1, 2, 9, 15],
+        "dependencies": [
+          1,
+          2,
+          9,
+          15
+        ],
         "status": "pending"
       },
       {
@@ -191,7 +240,9 @@
         "details": "• Мемоизация элементов, batched updates. \n• При необходимости — лёгкая виртуализация списка.",
         "testStrategy": "1) Скролл списка из 1000–2000 задач без заметных лагов на типовом ноутбуке. \n2) Стабильная сортировка и корректные выделения при прокрутке.",
         "priority": "low",
-        "dependencies": [11],
+        "dependencies": [
+          11
+        ],
         "status": "pending"
       },
       {
@@ -201,13 +252,15 @@
         "details": "• npm-скрипты для dev и prod. \n• Env-профили и чтение переменных. \n• Согласованность поведения с задачами выбора/редактирования/сохранения.",
         "testStrategy": "1) Dev и prod повторяют пользовательский сценарий от выбора файла до сохранения. \n2) Env-переменные читаются и влияют на конфиг ожидаемым образом.",
         "priority": "low",
-        "dependencies": [8],
+        "dependencies": [
+          8
+        ],
         "status": "pending"
       }
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-09T17:39:20.022Z",
+      "updated": "2025-09-09T19:00:48.153Z",
       "description": "Tasks for master context"
     }
   }
