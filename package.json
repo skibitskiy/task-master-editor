@@ -3,12 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "description": "Task Master Editor monorepo",
+  "main": "packages/electron/dist-bundle/entry.cjs",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "dev": "concurrently -k -n RENDERER,MAIN -c cyan,magenta \"npm --workspace @app/renderer run dev\" \"npm --workspace @app/electron run dev\"",
+    "build:shared": "npm --workspace @app/shared run build",
+    "build:renderer": "npm --workspace @app/renderer run build",
+    "build:electron": "npm --workspace @app/electron run build",
     "build": "npm -ws run build",
+    "dist": "npm run build && electron-builder",
+    "pack:mac": "npm run build && electron-builder --mac",
+    "pack:win": "npm run build && electron-builder --win",
+    "pack:linux": "npm run build && electron-builder --linux",
     "typecheck": "npm -ws run typecheck",
     "test": "npm run test:unit & npm run test:e2e",
     "test:unit": "npm -ws run test",
@@ -27,6 +35,7 @@
   "author": "",
   "license": "UNLICENSED",
   "devDependencies": {
+    "electron-builder": "^24.13.3",
     "@playwright/test": "^1.47.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
@@ -34,5 +43,30 @@
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.3.3"
+  },
+  "build": {
+    "appId": "com.taskmaster.editor",
+    "productName": "Task Master Editor",
+    "asar": true,
+    "electronVersion": "30.0.0",
+    "files": [
+      "package.json",
+      "packages/electron/dist-bundle/**",
+      "packages/renderer/dist/**",
+      "packages/shared/dist/**"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "mac": {
+      "target": ["dmg", "zip"]
+    },
+    "win": {
+      "target": ["nsis", "zip"]
+    },
+    "linux": {
+      "target": ["AppImage", "deb", "zip"],
+      "category": "Utility"
+    }
   }
 }

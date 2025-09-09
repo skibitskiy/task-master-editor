@@ -1,4 +1,5 @@
 // CommonJS Webpack config to avoid ESM __dirname issues
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('node:path');
 
 /** @type {import('webpack').Configuration} */
@@ -32,8 +33,6 @@ const mainConfig = {
   },
   externals: {
     electron: 'commonjs2 electron',
-    'electron-log': 'commonjs2 electron-log',
-    'electron-log/main.js': 'commonjs2 electron-log/main.js',
   },
   devtool: 'source-map',
   node: { __dirname: false, __filename: false },
@@ -70,8 +69,6 @@ const preloadConfig = {
   },
   externals: {
     electron: 'commonjs2 electron',
-    'electron-log': 'commonjs2 electron-log',
-    'electron-log/main.js': 'commonjs2 electron-log/main.js',
   },
   devtool: 'source-map',
   node: { __dirname: false, __filename: false },
