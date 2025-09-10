@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Task Master Editor monorepo",
-  "main": "packages/electron/dist-bundle/entry.cjs",
+  "main": "packages/electron/dist/entry.cjs",
   "workspaces": [
     "packages/*"
   ],
@@ -51,7 +51,7 @@
     "electronVersion": "30.0.0",
     "files": [
       "package.json",
-      "packages/electron/dist-bundle/**",
+      "packages/electron/dist/**",
       "packages/renderer/dist/**",
       "packages/shared/dist/**"
     ],

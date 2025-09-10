@@ -2,14 +2,16 @@
   "name": "@app/electron",
   "version": "0.1.0",
   "private": true,
-  "main": "dist-bundle/entry.cjs",
+  "main": "dist/entry.cjs",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development tsc -w -p tsconfig.json --preserveWatchOutput & wait-on tcp:5173 && electron .",
-    "build": "rimraf dist dist-bundle && tsc -p tsconfig.json && webpack --config webpack.config.cjs",
+    "dev": "npm run build:dev && cross-env NODE_ENV=development electron dist/entry.cjs",
+    "build": "npm run build:prod",
+    "build:prod": "rimraf dist && webpack --config webpack.config.cjs",
+    "build:dev": "rimraf dist && cross-env NODE_ENV=development webpack --config webpack.config.cjs",
     "start": "electron .",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "npm run build && node tests/run.js"
+    "test": "npm run build:dev >> /dev/null && node tests/run.js"
   },
   "dependencies": {
     "@app/shared": "*",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
+    "cross-env": "^10.0.0",
     "electron": "^30.0.0",
     "rimraf": "^5.0.5",
     "ts-loader": "^9.5.4",

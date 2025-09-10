@@ -2,29 +2,17 @@
 import assert from 'node:assert';
 
 // Load compiled ESM modules from tsc output (NodeNext)
-import * as security from '../dist/security.js';
-import * as main from '../dist/main.js';
-import { atomicWriteTasksJsonWithBackup } from '../dist/fsAtomic.js';
+import * as security from '../dist/security.cjs';
+import * as main from '../dist/main.cjs';
+import { atomicWriteTasksJsonWithBackup } from '../dist/fsAtomic.cjs';
 import { promises as fs } from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
 function testSecurityAllowList() {
-  assert.strictEqual(
-    security.isUrlAllowed('https://github.com/openai'),
-    true,
-    'github should be allowed',
-  );
-  assert.strictEqual(
-    security.isUrlAllowed('https://openai.com/blog'),
-    true,
-    'openai should be allowed',
-  );
-  assert.strictEqual(
-    security.isUrlAllowed('https://example.com'),
-    false,
-    'example.com should be blocked',
-  );
+  assert.strictEqual(security.isUrlAllowed('https://github.com/openai'), true, 'github should be allowed');
+  assert.strictEqual(security.isUrlAllowed('https://openai.com/blog'), true, 'openai should be allowed');
+  assert.strictEqual(security.isUrlAllowed('https://example.com'), false, 'example.com should be blocked');
   assert.strictEqual(security.isUrlAllowed('notaurl'), false, 'invalid URL should be blocked');
 }
 
@@ -56,10 +44,7 @@ async function testAtomicWrite() {
   assert.equal(JSON.parse(await fs.readFile(file, 'utf-8')).master.tasks[0].title, 'A');
 
   const before = await fs.readFile(file, 'utf-8');
-  await assert.rejects(
-    () => atomicWriteTasksJsonWithBackup(file, JSON.stringify({ not: 'tasks' })),
-    /Invalid schema/,
-  );
+  await assert.rejects(() => atomicWriteTasksJsonWithBackup(file, JSON.stringify({ not: 'tasks' })), /Invalid schema/);
   assert.equal(await fs.readFile(file, 'utf-8'), before);
 
   const v2 = JSON.stringify({ master: { tasks: [{ id: 1, title: 'B' }] } }, null, 2);

@@ -4,13 +4,16 @@ const path = require('node:path');
 
 /** @type {import('webpack').Configuration} */
 const mainConfig = {
-  mode: 'production',
+  mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   target: 'electron-main',
   entry: {
     entry: path.resolve(__dirname, 'src/entry.ts'),
+    security: path.resolve(__dirname, 'src/security.ts'),
+    fsAtomic: path.resolve(__dirname, 'src/fsAtomic.ts'),
+    main: path.resolve(__dirname, 'src/main.ts'),
   },
   output: {
-    path: path.resolve(__dirname, 'dist-bundle'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].cjs',
     libraryTarget: 'commonjs2',
     clean: false,
@@ -40,22 +43,27 @@ const mainConfig = {
 
 /** @type {import('webpack').Configuration} */
 const preloadConfig = {
-  mode: 'production',
+  mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   target: 'electron-preload',
   entry: {
     preload: path.resolve(__dirname, 'src/preload.ts'),
   },
   output: {
-    path: path.resolve(__dirname, 'dist-bundle'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].cjs',
-    libraryTarget: 'commonjs2',
+    library: {
+      type: 'commonjs2',
+    },
     clean: false,
+    module: false,
+    chunkFormat: 'commonjs',
   },
+  externalsType: 'commonjs',
   resolve: {
     extensions: ['.ts', '.js'],
     extensionAlias: { '.js': ['.ts', '.js'] },
     alias: {
-      '@app/shared': path.resolve(__dirname, '../shared/dist'),
+      '@app/shared': path.resolve(__dirname, '../shared/dist/index.js'),
     },
   },
   module: {

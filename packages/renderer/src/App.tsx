@@ -140,12 +140,7 @@ export const App: React.FC = () => {
                   </div>
                   <div className="app-content">
                     <ErrorBoundary>
-                      <EditorPanel
-                        taskId={selectedTaskId}
-                        onSave={() => {
-                          notifySuccess('Сохранено', 'Изменения успешно сохранены');
-                        }}
-                      />
+                      <EditorPanel taskId={selectedTaskId} />
                     </ErrorBoundary>
                   </div>
                 </Flex>

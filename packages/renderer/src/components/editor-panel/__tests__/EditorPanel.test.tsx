@@ -1,22 +1,30 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { ThemeProvider } from '@gravity-ui/uikit';
 import { EditorPanel } from '../ui';
-import dataReducer from '../../../redux/dataSlice';
+import dataReducer, { saveFile } from '../../../redux/dataSlice';
 import settingsReducer from '../../../redux/settingsSlice';
 import type { TasksFile } from '@app/shared';
+import * as notifyModule from '../../../utils/notify';
 
 // Mock the markdown editor
 vi.mock('@gravity-ui/markdown-editor', () => ({
   useMarkdownEditor: () => ({
     getValue: () => 'test content',
+    replaceWholeDoc: vi.fn(),
   }),
   MarkdownEditorView: ({ children }: { children?: React.ReactNode }) => (
     <div data-testid="markdown-editor">{children}</div>
   ),
+}));
+
+// Mock the notify module
+vi.mock('../../../utils/notify', () => ({
+  notifySuccess: vi.fn(),
+  notifyError: vi.fn(),
 }));
 
 const mockTasksFile: TasksFile = {
@@ -224,6 +232,265 @@ describe('EditorPanel - Task Tabs (Task 13)', () => {
 
       expect(screen.getByText('Выберите задачу для редактирования')).toBeInTheDocument();
       expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Validation', () => {
+    it('should show validation error when title is empty', async () => {
+      renderEditorPanel('1');
+
+      // Click title tab
+      fireEvent.click(screen.getByRole('tab', { name: /заголовок/i }));
+
+      // Get the title input
+      const titleInput = screen.getByRole('textbox');
+
+      // Clear the title
+      fireEvent.change(titleInput, { target: { value: '' } });
+      fireEvent.blur(titleInput);
+
+      // Should show validation error
+      await waitFor(() => {
+        expect(screen.getByText('Название задачи обязательно')).toBeInTheDocument();
+      });
+    });
+
+    it('should show validation error for invalid dependency format', async () => {
+      renderEditorPanel('1');
+
+      // Click dependencies tab
+      fireEvent.click(screen.getByRole('tab', { name: /зависимости/i }));
+
+      // Get the dependencies input
+      const depsInput = screen.getByRole('textbox');
+
+      // Enter invalid dependency
+      fireEvent.change(depsInput, { target: { value: 'invalid, 1.2, abc' } });
+
+      // Should show validation error
+      await waitFor(() => {
+        expect(screen.getByText(/Неверный формат зависимости/)).toBeInTheDocument();
+      });
+    });
+
+    it('should disable save button when there are validation errors', async () => {
+      renderEditorPanel('1');
+
+      // Click title tab
+      fireEvent.click(screen.getByRole('tab', { name: /заголовок/i }));
+
+      // Clear the title
+      const titleInput = screen.getByRole('textbox');
+      fireEvent.change(titleInput, { target: { value: '' } });
+      fireEvent.blur(titleInput);
+
+      // Save button should be disabled
+      await waitFor(() => {
+        const saveButton = screen.getByRole('button', { name: /сохранить/i });
+        expect(saveButton).toBeDisabled();
+      });
+    });
+  });
+
+  describe('Real-time Updates', () => {
+    it('should update Redux store when changing field values', async () => {
+      const { store } = renderEditorPanel('1');
+
+      // Click title tab
+      fireEvent.click(screen.getByRole('tab', { name: /заголовок/i }));
+
+      // Change the title
+      const titleInput = screen.getByRole('textbox');
+      fireEvent.change(titleInput, { target: { value: 'Updated Title' } });
+
+      // Check that the store was updated
+      await waitFor(() => {
+        const state = store.getState();
+        const task = state.data.tasksFile?.master.tasks.find((t) => String(t.id) === '1');
+        expect(task?.title).toBe('Updated Title');
+      });
+    });
+
+    it('should mark task as dirty when field is modified', async () => {
+      const { store } = renderEditorPanel('1');
+
+      // Click description tab
+      fireEvent.click(screen.getByRole('tab', { name: /описание/i }));
+
+      // Store should mark task as dirty after change
+      const initialState = store.getState();
+      expect(initialState.data.dirty.byTaskId['1']).toBeFalsy();
+
+      // Change description (simulated by direct store update since markdown editor is mocked)
+      store.dispatch({
+        type: 'data/updateTask',
+        payload: { id: 1, patch: { description: 'New description' } },
+      });
+
+      // Check dirty state
+      await waitFor(() => {
+        const state = store.getState();
+        expect(state.data.dirty.byTaskId['1']).toBe(true);
+      });
+    });
+
+    it('should show dirty indicator on save button when task is dirty', async () => {
+      const { store } = renderEditorPanel('1');
+
+      // Click title tab
+      fireEvent.click(screen.getByRole('tab', { name: /заголовок/i }));
+
+      // Change the title directly in store to simulate dirty state
+      store.dispatch({
+        type: 'data/updateTask',
+        payload: { id: 1, patch: { title: 'Modified Title' } },
+      });
+
+      // Should show dirty indicator on save button
+      await waitFor(() => {
+        const saveButton = screen.getByRole('button', { name: /сохранить/i });
+        expect(saveButton.textContent).toContain('●');
+      });
+    });
+  });
+
+  describe('Save Functionality (Task 15)', () => {
+    it('should show save button with dirty indicator when task is modified', async () => {
+      const { store } = renderEditorPanel('1');
+
+      // Modify the task to make it dirty
+      store.dispatch({
+        type: 'data/updateTask',
+        payload: { id: 1, patch: { title: 'Modified Title' } },
+      });
+
+      // Should show save button with dirty indicator
+      await waitFor(() => {
+        const saveButton = screen.getByRole('button', { name: /сохранить/i });
+        expect(saveButton.textContent).toContain('●');
+      });
+    });
+
+    it('should call saveFile and show success notification on successful save', async () => {
+      renderEditorPanel('1');
+
+      // Mock window.api for successful save
+      window.api = {
+        file: {
+          write: vi.fn().mockResolvedValue({ ok: true }),
+          read: vi.fn(),
+        },
+      } as unknown as typeof window.api;
+
+      // Clear any previous calls
+      vi.clearAllMocks();
+
+      // Click save button
+      const saveButton = screen.getByRole('button', { name: /сохранить/i });
+      fireEvent.click(saveButton);
+
+      // Should show success notification after successful save
+      await waitFor(
+        () => {
+          expect(notifyModule.notifySuccess).toHaveBeenCalledWith('Сохранено', 'Все изменения успешно сохранены');
+        },
+        { timeout: 3000 },
+      );
+    });
+
+    it('should show error notification on failed save', async () => {
+      renderEditorPanel('1');
+
+      // Mock window.api for failed save
+      window.api = {
+        file: {
+          write: vi.fn().mockRejectedValue(new Error('Save failed')),
+          read: vi.fn(),
+        },
+      } as unknown as typeof window.api;
+
+      // Clear any previous calls
+      vi.clearAllMocks();
+
+      // Click save button
+      const saveButton = screen.getByRole('button', { name: /сохранить/i });
+      fireEvent.click(saveButton);
+
+      // Should show error notification
+      await waitFor(
+        () => {
+          expect(notifyModule.notifyError).toHaveBeenCalledWith(
+            'Ошибка сохранения',
+            expect.stringContaining('Save failed'),
+          );
+        },
+        { timeout: 3000 },
+      );
+    });
+
+    it('should disable save button when there are validation errors', async () => {
+      renderEditorPanel('1');
+
+      // Click title tab and clear the title to trigger validation error
+      fireEvent.click(screen.getByRole('tab', { name: /заголовок/i }));
+      const titleInput = screen.getByRole('textbox');
+      fireEvent.change(titleInput, { target: { value: '' } });
+      fireEvent.blur(titleInput);
+
+      // Save button should be disabled
+      await waitFor(() => {
+        const saveButton = screen.getByRole('button', { name: /сохранить/i });
+        expect(saveButton).toBeDisabled();
+      });
+    });
+
+    it('should not call save when validation errors exist', async () => {
+      const { store } = renderEditorPanel('1');
+      const mockStore = vi.spyOn(store, 'dispatch');
+
+      // Click title tab and clear the title to trigger validation error
+      fireEvent.click(screen.getByRole('tab', { name: /заголовок/i }));
+      const titleInput = screen.getByRole('textbox');
+      fireEvent.change(titleInput, { target: { value: '' } });
+      fireEvent.blur(titleInput);
+
+      // Try to click save button (should be disabled but let's try)
+      await waitFor(() => {
+        const saveButton = screen.getByRole('button', { name: /сохранить/i });
+        expect(saveButton).toBeDisabled();
+
+        // Even if we could click it, it shouldn't call saveFile
+        fireEvent.click(saveButton);
+      });
+
+      // Should not have called saveFile
+      expect(mockStore).not.toHaveBeenCalledWith(expect.any(Function));
+    });
+
+    it('should reset dirty state after successful save', async () => {
+      const { store } = renderEditorPanel('1');
+
+      // Make task dirty first
+      store.dispatch({
+        type: 'data/updateTask',
+        payload: { id: 1, patch: { title: 'Modified Title' } },
+      });
+
+      // Check task is dirty
+      await waitFor(() => {
+        const saveButton = screen.getByRole('button', { name: /сохранить/i });
+        expect(saveButton.textContent).toContain('●');
+      });
+
+      // Mock successful save by dispatching the fulfilled action directly
+      store.dispatch({ type: saveFile.fulfilled.type, payload: true });
+
+      // Check dirty state is reset
+      await waitFor(() => {
+        const state = store.getState();
+        expect(state.data.dirty.file).toBe(false);
+        expect(state.data.dirty.byTaskId['1']).toBeFalsy();
+      });
     });
   });
 });

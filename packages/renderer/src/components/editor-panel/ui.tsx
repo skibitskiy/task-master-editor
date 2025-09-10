@@ -1,24 +1,36 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Flex, Text, Button, TextInput, TabProvider, TabList, Tab } from '@gravity-ui/uikit';
 import { useMarkdownEditor, MarkdownEditorView } from '@gravity-ui/markdown-editor';
-import { FloppyDisk, Eye, Code } from '@gravity-ui/icons';
+import { FloppyDisk, Eye, Code, CircleExclamation } from '@gravity-ui/icons';
 import type { Task } from '@app/shared';
-import type { RootState } from '../../redux/store';
+import type { RootState, AppDispatch } from '../../redux/store';
+import { updateTask, saveFile } from '../../redux/dataSlice';
+import { notifySuccess, notifyError } from '../../utils/notify';
 
 interface EditorPanelProps {
   taskId: string | null;
-  onSave: (content: string) => void;
 }
 
 type TaskFieldTab = Extract<keyof Task, 'title' | 'description' | 'details' | 'dependencies' | 'testStrategy'>;
 
-export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
+export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const [activeFieldTab, setActiveFieldTab] = useState<TaskFieldTab>('description');
   const [editorMode, setEditorMode] = useState<'editor' | 'preview'>('editor');
+  const [localValues, setLocalValues] = useState<Record<TaskFieldTab, string>>({
+    title: '',
+    description: '',
+    details: '',
+    dependencies: '',
+    testStrategy: '',
+  });
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
+  const dirtyState = useSelector((state: RootState) => state.data.dirty);
   const task = taskId ? tasksFile?.master.tasks.find((t) => String(t.id) === taskId) : null;
+  const isTaskDirty = taskId ? dirtyState.byTaskId[taskId] : false;
 
   // Get current field content
   const getCurrentFieldContent = React.useCallback((task: Task, field: TaskFieldTab) => {
@@ -38,19 +50,146 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
     }
   }, []);
 
+  // Initialize local values when task changes
+  useEffect(() => {
+    if (task) {
+      setLocalValues({
+        title: task.title || '',
+        description: task.description || '',
+        details: task.details || '',
+        dependencies: task.dependencies ? task.dependencies.join(', ') : '',
+        testStrategy: task.testStrategy || '',
+      });
+    }
+  }, [task?.id]);
+
   // Get current content for the active field
   const currentContent = React.useMemo(() => {
-    if (!task) return '';
-    return getCurrentFieldContent(task, activeFieldTab);
-  }, [task, activeFieldTab, getCurrentFieldContent]);
+    return localValues[activeFieldTab];
+  }, [localValues, activeFieldTab]);
 
+  // Always initialize the markdown editor (hooks must be called unconditionally)
   const editor = useMarkdownEditor({});
 
-  const handleSave = React.useCallback(() => {
-    const value = editor.getValue();
-    onSave(value);
-  }, [editor, onSave]);
+  // Validate field value - moved before other callbacks to maintain hook order
+  const validateField = useCallback((field: TaskFieldTab, value: string): string | null => {
+    if (field === 'title' && !value.trim()) {
+      return 'Название задачи обязательно';
+    }
+    if (field === 'dependencies') {
+      const deps = value
+        .split(',')
+        .map((d) => d.trim())
+        .filter(Boolean);
+      for (const dep of deps) {
+        if (!/^\d+(\.\d+)*$/.test(dep)) {
+          return `Неверный формат зависимости: ${dep}`;
+        }
+      }
+    }
+    return null;
+  }, []);
 
+  // Handle field changes with real-time store updates
+  const handleFieldChange = useCallback(
+    (field: TaskFieldTab, value: string) => {
+      // Update local state
+      setLocalValues((prev) => ({ ...prev, [field]: value }));
+
+      // Validate
+      const error = validateField(field, value);
+      if (error) {
+        setValidationErrors((prev) => ({ ...prev, [field]: error }));
+      } else {
+        setValidationErrors((prev) => {
+          const next = { ...prev };
+          delete next[field];
+          return next;
+        });
+      }
+
+      // Update Redux store
+      if (!error && task && taskId) {
+        const patch: Partial<Task> = {};
+
+        switch (field) {
+          case 'title':
+            patch.title = value;
+            break;
+          case 'description':
+            patch.description = value || undefined;
+            break;
+          case 'details':
+            patch.details = value || undefined;
+            break;
+          case 'dependencies': {
+            const deps = value
+              .split(',')
+              .map((d) => d.trim())
+              .filter(Boolean);
+            patch.dependencies = deps.length > 0 ? deps : undefined;
+            break;
+          }
+          case 'testStrategy':
+            patch.testStrategy = value || undefined;
+            break;
+        }
+
+        dispatch(updateTask({ id: taskId, patch }));
+      }
+    },
+    [task, taskId, dispatch, validateField],
+  );
+
+  // Listen to markdown editor changes - always set up effect but conditionally execute
+  useEffect(() => {
+    const handleEditorChange = () => {
+      // Only handle editor changes for markdown fields
+      if (activeFieldTab !== 'title' && activeFieldTab !== 'dependencies') {
+        const value = editor.getValue();
+        handleFieldChange(activeFieldTab, value);
+      }
+    };
+
+    // Always set up the interval but it will only do work for markdown fields
+    const interval = setInterval(handleEditorChange, 500);
+    return () => clearInterval(interval);
+  }, [activeFieldTab, editor, handleFieldChange]);
+
+  // Handle save button click
+  const handleSave = useCallback(async () => {
+    // Check for validation errors
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    try {
+      // Dispatch save action and wait for completion
+      const result = await dispatch(saveFile());
+
+      if (saveFile.fulfilled.match(result)) {
+        notifySuccess('Сохранено', 'Все изменения успешно сохранены');
+      } else if (saveFile.rejected.match(result)) {
+        const errorMessage = typeof result.payload === 'string' ? result.payload : 'Неизвестная ошибка';
+        notifyError('Ошибка сохранения', errorMessage);
+      }
+    } catch (error) {
+      console.error('Save error:', error);
+      notifyError('Ошибка сохранения', 'Произошла неожиданная ошибка при сохранении файла');
+    }
+  }, [dispatch, validationErrors]);
+
+  // Check if field has been modified - must be defined before early return
+  const isFieldDirty = useCallback(
+    (field: TaskFieldTab): boolean => {
+      if (!task) return false;
+      const originalValue = getCurrentFieldContent(task, field);
+      return localValues[field] !== originalValue;
+    },
+    [task, localValues, getCurrentFieldContent],
+  );
+
+  // Early return after all hooks have been called
   if (!task) {
     return (
       <div className="editor-panel">
@@ -70,11 +209,16 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
   }
 
   const availableTabs = [
-    { id: 'title', title: 'Заголовок' },
-    { id: 'description', title: 'Описание' },
-    { id: 'details', title: 'Детали' },
-    { id: 'dependencies', title: 'Зависимости' },
-    { id: 'testStrategy', title: 'Стратегия тестирования' },
+    { id: 'title', title: 'Заголовок', isDirty: isFieldDirty('title'), hasError: !!validationErrors.title },
+    { id: 'description', title: 'Описание', isDirty: isFieldDirty('description'), hasError: false },
+    { id: 'details', title: 'Детали', isDirty: isFieldDirty('details'), hasError: false },
+    {
+      id: 'dependencies',
+      title: 'Зависимости',
+      isDirty: isFieldDirty('dependencies'),
+      hasError: !!validationErrors.dependencies,
+    },
+    { id: 'testStrategy', title: 'Стратегия тестирования', isDirty: isFieldDirty('testStrategy'), hasError: false },
   ];
 
   return (
@@ -95,11 +239,12 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
                 {editorMode === 'editor' ? 'Предпросмотр' : 'Редактор'}
               </Button>
             )}
-            <Button view="action" size="m" onClick={handleSave}>
+            <Button view="action" size="m" onClick={handleSave} disabled={Object.keys(validationErrors).length > 0}>
               <Button.Icon>
                 <FloppyDisk />
               </Button.Icon>
               Сохранить
+              {isTaskDirty && <span style={{ marginLeft: '8px', color: 'var(--g-color-text-warning)' }}>●</span>}
             </Button>
           </Flex>
         </Flex>
@@ -111,7 +256,13 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
           <TabList>
             {availableTabs.map((tab) => (
               <Tab key={tab.id} value={tab.id}>
-                {tab.title}
+                <Flex gap={1} alignItems="center">
+                  {tab.title}
+                  {tab.isDirty && <span style={{ color: 'var(--g-color-text-warning)', fontSize: '12px' }}>●</span>}
+                  {tab.hasError && (
+                    <CircleExclamation width={16} height={16} style={{ color: 'var(--g-color-text-danger)' }} />
+                  )}
+                </Flex>
               </Tab>
             ))}
           </TabList>
@@ -121,7 +272,21 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
       <div className="editor-content">
         {activeFieldTab === 'title' ? (
           <div className="title-editor">
-            <TextInput value={currentContent} placeholder="Введите название задачи..." size="l" view="normal" />
+            <TextInput
+              value={currentContent}
+              placeholder="Введите название задачи..."
+              size="l"
+              view="normal"
+              validationState={validationErrors.title ? 'invalid' : undefined}
+              errorMessage={validationErrors.title}
+              onChange={(e) => handleFieldChange('title', e.target.value)}
+              onBlur={() => {
+                const error = validateField('title', currentContent);
+                if (error) {
+                  setValidationErrors((prev) => ({ ...prev, title: error }));
+                }
+              }}
+            />
           </div>
         ) : activeFieldTab === 'dependencies' ? (
           <div className="dependencies-editor">
@@ -130,6 +295,9 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId, onSave }) => {
               placeholder="Введите зависимости через запятую (например: 1, 2, 3)"
               size="l"
               view="normal"
+              validationState={validationErrors.dependencies ? 'invalid' : undefined}
+              errorMessage={validationErrors.dependencies}
+              onChange={(e) => handleFieldChange('dependencies', e.target.value)}
             />
           </div>
         ) : activeFieldTab === 'testStrategy' ? (

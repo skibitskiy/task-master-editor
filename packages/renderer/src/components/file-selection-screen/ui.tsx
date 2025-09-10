@@ -12,6 +12,14 @@ interface FileSelectionScreenProps {
 export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFileSelected }) => {
   const [isSelecting, setIsSelecting] = useState(false);
 
+  // Debug: Log API availability
+  React.useEffect(() => {
+    console.log('🔍 FileSelectionScreen mounted');
+    console.log('🔍 window.api available:', !!window.api);
+    console.log('🔍 window.api.workspace available:', !!window.api?.workspace);
+    console.log('🔍 window.api.workspace.select available:', !!window.api?.workspace?.select);
+  }, []);
+
   const handleSelectFile = async () => {
     setIsSelecting(true);
 

@@ -4,10 +4,17 @@ import type { WebContents, BrowserWindowConstructorOptions } from 'electron';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import log from 'electron-log/main.js';
+import { existsSync } from 'node:fs';
 import { isUrlAllowed } from './security.js';
-// IPC handlers are registered in ipcHandlers.ts
 
 const isDev = process.env.NODE_ENV === 'development';
+
+// Debug logging
+log.info('Electron startup:', {
+  NODE_ENV: process.env.NODE_ENV,
+  isDev,
+  VITE_DEV_SERVER_URL: process.env.VITE_DEV_SERVER_URL,
+});
 
 export function setupSecurityHandlers(contents: WebContents) {
   contents.setWindowOpenHandler(({ url }: { url: string }) => {
@@ -36,6 +43,16 @@ export function setupSecurityHandlers(contents: WebContents) {
 const __DIRNAME = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
+  const preloadPath = path.join(__DIRNAME, 'preload.cjs');
+
+  // Debug: Log preload path and check if file exists
+  log.info('🔧 Preload configuration:', {
+    isDev,
+    __DIRNAME,
+    preloadPath,
+    fileExists: existsSync(preloadPath),
+  });
+
   return {
     width: 1024,
     height: 768,
@@ -44,7 +61,7 @@ export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
       contextIsolation: true,
       sandbox: true,
       nodeIntegration: false,
-      preload: path.join(__DIRNAME, 'preload.cjs'),
+      preload: preloadPath,
     },
   };
 }
