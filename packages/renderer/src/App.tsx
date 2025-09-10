@@ -77,6 +77,20 @@ export const App: React.FC = () => {
     setTheme(prefersDark ? 'dark' : 'light');
   }, []);
 
+  useEffect(() => {
+    const darkThemeListener = (e: MediaQueryListEvent) => e.matches && setTheme('dark');
+    const lightThemeListener = (e: MediaQueryListEvent) => e.matches && setTheme('light');
+    const mdark = window.matchMedia('(prefers-color-scheme: dark)');
+    const mlight = window.matchMedia('(prefers-color-scheme: light)');
+    mdark.addEventListener('change', darkThemeListener);
+    mlight.addEventListener('change', lightThemeListener);
+    return () => {
+      // cleanup event listeners
+      mdark.removeEventListener('change', darkThemeListener);
+      mlight.removeEventListener('change', lightThemeListener);
+    };
+  }, []);
+
   const handleFileSelected = async (filePath: string) => {
     setIsLoading(true);
     try {
@@ -140,7 +154,7 @@ export const App: React.FC = () => {
                   </div>
                   <div className="app-content">
                     <ErrorBoundary>
-                      <EditorPanel taskId={selectedTaskId} />
+                      <EditorPanel key={selectedTaskId} taskId={selectedTaskId} />
                     </ErrorBoundary>
                   </div>
                 </Flex>

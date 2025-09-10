@@ -1,5 +1,17 @@
 @import '@gravity-ui/uikit/styles/styles.css';
 
+@media (prefers-color-scheme: dark) {
+.yfm {
+    --yfm-color-text: white;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .yfm {
+      --yfm-color-text: black;
+    }
+  }
+
 .app {
   height: 100vh;
   width: 100vw;

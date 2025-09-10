@@ -14,7 +14,9 @@ import * as notifyModule from '../../../utils/notify';
 vi.mock('@gravity-ui/markdown-editor', () => ({
   useMarkdownEditor: () => ({
     getValue: () => 'test content',
-    replaceWholeDoc: vi.fn(),
+    replace: vi.fn(),
+    on: vi.fn(),
+    off: vi.fn(),
   }),
   MarkdownEditorView: ({ children }: { children?: React.ReactNode }) => (
     <div data-testid="markdown-editor">{children}</div>

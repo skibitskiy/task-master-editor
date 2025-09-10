@@ -1,0 +1,1 @@
+export { EditorPanelTabs } from './ui';
