@@ -11,6 +11,9 @@ interface UseMarkdownFieldEditorParams {
 export const useMarkdownFieldEditor = ({ field, initialValue, onChange }: UseMarkdownFieldEditorParams) => {
   const editor = useMarkdownEditor({
     initial: { markup: initialValue },
+    md: {
+      html: true,
+    },
   });
 
   React.useEffect(() => {

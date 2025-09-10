@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Flex, Text, TextInput } from '@gravity-ui/uikit';
 import { MarkdownEditorView } from '@gravity-ui/markdown-editor';
@@ -52,6 +52,18 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({ taskId }) => {
     initialValue: localValues.testStrategy,
     onChange: handleFieldChange,
   });
+
+  useEffect(() => {
+    if (editorMode === 'preview') {
+      descriptionEditor.setEditorMode('wysiwyg');
+      detailsEditor.setEditorMode('wysiwyg');
+      testStrategyEditor.setEditorMode('wysiwyg');
+    } else if (editorMode === 'editor') {
+      descriptionEditor.setEditorMode('markup');
+      detailsEditor.setEditorMode('markup');
+      testStrategyEditor.setEditorMode('markup');
+    }
+  }, [editorMode]);
 
   // Handle save button click
   const handleSave = useCallback(async () => {
