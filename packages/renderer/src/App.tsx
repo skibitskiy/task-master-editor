@@ -5,7 +5,7 @@ import { store } from './redux/store';
 import { initSettings, updateMRU } from './redux/settingsSlice';
 import { loadFromPath } from './redux/dataSlice';
 import { TaskList } from './components/task-list';
-import { EditorPanel } from './components/EditorPanel';
+import { EditorPanel } from './components/editor-panel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { FileSelectionScreen } from './components/file-selection-screen';
 import { setToasterInstance, notifySuccess, notifyError } from './utils/notify';

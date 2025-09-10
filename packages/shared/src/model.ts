@@ -8,6 +8,7 @@ export interface Task {
   description?: string;
   details?: string;
   status?: TaskStatus;
+  testStrategy?: string;
   priority?: 'low' | 'medium' | 'high';
   dependencies?: Array<number | string>;
 }
@@ -31,6 +32,7 @@ export const TaskSchema = z.object({
   details: z.string().optional(),
   status: z.enum(['pending', 'in-progress', 'done', 'deferred', 'cancelled', 'blocked']).optional(),
   priority: z.enum(['low', 'medium', 'high']).optional(),
+  testStrategy: z.string().optional(),
   dependencies: z.array(z.union([z.number(), z.string()])).optional(),
 });
 
