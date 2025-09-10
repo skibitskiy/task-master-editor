@@ -6,256 +6,311 @@
         "title": "Каркас Electron-приложения",
         "description": "Базовая структура main/preload/renderer, строгий TypeScript, безопасные флаги окна.",
         "details": "• Electron + TypeScript (strict) + Vite/webpack.\n• Настройки безопасности: contextIsolation: true, sandbox: true, nodeIntegration: false.\n• Логирование: electron-log.\n• Конфиг навигации наружу (allow-list для shell.openExternal).",
-        "testStrategy": "1) Приложение стартует в dev одной командой и показывает окно. \n2) Prod-сборка запускается и поведение идентично dev. \n3) Проверка, что nodeIntegration=false, contextIsolation=true, sandbox=true. \n4) Внешние ссылки блокируются, кроме явно разрешённых.",
+        "status": "done",
         "priority": "high",
-        "dependencies": [],
-        "status": "done"
+        "testStrategy": "1) Приложение стартует в dev одной командой и показывает окно. \n2) Prod-сборка запускается и поведение идентично dev. \n3) Проверка, что nodeIntegration=false, contextIsolation=true, sandbox=true. \n4) Внешние ссылки блокируются, кроме явно разрешённых.",
+        "dependencies": []
       },
       {
         "id": 2,
         "title": "Контракты IPC и безопасность Preload",
         "description": "Единые каналы IPC и типизированный, минимальный API в preload.",
         "details": "• Каналы: workspace:select, file:read, file:write.\n• Валидация payload через zod/valibot.\n• contextBridge.exposeInMainWorld с минимальным API.",
-        "testStrategy": "1) Все IPC-запросы/ответы валидируются и некорректные данные отклоняются с понятной ошибкой. \n2) Renderer не имеет прямого доступа к fs/process. \n3) API preload соответствует описанной спецификации (названия и сигнатуры).",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) Все IPC-запросы/ответы валидируются и некорректные данные отклоняются с понятной ошибкой. \n2) Renderer не имеет прямого доступа к fs/process. \n3) API preload соответствует описанной спецификации (названия и сигнатуры).",
         "dependencies": [
           1
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 3,
         "title": "Модель данных и глобальный стор",
         "description": "Типы Task и контейнера файла, единый стор, MRU последних путей, dirty-flags.",
         "details": "• Типы: Task, TasksFile ({ master: { tasks: Task[] } }).\n• React Context/Reducer или легковесный стор.\n• electron-store для настроек (MRU, предпочтения).",
-        "testStrategy": "1) Парсинг валидного файла формирует корректное состояние. \n2) Частично битые поля не роняют UI — задачи с ошибками помечаются/игнорируются. \n3) Dirty-статусы корректно обновляются на уровне задачи и файла. \n4) MRU хранит и возвращает последний путь, если опция включена.",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) Парсинг валидного файла формирует корректное состояние. \n2) Частично битые поля не роняют UI — задачи с ошибками помечаются/игнорируются. \n3) Dirty-статусы корректно обновляются на уровне задачи и файла. \n4) MRU хранит и возвращает последний путь, если опция включена.",
         "dependencies": [
           1,
           2
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 4,
         "title": "Валидация JSON и атомарная запись",
         "description": "Схема валидации tasks.json, запись через temp→fsync→rename, бэкап.",
         "details": "• Схема zod для TasksFile. \n• fs/promises: временный файл + fsync + атомарный rename. \n• Автобэкап и откат при сбое.",
-        "testStrategy": "1) Невалидный JSON/схема — понятная ошибка и возможность выбрать другой файл. \n2) При сбое записи исходный файл остаётся цел. \n3) Бэкап доступен и может быть восстановлен. \n4) Успешная запись не теряет данные (проверка чтением).",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) Невалидный JSON/схема — понятная ошибка и возможность выбрать другой файл. \n2) При сбое записи исходный файл остаётся цел. \n3) Бэкап доступен и может быть восстановлен. \n4) Успешная запись не теряет данные (проверка чтением).",
         "dependencies": [
           2,
           3
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 5,
         "title": "UI-скелет: двухколоночный лейаут",
         "description": "Слева список задач, справа редактор; плейсхолдер при отсутствии выбора.",
         "details": "• @gravity-ui/uikit: Layout/Flex, Tabs, Toaster. \n• @gravity-ui/markdown-editor для правой панели. \n• Адаптив: при узком экране переключение вида.",
-        "testStrategy": "1) При старте без выбранной задачи справа виден плейсхолдер. \n2) Лейаут устойчив к ресайзу окна. \n3) Toaster доступен из любой части renderer.",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) При старте без выбранной задачи справа виден плейсхолдер. \n2) Лейаут устойчив к ресайзу окна. \n3) Toaster доступен из любой части renderer.",
         "dependencies": [
           1
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 6,
         "title": "Обработка ошибок и устойчивость",
         "description": "Глобальные перехватчики ошибок, уведомления и неизбыточные логи.",
         "details": "• React ErrorBoundary, window.onerror/unhandledrejection. \n• Утилита notify() на базе @gravity-ui/uikit Toaster. \n• electron-log с маскированием PII.",
-        "testStrategy": "1) Неуправляемые исключения не закрывают окно — пользователь видит понятный тост. \n2) Ошибки IPC маппятся в человекочитаемые сообщения. \n3) Логи пишутся и не содержат PII.",
+        "status": "done",
         "priority": "medium",
+        "testStrategy": "1) Неуправляемые исключения не закрывают окно — пользователь видит понятный тост. \n2) Ошибки IPC маппятся в человекочитаемые сообщения. \n3) Логи пишутся и не содержат PII.",
         "dependencies": [
           1,
           5
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 7,
         "title": "Качество и DX",
         "description": "ESLint/Prettier, unit-тесты для парсинга/сериализации, smoke E2E.",
         "details": "• ESLint + Prettier. \n• Vitest/Jest для юнитов (парсинг, сериализация). \n• Playwright (Electron) smoke: окно открывается, UI-скелет виден.",
-        "testStrategy": "1) Линт без ошибок, автоформат работает. \n2) Юнит-тесты зелёные, покрытие парсинга/записи ≥80%. \n3) Smoke E2E подтверждает рендер списка и плейсхолдера.",
+        "status": "done",
         "priority": "medium",
+        "testStrategy": "1) Линт без ошибок, автоформат работает. \n2) Юнит-тесты зелёные, покрытие парсинга/записи ≥80%. \n3) Smoke E2E подтверждает рендер списка и плейсхолдера.",
         "dependencies": [
           1
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 8,
         "title": "Сборка и поставка",
         "description": "Конфигурация сборки, артефакты под целевые ОС, sourcemaps.",
         "details": "• electron-builder или Forge. \n• Env-профили, версионирование, генерация артефактов. \n• Sourcemaps для prod-диагностики.",
-        "testStrategy": "1) Генерируется устанавливаемый пакет для целевой ОС. \n2) Prod-сборка запускается и повторяет UX dev-версии. \n3) Sourcemaps доступны для стека ошибок.",
+        "status": "done",
         "priority": "medium",
+        "testStrategy": "1) Генерируется устанавливаемый пакет для целевой ОС. \n2) Prod-сборка запускается и повторяет UX dev-версии. \n3) Sourcemaps доступны для стека ошибок.",
         "dependencies": [
           1
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 9,
         "title": "Стартовый выбор файла задач",
         "description": "Диалог выбора tasks.json при запуске с обработкой отмены.",
         "details": "• Electron dialog.showOpenDialog (file). \n• IPC: workspace:select.\n• Экран «Выберите файл задач» при отмене.",
-        "testStrategy": "1) При старте отображается диалог выбора файла. \n2) Отмена — остаёмся на экране выбора без ошибок. \n3) Выбор валидного файла приводит к главному экрану.",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) При старте отображается диалог выбора файла. \n2) Отмена — остаёмся на экране выбора без ошибок. \n3) Выбор валидного файла приводит к главному экрану.",
         "dependencies": [
           2,
           3,
           5
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 10,
         "title": "Чтение и валидация tasks.json",
         "description": "Загрузка файла, проверка схемы и наполнение стора.",
+        "details": "• IPC: file:read. \n• Валидация схемой zod. \n• Ошибки — через Toaster с понятным текстом.",
         "status": "done",
+        "priority": "high",
+        "testStrategy": "1) Валидный файл корректно отображает список задач. \n2) Невалидный файл выдаёт тост с описанием и предлагает выбрать другой. \n3) Частичные ошибки не роняют приложение.",
         "dependencies": [
           9,
           4,
           3
-        ],
-        "priority": "high",
-        "details": "• IPC: file:read. \n• Валидация схемой zod. \n• Ошибки — через Toaster с понятным текстом.",
-        "testStrategy": "1) Валидный файл корректно отображает список задач. \n2) Невалидный файл выдаёт тост с описанием и предлагает выбрать другой. \n3) Частичные ошибки не роняют приложение.",
-        "subtasks": []
+        ]
       },
       {
         "id": 11,
         "title": "Список задач (левая панель)",
         "description": "Рендер id, title, status; сортировка по id; выбор активной задачи.",
         "details": "• @gravity-ui/uikit: List/Table, Badge для статуса. \n• Стабильная сортировка по id. \n• Заглушка «Задач нет» при пустом массиве.",
-        "testStrategy": "1) Список отображается и отсортирован по id. \n2) Клик по задаче активирует её и подсвечивает. \n3) При пустом списке видна заглушка.",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) Список отображается и отсортирован по id. \n2) Клик по задаче активирует её и подсвечивает. \n3) При пустом списке видна заглушка.",
         "dependencies": [
           5,
           10
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 12,
         "title": "Плейсхолдер редактора",
         "description": "Правый блок остаётся пустым до выбора задачи.",
         "details": "• Типографика @gravity-ui/uikit для подсказки. \n• Tabs скрыты, пока нет активной задачи.",
-        "testStrategy": "1) До выбора задачи отображается плейсхолдер. \n2) Вкладки не видны без активной задачи.",
+        "status": "done",
         "priority": "medium",
+        "testStrategy": "1) До выбора задачи отображается плейсхолдер. \n2) Вкладки не видны без активной задачи.",
         "dependencies": [
           5
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 13,
         "title": "Табы полей задачи",
         "description": "Переключение между title, description, details над редактором.",
         "details": "• @gravity-ui/uikit Tabs. \n• По умолчанию активна description. \n• Отсутствующие поля скрываются.",
-        "testStrategy": "1) Tabs отображают только доступные поля. \n2) Переключение вкладок не теряет несохранённые правки. \n3) По умолчанию активна вкладка description.",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) Tabs отображают только доступные поля. \n2) Переключение вкладок не теряет несохранённые правки. \n3) По умолчанию активна вкладка description.",
         "dependencies": [
           5,
           11
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 14,
         "title": "Редактирование контента",
         "description": "Title — однострочный ввод; description/details — Markdown-редактор.",
         "details": "• @gravity-ui/uikit TextInput для title. \n• @gravity-ui/markdown-editor для description и details. \n• Предпросмотр Markdown.",
-        "testStrategy": "1) Изменения отражаются в сторе в реальном времени. \n2) Markdown редактируется и предварительно просматривается. \n3) Изменённые вкладки показывают индикатор несохранённости.",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) Изменения отражаются в сторе в реальном времени. \n2) Markdown редактируется и предварительно просматривается. \n3) Изменённые вкладки показывают индикатор несохранённости.",
         "dependencies": [
           13
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 15,
         "title": "Сохранение файла",
         "description": "Явная кнопка «Сохранить», запись текущего состояния в tasks.json.",
         "details": "• Toolbar над редактором с кнопкой «Сохранить». \n• IPC: file:write. \n• Атомарная запись из задачи 4.",
-        "testStrategy": "1) Успешное сохранение — тост «Сохранено», все dirty-индикаторы сброшены. \n2) Ошибка записи — тост с причиной, данные в сторе не теряются. \n3) Повторное открытие файла отражает внесённые изменения.",
+        "status": "done",
         "priority": "high",
+        "testStrategy": "1) Успешное сохранение — тост «Сохранено», все dirty-индикаторы сброшены. \n2) Ошибка записи — тост с причиной, данные в сторе не теряются. \n3) Повторное открытие файла отражает внесённые изменения.",
         "dependencies": [
           4,
           2,
           14
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 16,
         "title": "Индикаторы несохранённых изменений",
         "description": "Отслеживание dirty-state на уровне задачи и файла.",
-        "details": "• Маркеры «●» на вкладках и в списке. \n• Диалог подтверждения при выходе при наличии несохранённых изменений.",
-        "testStrategy": "1) Любое изменение включает индикаторы на вкладке и в списке. \n2) Сохранение сбрасывает индикаторы. \n3) Попытка закрыть приложение с несохранёнными изменениями вызывает подтверждение.",
+        "details": "• Маркеры «●» на вкладках и в списке.\n• Диалог подтверждения при выходе при наличии несохранённых изменений.\\\n• Использовать компонент Modal из Gravity-UI\n• Добавить в модалку подтверждения кнопки \"сохранить\", \"не сохранять\"\n\n```\nimport {useState} from 'react';\nimport {Button, Modal} from '@gravity-ui/uikit';\n\nconst [open, setOpen] = useState(false);\n\n<Button onClick={() => setOpen(true)}>Open Modal</Button>\n<Modal open={open} onClose={() => setOpen(false)}>\n    Content\n</Modal>\n```\n\nОписание пропсов модалки в таблице\n\n<table><thead><tr><th align=\"left\">Имя</th><th align=\"left\">Описание</th><th align=\"center\">Тип</th><th align=\"center\">Значение по умолчанию</th></tr></thead><tbody><tr><td align=\"left\">autoFocus</td><td align=\"left\">В открытом состоянии фокус будет установлен на первый интерактивный элемент в содержимом.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>true</code></td></tr><tr><td align=\"left\">children</td><td align=\"left\">Любое содержимое React.</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">className</td><td align=\"left\">HTML-атрибут <code>class</code> для корневого узла.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">container</td><td align=\"left\">DOM-элемент, в который монтируется компонент через <code>Portal</code>.</td><td align=\"center\"><code>HTMLElement</code></td><td align=\"center\"><code>document.body</code></td></tr><tr><td align=\"left\">contentClassName</td><td align=\"left\">Атрибут <code>class</code> в HTML для узла с содержимым.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">disableBodyScrollLock</td><td align=\"left\">Отключает блокировку прокрутки, пока модальное окно открыто.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disableEscapeKeyDown</td><td align=\"left\">Отключает закрытие при нажатии на клавишу <code>Esc</code>.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disableOutsideClick</td><td align=\"left\">Отключает закрытие элемента по клику вне его области.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disablePortal</td><td align=\"left\">Отключает использование <code>Portal</code></td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">focusTrap</td><td align=\"left\">Включает фиксацию фокуса внутри элемента.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>true</code></td></tr><tr><td align=\"left\">keepMounted</td><td align=\"left\">Компонент <code>Modal</code> не будет удален из DOM при скрытии.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">onClose</td><td align=\"left\">Обработчик события закрытия <code>Modal</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onEnterKeyDown</td><td align=\"left\">Обработчик события нажатия на клавишу <code>Enter</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onEscapeKeyDown</td><td align=\"left\">Обработчик события нажатия на клавишу <code>Esc</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionEnter</td><td align=\"left\">Обработчик начала анимации открытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionExit</td><td align=\"left\">Обработчик начала анимации закрытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionEntered</td><td align=\"left\">Обработчик завершения анимации открытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionExited</td><td align=\"left\">Обработчик завершения анимации закрытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onOutsideClick</td><td align=\"left\">Обработчик события клика вне элемента.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">open</td><td align=\"left\">Управляет видимостью <code>Modal</code>.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">qa</td><td align=\"left\">Атрибут для тестирования (<code>data-qa</code>).</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">restoreFocusRef</td><td align=\"left\">Элемент, на который вернется фокус.</td><td align=\"center\"><code>React.RefObject</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">style</td><td align=\"left\">HTML-атрибут <code>style</code> для корневого узла.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">aria-label</td><td align=\"left\">HTML-атрибут <code>aria-label</code> для описания <code>Modal</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">aria-labelledby</td><td align=\"left\">Идентификатор видимого элемента заголовка в <code>Modal</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">contentOverflow</td><td align=\"left\">Определяет, имеет ли <code>Modal</code> внутреннюю полосу прокрутки или увеличивается в размерах вместе с содержимым.</td><td align=\"center\"><code>visible</code> <code>auto</code></td><td align=\"center\"><code>visible</code></td></tr></tbody></table>\n",
+        "status": "pending",
         "priority": "medium",
+        "testStrategy": "1) Любое изменение включает индикаторы на вкладке и в списке. \n2) Сохранение сбрасывает индикаторы. \n3) Попытка закрыть приложение с несохранёнными изменениями вызывает подтверждение.",
         "dependencies": [
           3,
           14,
           15
-        ],
-        "status": "pending"
+        ]
       },
       {
         "id": 17,
         "title": "Синхронизация списка и редактора",
         "description": "Живое обновление левой панели при редактировании title.",
         "details": "• Единый источник данных в renderer. \n• Мгновенный ререндер списка при изменении title активной задачи.",
-        "testStrategy": "1) Изменение title сразу видно в списке. \n2) Текущая выборка и скролл не сбрасываются.",
+        "status": "pending",
         "priority": "medium",
+        "testStrategy": "1) Изменение title сразу видно в списке. \n2) Текущая выборка и скролл не сбрасываются.",
         "dependencies": [
           11,
           14
-        ],
-        "status": "pending"
+        ]
       },
       {
         "id": 18,
         "title": "Меню «Файл» и хоткеи",
         "description": "Пункты «Открыть другой файл…», «Сохранить», «Выход» + шорткаты.",
         "details": "• Electron Menu, globalShortcut/accelerators. \n• Cmd/Ctrl+O, Cmd/Ctrl+S. \n• Переоткрытие файла — замена текущего документа и состояния.",
-        "testStrategy": "1) «Открыть…» повторяет сценарий выбора и загружает новый файл. \n2) «Сохранить» активна только при dirty-state. \n3) Шорткаты работают в фокусе приложения.",
+        "status": "pending",
         "priority": "medium",
+        "testStrategy": "1) «Открыть…» повторяет сценарий выбора и загружает новый файл. \n2) «Сохранить» активна только при dirty-state. \n3) Шорткаты работают в фокусе приложения.",
         "dependencies": [
           1,
           2,
           9,
           15
-        ],
-        "status": "pending"
+        ]
       },
       {
         "id": 19,
         "title": "Производительность списка задач",
         "description": "Плавный скролл 1–2 тыс. задач за счёт оптимизаций/виртуализации.",
         "details": "• Мемоизация элементов, batched updates. \n• При необходимости — лёгкая виртуализация списка.",
-        "testStrategy": "1) Скролл списка из 1000–2000 задач без заметных лагов на типовом ноутбуке. \n2) Стабильная сортировка и корректные выделения при прокрутке.",
+        "status": "done",
         "priority": "low",
+        "testStrategy": "1) Скролл списка из 1000–2000 задач без заметных лагов на типовом ноутбуке. \n2) Стабильная сортировка и корректные выделения при прокрутке.",
         "dependencies": [
           11
-        ],
-        "status": "done"
+        ]
       },
       {
         "id": 20,
         "title": "Режимы запуска и окружения",
         "description": "Единый UX в dev/prod, корректная работа переменных окружения.",
         "details": "• npm-скрипты для dev и prod. \n• Env-профили и чтение переменных. \n• Согласованность поведения с задачами выбора/редактирования/сохранения.",
-        "testStrategy": "1) Dev и prod повторяют пользовательский сценарий от выбора файла до сохранения. \n2) Env-переменные читаются и влияют на конфиг ожидаемым образом.",
+        "status": "pending",
         "priority": "low",
+        "testStrategy": "1) Dev и prod повторяют пользовательский сценарий от выбора файла до сохранения. \n2) Env-переменные читаются и влияют на конфиг ожидаемым образом.",
         "dependencies": [
           8
-        ],
-        "status": "pending"
+        ]
+      },
+      {
+        "id": 21,
+        "title": "Настройка показа модалки подтверждения при выходе",
+        "description": "Настройка показа модалки подтверждения при выходе",
+        "details": "- Добавить в модалку кнопку \"не спрашивать\"\n- Добавить в шапку списка задач кнопку с иконкой (import \\{Gear\\} from '@gravity-ui/icons'), которая будет открывать DropdownMenu из gravity-ui. В меню будет единственная кнопка – Не спрашивать о сохранении. Если пользователь когда-либо нажимал \"не спрашивать\", то этот пункт активируется.\n- Надо завести redux стейт и редюсеры для настроек.\n\n```\n<DropdownMenu\n    renderSwitcher={(props) => (\n        <Button {...props} view=\"flat\">\n            <Icon size={16} data={Bars} />\n        </Button>\n    )}\n    items={[\n        {\n            iconStart: <Icon size={16} data={Pencil} />,\n            action: () => console.log('Rename'),\n            text: 'Rename',\n        },\n        {\n            iconStart: <Icon size={16} data={TrashBin} />,\n            action: () => console.log('Delete'),\n            text: 'Delete',\n            theme: 'danger',\n        },\n    ]}\n/>\n```\n\n<table><thead><tr><th align=\"left\">Имя</th><th align=\"left\">Описание</th><th align=\"center\">Тип</th><th align=\"center\">Значение по умолчанию</th></tr></thead><tbody><tr><td align=\"left\"><code>items</code></td><td align=\"left\">Массив элементов. Вложенные массивы элементов представляют визуально разделенные группы.</td><td align=\"center\"><code>(DropdownMenuItem | DropdownMenuItem[])[] | []</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>data</code></td><td align=\"left\">Данные, которые передаются в действия, вызываемые из меню (это может быть полезно для контекстных меню).</td><td align=\"center\"><code>any</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>icon</code></td><td align=\"left\">Иконка дефолтного переключателя (<code>switcher</code>).</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\">Иконка многоточия.</td></tr><tr><td align=\"left\"><code>size</code></td><td align=\"left\">Применяется как к дефолтному <code>switcher</code>, так и к меню.</td><td align=\"center\"><code>'s' | 'm' | 'l' | 'xl'</code></td><td align=\"center\"><code>'m'</code></td></tr><tr><td align=\"left\"><code>disabled</code></td><td align=\"left\">Значение <code>true</code> для этого свойства отключает кнопку <code>switcher</code> и блокирует открытие меню.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>renderSwitcher</code></td><td align=\"left\">Функция рендеринга для контрола переключения меню.</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>switcherWrapperClassName</code></td><td align=\"left\">Значение для свойства <code>className</code> родительского компонента <code>switcher</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>defaultSwitcherProps</code></td><td align=\"left\">Свойства дефолтного <code>switcher</code>.</td><td align=\"center\"><code>ButtonProps</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>defaultSwitcherClassName</code></td><td align=\"left\">Значение для свойства <code>className</code> дефолтного <code>switcher</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>menuProps</code></td><td align=\"left\">Переопределяет свойства выпадающего меню по умолчанию.</td><td align=\"center\"><code>MenuProps</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>popupProps</code></td><td align=\"left\">Переопределяет свойства всплывающего окна по умолчанию.</td><td align=\"center\"><code>PopupProps</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>open</code></td><td align=\"left\">Переключает видимость выпадающего меню.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>onOpenToggle</code></td><td align=\"left\">Вызывается при открытии или закрытии меню.</td><td align=\"center\"><code>() =&gt; void</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>onSwitcherClick</code></td><td align=\"left\">Вызывается при клике по переключателю.</td><td align=\"center\"><code>React.MouseEventHandler&lt;HTMLElement&gt;</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>hideOnScroll</code></td><td align=\"left\">Указывает, нужно ли скрывать меню при прокрутке родительского элемента.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>true</code></td></tr><tr><td align=\"left\"><code>children</code></td><td align=\"left\">Пользовательский контент внутри всплывающего окна с меню.</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\"></td></tr></tbody></table>\n",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "",
+        "dependencies": [
+          16
+        ]
+      },
+      {
+        "id": 22,
+        "title": "Добавить языки программирования для выбора в блоке Code",
+        "description": "",
+        "details": "",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "",
+        "dependencies": [
+          5
+        ]
+      },
+      {
+        "id": 23,
+        "title": "Добавить режим GPT в markdown editor",
+        "description": "",
+        "details": "Добавить плагин (https://preview.gravity-ui.com/md-editor/?path=/docs/docs-extensions-gpt--docs) и добавить меню для хранения api ключей. Подумать о секьюрности",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "",
+        "dependencies": [
+          5, 21
+        ]
+      },
+      {
+        "id": 24,
+        "title": "Добавить чат с ИИ в приложение",
+        "description": "",
+        "details": "https://chatgpt.com/c/68c1ef76-5f80-8333-94aa-6501f90a5734",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "",
+        "dependencies": [5, 23]
+      },
+      {
+        "id": 25,
+        "title": "Добавить недавние проекты в стартовый экран",
+        "description": "",
+        "details": "",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "",
+        "dependencies": [9]
       }
     ],
     "metadata": {
