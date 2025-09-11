@@ -311,7 +311,7 @@
         "title": "Добавить недавние проекты в стартовый экран",
         "description": "",
         "details": "",
-        "status": "pending",
+        "status": "done",
         "priority": "low",
         "testStrategy": "",
         "dependencies": [
@@ -365,7 +365,7 @@
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-11T20:19:52.096Z",
+      "updated": "2025-09-11T20:59:49.444Z",
       "description": "Tasks for master context"
     }
   }

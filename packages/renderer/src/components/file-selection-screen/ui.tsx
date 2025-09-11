@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Flex, Card, Button, Text, Icon, Spin } from '@gravity-ui/uikit';
-import { File as FileIcon } from '@gravity-ui/icons';
+import { Flex, Card, Button, Text, Icon, Spin, List } from '@gravity-ui/uikit';
+import { File as FileIcon, Clock } from '@gravity-ui/icons';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../redux/store';
 import { withIPCErrorHandling } from '../../utils/ipcErrorMapper';
 import { notifyError } from '../../utils/notify';
 import styles from './styles.module.css';
@@ -11,14 +13,17 @@ interface FileSelectionScreenProps {
 
 export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFileSelected }) => {
   const [isSelecting, setIsSelecting] = useState(false);
+  const settingsState = useSelector((state: RootState) => state.settings);
+  const recentPaths = settingsState.data.recentPaths;
 
-  // Debug: Log API availability
-  React.useEffect(() => {
-    console.log('🔍 FileSelectionScreen mounted');
-    console.log('🔍 window.api available:', !!window.api);
-    console.log('🔍 window.api.workspace available:', !!window.api?.workspace);
-    console.log('🔍 window.api.workspace.select available:', !!window.api?.workspace?.select);
-  }, []);
+  const getProjectName = (filePath: string) => {
+    const parts = filePath.split(/[/\\]/);
+    const tasksIndex = parts.findIndex((part) => part === 'tasks.json');
+    if (tasksIndex > 0) {
+      return parts[tasksIndex - 1];
+    }
+    return parts[parts.length - 2] || 'Проект';
+  };
 
   const handleSelectFile = async () => {
     setIsSelecting(true);
@@ -47,6 +52,10 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
     }
   };
 
+  const handleRecentFileSelect = (filePath: string) => {
+    onFileSelected(filePath);
+  };
+
   return (
     <Flex centerContent width="100%" height="100vh" direction="column" className={styles.container}>
       <Card view="outlined" type="container" size="l" className={styles.card}>
@@ -66,6 +75,44 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
             Для начала работы выберите существующий файл tasks.json или создайте новый проект с помощью Task Master CLI
           </Text>
 
+          {/* Recent Projects */}
+          {recentPaths.length > 0 && (
+            <div className={styles.recentSection}>
+              <Flex direction="row" alignItems="center" gap={2} className={styles.recentHeader}>
+                <Icon data={Clock} size={16} />
+                <Text variant="subheader-1">Недавние проекты</Text>
+              </Flex>
+              <Card view="outlined" className={styles.recentList}>
+                <List
+                  filterable={false}
+                  itemHeight={60}
+                  itemsHeight={160}
+                  items={recentPaths.slice(0, 5).map((path, index) => ({
+                    id: index.toString(),
+                    path,
+                  }))}
+                  renderItem={({ path }) => (
+                    <Flex
+                      direction="row"
+                      alignItems="center"
+                      gap={3}
+                      className={styles.recentItem}
+                      onClick={() => handleRecentFileSelect(path)}
+                    >
+                      <Icon data={FileIcon} size={16} />
+                      <Flex direction="column" grow>
+                        <Text variant="body-2">{getProjectName(path)}</Text>
+                        <Text variant="caption-2" color="secondary">
+                          {path}
+                        </Text>
+                      </Flex>
+                    </Flex>
+                  )}
+                />
+              </Card>
+            </div>
+          )}
+
           {/* Select button */}
           <Button
             view="action"
@@ -81,7 +128,7 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
             ) : (
               <Icon data={FileIcon} size={18} />
             )}
-            {isSelecting ? <Text>Выбор файла...</Text> : <Text>Выбрать файл</Text>}
+            {isSelecting ? <Text>Выбор файла...</Text> : <Text>Выбрать другой файл</Text>}
           </Button>
 
           {/* Help text */}

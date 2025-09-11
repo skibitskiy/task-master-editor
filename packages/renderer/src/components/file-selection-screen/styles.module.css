@@ -45,3 +45,24 @@
   text-align: center;
   max-width: 360px;
 }
+
+.recentSection {
+  width: 100%;
+  max-width: 400px;
+}
+
+.recentHeader {
+  margin-bottom: 12px;
+  color: var(--g-color-text-primary);
+}
+
+.recentList {
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.recentItem {
+  padding: 8px 12px;
+  border-radius: 6px;
+}

@@ -1,8 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { ThemeProvider } from '@gravity-ui/uikit';
 import { FileSelectionScreen } from '../../file-selection-screen';
+import settingsReducer from '../../../redux/settingsSlice';
 
 // Mock the IPC and notification modules
 vi.mock('../../../utils/ipcErrorMapper', () => ({
@@ -27,16 +30,36 @@ Object.defineProperty(window, 'api', {
   writable: true,
 });
 
-const renderComponent = (props: Partial<React.ComponentProps<typeof FileSelectionScreen>> = {}) => {
+const renderComponent = (
+  props: Partial<React.ComponentProps<typeof FileSelectionScreen>> = {},
+  recentPaths: string[] = [],
+) => {
   const defaultProps = {
     onFileSelected: vi.fn(),
     ...props,
   };
 
+  const store = configureStore({
+    reducer: {
+      settings: settingsReducer,
+    },
+    preloadedState: {
+      settings: {
+        data: {
+          recentPaths,
+          preferences: {},
+        },
+        loaded: true,
+      },
+    },
+  });
+
   return render(
-    <ThemeProvider theme="light">
-      <FileSelectionScreen {...defaultProps} />
-    </ThemeProvider>,
+    <Provider store={store}>
+      <ThemeProvider theme="light">
+        <FileSelectionScreen {...defaultProps} />
+      </ThemeProvider>
+    </Provider>,
   );
 };
 
@@ -50,7 +73,7 @@ describe('FileSelectionScreen', () => {
 
     expect(screen.getByText('Выберите файл задач')).toBeInTheDocument();
     expect(screen.getByText(/Для начала работы выберите существующий файл tasks.json/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Выбрать файл/ })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Выбрать другой файл/ })).toBeInTheDocument();
     expect(screen.getByText(/Поддерживаются файлы tasks.json/)).toBeInTheDocument();
   });
 
@@ -64,7 +87,7 @@ describe('FileSelectionScreen', () => {
 
     renderComponent({ onFileSelected });
 
-    const selectButton = screen.getByRole('button', { name: /Выбрать файл/ });
+    const selectButton = screen.getByRole('button', { name: /Выбрать другой файл/ });
     fireEvent.click(selectButton);
 
     await waitFor(() => {
@@ -86,7 +109,7 @@ describe('FileSelectionScreen', () => {
 
     renderComponent({ onFileSelected });
 
-    const selectButton = screen.getByRole('button', { name: /Выбрать файл/ });
+    const selectButton = screen.getByRole('button', { name: /Выбрать другой файл/ });
     fireEvent.click(selectButton);
 
     await waitFor(() => {
@@ -105,7 +128,7 @@ describe('FileSelectionScreen', () => {
 
     renderComponent();
 
-    const selectButton = screen.getByRole('button', { name: /Выбрать файл/ });
+    const selectButton = screen.getByRole('button', { name: /Выбрать другой файл/ });
     fireEvent.click(selectButton);
 
     // Should show loading state
@@ -114,7 +137,7 @@ describe('FileSelectionScreen', () => {
 
     // Wait for loading to finish
     await waitFor(() => {
-      expect(screen.getByText('Выбрать файл')).toBeInTheDocument();
+      expect(screen.getByText('Выбрать другой файл')).toBeInTheDocument();
       expect(selectButton).not.toBeDisabled();
     });
   });
@@ -124,7 +147,7 @@ describe('FileSelectionScreen', () => {
 
     renderComponent();
 
-    const selectButton = screen.getByRole('button', { name: /Выбрать файл/ });
+    const selectButton = screen.getByRole('button', { name: /Выбрать другой файл/ });
     fireEvent.click(selectButton);
 
     await waitFor(() => {
@@ -132,6 +155,75 @@ describe('FileSelectionScreen', () => {
         'Ошибка выбора файла',
         'Не удалось открыть диалог выбора файла',
       );
+    });
+  });
+
+  describe('Recent Projects', () => {
+    it('does not show recent projects section when no recent paths exist', () => {
+      renderComponent({}, []);
+
+      expect(screen.queryByText('Недавние проекты')).not.toBeInTheDocument();
+    });
+
+    it('shows recent projects section when recent paths exist', () => {
+      const recentPaths = ['/path/to/project1/tasks.json', '/path/to/project2/tasks.json'];
+      renderComponent({}, recentPaths);
+
+      expect(screen.getByText('Недавние проекты')).toBeInTheDocument();
+      expect(screen.getByText('project1')).toBeInTheDocument();
+      expect(screen.getByText('project2')).toBeInTheDocument();
+    });
+
+    it('limits recent projects display to 5 items', () => {
+      const recentPaths = [
+        '/path/to/project1/tasks.json',
+        '/path/to/project2/tasks.json',
+        '/path/to/project3/tasks.json',
+        '/path/to/project4/tasks.json',
+        '/path/to/project5/tasks.json',
+        '/path/to/project6/tasks.json',
+        '/path/to/project7/tasks.json',
+      ];
+      renderComponent({}, recentPaths);
+
+      expect(screen.getByText('project1')).toBeInTheDocument();
+      expect(screen.getByText('project2')).toBeInTheDocument();
+      expect(screen.getByText('project3')).toBeInTheDocument();
+      expect(screen.getByText('project4')).toBeInTheDocument();
+      expect(screen.getByText('project5')).toBeInTheDocument();
+      expect(screen.queryByText('project6')).not.toBeInTheDocument();
+      expect(screen.queryByText('project7')).not.toBeInTheDocument();
+    });
+
+    it('handles recent project selection', () => {
+      const onFileSelected = vi.fn();
+      const recentPaths = ['/path/to/project1/tasks.json'];
+      renderComponent({ onFileSelected }, recentPaths);
+
+      const projectItem = screen.getByText('project1');
+      fireEvent.click(projectItem);
+
+      expect(onFileSelected).toHaveBeenCalledWith('/path/to/project1/tasks.json');
+    });
+
+    it('extracts project name correctly from file path', () => {
+      const recentPaths = [
+        '/Users/john/projects/my-project/tasks.json',
+        '/home/dev/work/another-project/tasks.json',
+        'C:\\Projects\\windows-project\\tasks.json',
+      ];
+      renderComponent({}, recentPaths);
+
+      expect(screen.getByText('my-project')).toBeInTheDocument();
+      expect(screen.getByText('another-project')).toBeInTheDocument();
+      expect(screen.getByText('windows-project')).toBeInTheDocument();
+    });
+
+    it('shows full path in project item', () => {
+      const recentPaths = ['/path/to/project1/tasks.json'];
+      renderComponent({}, recentPaths);
+
+      expect(screen.getByText('/path/to/project1/tasks.json')).toBeInTheDocument();
     });
   });
 });

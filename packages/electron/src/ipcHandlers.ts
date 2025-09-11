@@ -29,13 +29,18 @@ async function settingsPath(): Promise<string> {
 
 async function loadSettings(): Promise<InternalSettings> {
   if (cachedSettings) {
+    log.info('🔍 Using cached settings:', cachedSettings);
     return cachedSettings;
   }
   try {
     const p = await settingsPath();
+    log.info('🔍 Settings path:', p);
     const raw = await fs.readFile(p, 'utf-8');
+    log.info('🔍 Settings file content:', raw);
     cachedSettings = validateSettingsData(JSON.parse(raw));
-  } catch {
+    log.info('🔍 Parsed settings:', cachedSettings);
+  } catch (err) {
+    log.info('🔍 Failed to load settings, using defaults:', err);
     cachedSettings = { recentPaths: [], preferences: {} };
   }
   return cachedSettings!;
@@ -108,6 +113,7 @@ export function registerIpcHandlers() {
 
   ipcMain.handle(Channels.settingsGet, async () => {
     const settings = await loadSettings();
+    log.info('🔍 Loading settings:', settings);
     return validateSettingsGetResult({ settings });
   });
 
