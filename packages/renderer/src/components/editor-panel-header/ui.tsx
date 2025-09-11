@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex, Text, Button } from '@gravity-ui/uikit';
-import { FloppyDisk, Eye, Code } from '@gravity-ui/icons';
+import { FloppyDisk, Eye, Code, TrashBin } from '@gravity-ui/icons';
 
 interface EditorPanelHeaderProps {
   taskId: string;
@@ -9,6 +9,7 @@ interface EditorPanelHeaderProps {
   showModeToggle: boolean;
   onToggleMode: () => void;
   onSave: () => void;
+  onDelete: () => void;
   isTaskDirty: boolean;
   hasErrors: boolean;
 }
@@ -20,6 +21,7 @@ export const EditorPanelHeader: React.FC<EditorPanelHeaderProps> = ({
   showModeToggle,
   onToggleMode,
   onSave,
+  onDelete,
   isTaskDirty,
   hasErrors,
 }) => {
@@ -35,12 +37,18 @@ export const EditorPanelHeader: React.FC<EditorPanelHeaderProps> = ({
             {editorMode === 'editor' ? 'Предпросмотр' : 'Редактор'}
           </Button>
         )}
-        <Button view="action" size="m" onClick={onSave} disabled={hasErrors}>
+        <Button view="outlined-action" size="m" onClick={onSave} disabled={hasErrors}>
           <Button.Icon>
             <FloppyDisk />
           </Button.Icon>
           Сохранить
           {isTaskDirty && <span style={{ marginLeft: 8, color: 'var(--g-color-text-warning)' }}>●</span>}
+        </Button>
+        <Button view="outlined-danger" size="m" onClick={onDelete}>
+          <Button.Icon>
+            <TrashBin />
+          </Button.Icon>
+          Удалить
         </Button>
       </Flex>
     </Flex>

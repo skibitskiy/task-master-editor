@@ -167,6 +167,58 @@ const dataSlice = createSlice({
         state.errors = { general: [], byTaskId: {} };
       }
     },
+    addNewTask(state) {
+      if (!state.tasksFile || !state.tasksFile[state.currentBranch]) {
+        return;
+      }
+
+      const currentBranchTasks = state.tasksFile[state.currentBranch].tasks;
+
+      // Generate next ID by finding the maximum existing ID and adding 1
+      let nextId = 1;
+      if (currentBranchTasks.length > 0) {
+        const maxId = Math.max(
+          ...currentBranchTasks.map((task) => {
+            const taskId = typeof task.id === 'string' ? parseInt(task.id, 10) : task.id;
+            return isNaN(taskId) ? 0 : taskId;
+          }),
+        );
+        nextId = maxId + 1;
+      }
+
+      const newTask: Task = {
+        id: nextId,
+        title: 'Новая задача',
+      };
+
+      state.tasksFile[state.currentBranch].tasks.push(newTask);
+      state.dirty.file = true;
+      state.dirty.byTaskId[String(nextId)] = true;
+    },
+    deleteTask(state, action: PayloadAction<number | string>) {
+      if (!state.tasksFile || !state.tasksFile[state.currentBranch]) {
+        return;
+      }
+
+      const taskId = action.payload;
+      const idStr = String(taskId);
+      const currentBranchTasks = state.tasksFile[state.currentBranch].tasks;
+      const taskIndex = currentBranchTasks.findIndex((t: Task) => String(t.id) === idStr);
+
+      if (taskIndex === -1) {
+        return;
+      }
+
+      // Remove task from the list
+      state.tasksFile[state.currentBranch].tasks.splice(taskIndex, 1);
+
+      // Mark file as dirty
+      state.dirty.file = true;
+
+      // Remove task from dirty tracking and errors
+      delete state.dirty.byTaskId[idStr];
+      delete state.errors.byTaskId[idStr];
+    },
   },
   extraReducers(builder) {
     builder.addCase(loadFromPath.fulfilled, (state, action) => {
@@ -216,5 +268,7 @@ export const {
   clearGeneralErrors,
   setTaskDirty,
   switchBranch,
+  addNewTask,
+  deleteTask,
 } = dataSlice.actions;
 export default dataSlice.reducer;

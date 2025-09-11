@@ -1,5 +1,9 @@
 @import '@gravity-ui/uikit/styles/styles.css';
 
+body {
+  margin: 0;
+}
+
 @media (prefers-color-scheme: dark) {
 .yfm {
     --yfm-color-text: white;

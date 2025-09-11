@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Flex, Text, Button, Select } from '@gravity-ui/uikit';
 import { Plus } from '@gravity-ui/icons';
 import type { RootState, AppDispatch } from '../../redux/store';
-import { switchBranch, createBranch } from '../../redux/dataSlice';
+import { switchBranch, createBranch, addNewTask } from '../../redux/dataSlice';
 import { clearSelectedTask } from '../../redux/task/taskSlice';
 import { CreateBranchModal } from '../create-branch-modal';
 import type { BranchOption } from './lib/types';
@@ -42,13 +42,17 @@ export const TaskListHeader: React.FC = () => {
     setIsModalOpen(true);
   };
 
+  const handleAddNewTask = () => {
+    dispatch(addNewTask());
+  };
+
   return (
     <>
       <div style={{ padding: '16px', borderBottom: '1px solid var(--g-color-line-generic)' }}>
         <Flex direction="column" gap={3}>
           <Flex alignItems="center" justifyContent="space-between">
             <Text variant="header-1">Задачи</Text>
-            <Button view="action" size="s" title="Добавить задачу">
+            <Button view="action" size="s" title="Добавить задачу" onClick={handleAddNewTask}>
               <Button.Icon>
                 <Plus />
               </Button.Icon>

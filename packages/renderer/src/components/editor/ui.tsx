@@ -3,14 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { TextInput } from '@gravity-ui/uikit';
 import { MarkdownEditorView } from '@gravity-ui/markdown-editor';
 import type { RootState, AppDispatch } from '../../redux/store';
-import { saveFile } from '../../redux/dataSlice';
+import { saveFile, deleteTask } from '../../redux/dataSlice';
 import { notifySuccess, notifyError } from '../../utils/notify';
 import { EditorPanelHeader } from '../editor-panel-header';
 import { EditorPanelTabs } from '../editor-panel-tabs';
+import { DeleteTaskModal } from '../delete-task-modal';
 import { useMarkdownFieldEditor } from './lib/use-markdown-field-editor';
 import { tabTypeGuard } from './lib/tab-type-guard';
 import { useEditorContext } from '../../shared/editor-context';
-import { setActiveFieldTab } from '../../redux/task';
+import { setActiveFieldTab, clearSelectedTask } from '../../redux/task';
 import { Task } from '@app/shared';
 
 type EditorProps = {
@@ -20,6 +21,7 @@ type EditorProps = {
 export const Editor: React.FC<EditorProps> = ({ task }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [editorMode, setEditorMode] = useState<'editor' | 'preview'>('editor');
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const taskId = task?.id.toString();
 
@@ -97,6 +99,27 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
     }
   }, [validationErrors, taskId, updateCurrentTask, dispatch]);
 
+  // Handle delete button click
+  const handleDelete = useCallback(() => {
+    setIsDeleteModalOpen(true);
+  }, []);
+
+  // Handle confirm delete
+  const handleConfirmDelete = useCallback(() => {
+    if (!taskId) {
+      return;
+    }
+
+    try {
+      dispatch(deleteTask(task.id));
+      dispatch(clearSelectedTask());
+      notifySuccess('Задача удалена', 'Задача была успешно удалена');
+    } catch (error) {
+      console.error('Delete task error:', error);
+      notifyError('Ошибка удаления', 'Произошла ошибка при удалении задачи');
+    }
+  }, [taskId, task.id, dispatch]);
+
   // EditorPanelTabs props
   const availableTabs = [
     { id: 'title', title: 'Заголовок', isDirty: fieldDirtyState.title, hasError: !!validationErrors.title },
@@ -127,6 +150,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
           showModeToggle={activeFieldTab !== 'title' && activeFieldTab !== 'dependencies'}
           onToggleMode={() => setEditorMode(editorMode === 'editor' ? 'preview' : 'editor')}
           onSave={handleSave}
+          onDelete={handleDelete}
           isTaskDirty={!!isTaskDirty}
           hasErrors={Object.keys(validationErrors).length > 0}
         />
@@ -181,6 +205,14 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
           </div>
         )}
       </div>
+
+      <DeleteTaskModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={handleConfirmDelete}
+        taskId={String(task?.id)}
+        taskTitle={task?.title || ''}
+      />
     </div>
   );
 };
