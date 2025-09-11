@@ -12,6 +12,9 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'no-shadow': 'warn',
+    curly: 'error',
+    'brace-style': ['error', '1tbs', { allowSingleLine: false }],
+    'max-statements-per-line': ['error', { max: 1 }],
     'prettier/prettier': [
       'error',
       {

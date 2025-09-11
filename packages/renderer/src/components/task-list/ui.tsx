@@ -92,7 +92,9 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
   // Custom filter function for List component
   const filterTask = React.useCallback((query: string) => {
     return (task: Task): boolean => {
-      if (!query.trim()) return true;
+      if (!query.trim()) {
+        return true;
+      }
       const lowerQuery = query.toLowerCase();
       return (
         task.title.toLowerCase().includes(lowerQuery) || Boolean(task.description?.toLowerCase().includes(lowerQuery))

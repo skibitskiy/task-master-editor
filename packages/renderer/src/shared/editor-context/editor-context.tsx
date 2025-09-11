@@ -83,7 +83,9 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
 
   const isFieldDirty = useCallback(
     (field: TaskFieldTab, value: string): boolean => {
-      if (!task) return false;
+      if (!task) {
+        return false;
+      }
       const originalValue = getCurrentFieldContent(task, field);
       return value !== originalValue;
     },
@@ -151,7 +153,9 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
 
   // Debounced dirty state update to Redux
   const setTaskDirtyCallback = useCallback(() => {
-    if (!taskId || !task) return;
+    if (!taskId || !task) {
+      return;
+    }
 
     const isDirty = Object.values(fieldDirtyState).some(Boolean);
     dispatch(setTaskDirty({ taskId, isDirty }));

@@ -76,7 +76,9 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
 
     try {
       // Only dispatch updateTask, don't auto-save to file
-      if (!taskId) throw new Error('Отсутствует ID задачи');
+      if (!taskId) {
+        throw new Error('Отсутствует ID задачи');
+      }
 
       const dependencies = localValues.dependencies
         .split(',')

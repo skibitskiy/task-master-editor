@@ -17,7 +17,9 @@ export function setDirtyState(dirty: boolean) {
 
 function updateMenuState() {
   const menu = Menu.getApplicationMenu();
-  if (!menu) return;
+  if (!menu) {
+    return;
+  }
 
   const saveItem = menu.getMenuItemById('save');
   if (saveItem) {
@@ -26,7 +28,9 @@ function updateMenuState() {
 }
 
 async function handleOpenFile() {
-  if (!mainWindow || mainWindow.isDestroyed()) return;
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
 
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openFile'],
@@ -44,7 +48,9 @@ async function handleOpenFile() {
 }
 
 function handleSave() {
-  if (!mainWindow || !isDirty || mainWindow.isDestroyed()) return;
+  if (!mainWindow || !isDirty || mainWindow.isDestroyed()) {
+    return;
+  }
 
   if (mainWindow.webContents && !mainWindow.webContents.isDestroyed()) {
     mainWindow.webContents.send('menu:save');

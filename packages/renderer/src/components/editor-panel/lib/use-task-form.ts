@@ -74,7 +74,9 @@ export const useTaskForm = ({ task, taskId }: UseTaskFormParams) => {
 
   const isFieldDirty = React.useCallback(
     (field: TaskFieldTab, value: string): boolean => {
-      if (!task) return false;
+      if (!task) {
+        return false;
+      }
       const originalValue = getCurrentFieldContent(task, field);
       return value !== originalValue;
     },
@@ -118,7 +120,9 @@ export const useTaskForm = ({ task, taskId }: UseTaskFormParams) => {
   );
 
   const setTaskDirtyCallback = React.useCallback(() => {
-    if (!taskId || !task) return;
+    if (!taskId || !task) {
+      return;
+    }
 
     const isDirty = titleDirty || descriptionDirty || detailsDirty || dependenciesDirty || testStrategyDirty;
 

@@ -28,7 +28,9 @@ async function settingsPath(): Promise<string> {
 }
 
 async function loadSettings(): Promise<InternalSettings> {
-  if (cachedSettings) return cachedSettings;
+  if (cachedSettings) {
+    return cachedSettings;
+  }
   try {
     const p = await settingsPath();
     const raw = await fs.readFile(p, 'utf-8');
@@ -52,9 +54,15 @@ export function registerIpcHandlers() {
     try {
       const options = validateWorkspaceSelectOptions(rawOptions ?? {});
       const props: Array<'openDirectory' | 'openFile' | 'multiSelections'> = [];
-      if (options.type === 'directory') props.push('openDirectory');
-      if (options.type === 'file') props.push('openFile');
-      if (options.multiple) props.push('multiSelections');
+      if (options.type === 'directory') {
+        props.push('openDirectory');
+      }
+      if (options.type === 'file') {
+        props.push('openFile');
+      }
+      if (options.multiple) {
+        props.push('multiSelections');
+      }
 
       const result = await dialog.showOpenDialog({ properties: props });
       const payload = { paths: result.canceled ? [] : result.filePaths };

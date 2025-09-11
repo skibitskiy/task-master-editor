@@ -70,31 +70,43 @@ export interface PreloadAPI {
 export function validateWorkspaceSelectOptions(raw: unknown): WorkspaceSelectOptions {
   const o = (raw ?? {}) as Record<string, unknown>;
   const type = (o.type as unknown) ?? 'directory';
-  if (type !== 'directory' && type !== 'file') throw new Error('type must be "directory" or "file"');
+  if (type !== 'directory' && type !== 'file') {
+    throw new Error('type must be "directory" or "file"');
+  }
   const multiple = (o.multiple as unknown) ?? false;
-  if (typeof multiple !== 'boolean') throw new Error('multiple must be boolean');
+  if (typeof multiple !== 'boolean') {
+    throw new Error('multiple must be boolean');
+  }
   return { type, multiple };
 }
 
 export function validateWorkspaceSelectResult(raw: unknown): WorkspaceSelectResult {
   const o = (raw ?? {}) as Record<string, unknown>;
   const paths = Array.isArray(o.paths) ? (o.paths as unknown[]) : [];
-  if (!paths.every((p: unknown) => typeof p === 'string')) throw new Error('paths must be string[]');
+  if (!paths.every((p: unknown) => typeof p === 'string')) {
+    throw new Error('paths must be string[]');
+  }
   return { paths: paths as string[] };
 }
 
 export function validateFileReadInput(raw: unknown): FileReadInput {
   const o = (raw ?? {}) as Record<string, unknown>;
   const path = o.path as unknown;
-  if (typeof path !== 'string' || path.length < 1) throw new Error('path must be non-empty string');
+  if (typeof path !== 'string' || path.length < 1) {
+    throw new Error('path must be non-empty string');
+  }
   const encoding = (o.encoding as unknown) ?? 'utf-8';
-  if (encoding !== 'utf-8') throw new Error('encoding must be "utf-8"');
+  if (encoding !== 'utf-8') {
+    throw new Error('encoding must be "utf-8"');
+  }
   return { path, encoding };
 }
 
 export function validateFileReadResult(raw: unknown): FileReadResult {
   const o = (raw ?? {}) as Record<string, unknown>;
-  if (typeof o.data !== 'string') throw new Error('data must be string');
+  if (typeof o.data !== 'string') {
+    throw new Error('data must be string');
+  }
   return { data: o.data };
 }
 
@@ -102,24 +114,34 @@ export function validateFileWriteInput(raw: unknown): FileWriteInput {
   const o = (raw ?? {}) as Record<string, unknown>;
   const path = o.path as unknown;
   const data = o.data as unknown;
-  if (typeof path !== 'string' || path.length < 1) throw new Error('path must be non-empty string');
-  if (typeof data !== 'string') throw new Error('data must be string');
+  if (typeof path !== 'string' || path.length < 1) {
+    throw new Error('path must be non-empty string');
+  }
+  if (typeof data !== 'string') {
+    throw new Error('data must be string');
+  }
   const encoding = (o.encoding as unknown) ?? 'utf-8';
-  if (encoding !== 'utf-8') throw new Error('encoding must be "utf-8"');
+  if (encoding !== 'utf-8') {
+    throw new Error('encoding must be "utf-8"');
+  }
   return { path, data, encoding };
 }
 
 export function validateFileWriteResult(raw: unknown): FileWriteResult {
   const o = (raw ?? {}) as Record<string, unknown>;
   const ok = (o as Record<string, unknown>).ok;
-  if (ok !== true) throw new Error('ok must be true');
+  if (ok !== true) {
+    throw new Error('ok must be true');
+  }
   return { ok: true };
 }
 
 export function validateSettingsData(raw: unknown): SettingsData {
   const o = (raw ?? {}) as Record<string, unknown>;
   const recentPaths = Array.isArray(o.recentPaths) ? (o.recentPaths as unknown[]) : [];
-  if (!recentPaths.every((p: unknown) => typeof p === 'string')) throw new Error('recentPaths must be string[]');
+  if (!recentPaths.every((p: unknown) => typeof p === 'string')) {
+    throw new Error('recentPaths must be string[]');
+  }
   const preferences = (o.preferences as Record<string, unknown> | undefined) ?? undefined;
   return { recentPaths: recentPaths as string[], preferences };
 }
@@ -137,7 +159,9 @@ export function validateSettingsUpdateInput(raw: unknown): SettingsUpdateInput {
   }
   if ('preferences' in o) {
     const prefs = o.preferences as Record<string, unknown>;
-    if (prefs != null && typeof prefs !== 'object') throw new Error('preferences must be object');
+    if (prefs != null && typeof prefs !== 'object') {
+      throw new Error('preferences must be object');
+    }
     partial.preferences = prefs;
   }
   return { settings: partial };
