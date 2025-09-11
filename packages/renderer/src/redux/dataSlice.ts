@@ -96,6 +96,47 @@ export const createBranch = createAsyncThunk(
   },
 );
 
+export const addNewTaskAsync = createAsyncThunk(
+  'data/addNewTaskAsync',
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as { data: DataState };
+    if (!state.data.tasksFile || !state.data.tasksFile[state.data.currentBranch]) {
+      return rejectWithValue('No tasks file loaded or invalid branch');
+    }
+
+    const currentBranchTasks = state.data.tasksFile[state.data.currentBranch].tasks;
+
+    // Generate next ID by finding the maximum existing ID and adding 1
+    let nextId = 1;
+    if (currentBranchTasks.length > 0) {
+      const maxId = Math.max(
+        ...currentBranchTasks.map((task) => {
+          const taskId = typeof task.id === 'string' ? parseInt(task.id, 10) : task.id;
+          return isNaN(taskId) ? 0 : taskId;
+        }),
+      );
+      nextId = maxId + 1;
+    }
+
+    const newTask: Task = {
+      id: nextId,
+      title: 'Новая задача',
+    };
+
+    // Add task to state via regular action
+    dispatch(addNewTask(newTask));
+
+    // Save to file
+    try {
+      await dispatch(saveFile()).unwrap();
+    } catch (error) {
+      return rejectWithValue('Failed to save file');
+    }
+
+    return { taskId: nextId };
+  },
+);
+
 const dataSlice = createSlice({
   name: 'data',
   initialState,
@@ -167,33 +208,17 @@ const dataSlice = createSlice({
         state.errors = { general: [], byTaskId: {} };
       }
     },
-    addNewTask(state) {
+    addNewTask(state, action: PayloadAction<Task>) {
       if (!state.tasksFile || !state.tasksFile[state.currentBranch]) {
         return;
       }
 
-      const currentBranchTasks = state.tasksFile[state.currentBranch].tasks;
-
-      // Generate next ID by finding the maximum existing ID and adding 1
-      let nextId = 1;
-      if (currentBranchTasks.length > 0) {
-        const maxId = Math.max(
-          ...currentBranchTasks.map((task) => {
-            const taskId = typeof task.id === 'string' ? parseInt(task.id, 10) : task.id;
-            return isNaN(taskId) ? 0 : taskId;
-          }),
-        );
-        nextId = maxId + 1;
-      }
-
-      const newTask: Task = {
-        id: nextId,
-        title: 'Новая задача',
-      };
+      const newTask = action.payload;
+      const taskIdStr = String(newTask.id);
 
       state.tasksFile[state.currentBranch].tasks.push(newTask);
       state.dirty.file = true;
-      state.dirty.byTaskId[String(nextId)] = true;
+      state.dirty.byTaskId[taskIdStr] = true;
     },
     deleteTask(state, action: PayloadAction<number | string>) {
       if (!state.tasksFile || !state.tasksFile[state.currentBranch]) {

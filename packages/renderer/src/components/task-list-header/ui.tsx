@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Flex, Text, Button, Select } from '@gravity-ui/uikit';
 import { Plus } from '@gravity-ui/icons';
 import type { RootState, AppDispatch } from '../../redux/store';
-import { switchBranch, createBranch, addNewTask } from '../../redux/dataSlice';
-import { clearSelectedTask } from '../../redux/task/taskSlice';
+import { switchBranch, createBranch, addNewTaskAsync } from '../../redux/dataSlice';
+import { clearSelectedTask, setSelectedTaskId } from '../../redux/task/taskSlice';
 import { CreateBranchModal } from '../create-branch-modal';
 import type { BranchOption } from './lib/types';
 
@@ -42,8 +42,14 @@ export const TaskListHeader: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleAddNewTask = () => {
-    dispatch(addNewTask());
+  const handleAddNewTask = async () => {
+    try {
+      const result = await dispatch(addNewTaskAsync()).unwrap();
+      // Выбираем новую задачу в редакторе
+      dispatch(setSelectedTaskId(String(result.taskId)));
+    } catch (error) {
+      console.error('Failed to create new task:', error);
+    }
   };
 
   return (

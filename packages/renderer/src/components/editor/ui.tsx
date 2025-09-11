@@ -113,6 +113,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
     try {
       dispatch(deleteTask(task.id));
       dispatch(clearSelectedTask());
+      dispatch(saveFile());
       notifySuccess('Задача удалена', 'Задача была успешно удалена');
     } catch (error) {
       console.error('Delete task error:', error);
