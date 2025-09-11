@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Flex, Text, Button, Label, List } from '@gravity-ui/uikit';
-import { Plus } from '@gravity-ui/icons';
+import { Flex, Text, Label, List } from '@gravity-ui/uikit';
 import type { RootState } from '../../redux/store';
 import type { TaskStatus, Task } from '@app/shared';
 import type { TaskListProps } from './lib/types';
+import { TaskListHeader } from '../task-list-header';
 import styles from './styles.module.css';
 
 // Helper function to map task status to Label theme
@@ -30,9 +30,15 @@ const getStatusLabelProps = (
 
 export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask }) => {
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
+  const currentBranch = useSelector((state: RootState) => state.data.currentBranch);
   const dirtyState = useSelector((state: RootState) => state.data.dirty);
 
-  const tasks = useMemo(() => tasksFile?.master.tasks || [], [tasksFile]);
+  const tasks = useMemo(() => {
+    if (!tasksFile || !currentBranch) {
+      return [];
+    }
+    return tasksFile[currentBranch]?.tasks || [];
+  }, [tasksFile, currentBranch]);
 
   // Stable sorting by ID (convert to number for proper numeric sorting)
   const sortedTasks = React.useMemo(() => {
@@ -104,20 +110,9 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
 
   return (
     <Flex direction="column" className={styles.taskList} grow>
-      <div className={styles.taskListHeader}>
-        <Flex direction="column" gap={3}>
-          <Flex alignItems="center" justifyContent="space-between">
-            <Text variant="header-1">Задачи</Text>
-            <Button view="action" size="s" title="Добавить задачу">
-              <Button.Icon>
-                <Plus />
-              </Button.Icon>
-            </Button>
-          </Flex>
-        </Flex>
-      </div>
+      <TaskListHeader />
 
-      <Flex direction="column" grow style={{ minHeight: 0 }}>
+      <Flex direction="column" grow style={{ minHeight: 0, padding: '16px' }}>
         {sortedTasks.length === 0 ? (
           <div className="editor-placeholder">
             <Text color="secondary">Задач нет</Text>

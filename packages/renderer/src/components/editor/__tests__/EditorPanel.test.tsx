@@ -89,6 +89,7 @@ const createMockStore = (tasksFile: TasksFile | null, selectedTaskId: string | n
       data: {
         filePath: '/test/tasks.json',
         tasksFile,
+        currentBranch: 'master',
         dirty: { file: false, byTaskId: {} },
         errors: { general: [], byTaskId: {} },
       },

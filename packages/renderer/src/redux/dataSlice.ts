@@ -6,6 +6,7 @@ import { collectTaskErrors, validateTask } from './helpers.js';
 export interface DataState {
   filePath: string | null;
   tasksFile: TasksFile | null;
+  currentBranch: string;
   dirty: { file: boolean; byTaskId: Record<string, boolean> };
   errors: { general: string[]; byTaskId: Record<string, string[]> };
 }
@@ -13,6 +14,7 @@ export interface DataState {
 const initialState: DataState = {
   filePath: null,
   tasksFile: null,
+  currentBranch: 'master',
   dirty: { file: false, byTaskId: {} },
   errors: { general: [], byTaskId: {} },
 };
@@ -55,6 +57,45 @@ export const saveFile = createAsyncThunk('data/saveFile', async (_, { getState, 
   }
 });
 
+export const createBranch = createAsyncThunk(
+  'data/createBranch',
+  async (branchName: string, { getState, rejectWithValue }) => {
+    const state = getState() as { data: DataState };
+    if (!state.data.tasksFile) {
+      return rejectWithValue('No tasks file loaded');
+    }
+    if (state.data.tasksFile[branchName]) {
+      return rejectWithValue(`Branch '${branchName}' already exists`);
+    }
+
+    // Create empty branch
+    const newBranch = {
+      tasks: [],
+    };
+
+    const updatedTasksFile = {
+      ...state.data.tasksFile,
+      [branchName]: newBranch,
+    };
+
+    // Save to disk
+    if (state.data.filePath) {
+      try {
+        const data = JSON.stringify(updatedTasksFile, null, 2);
+        const res = await window.api?.file.write({ path: state.data.filePath, data });
+        if (!res?.ok) {
+          throw new Error('Write failed');
+        }
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Failed to save file';
+        return rejectWithValue(msg);
+      }
+    }
+
+    return { branchName, tasksFile: updatedTasksFile };
+  },
+);
+
 const dataSlice = createSlice({
   name: 'data',
   initialState,
@@ -66,16 +107,17 @@ const dataSlice = createSlice({
 
       const { id, patch } = action.payload;
       const idStr = String(id);
-      const idx = state.tasksFile.master.tasks.findIndex((t: Task) => String(t.id) === idStr);
+      const currentBranchTasks = state.tasksFile[state.currentBranch]?.tasks || [];
+      const idx = currentBranchTasks.findIndex((t: Task) => String(t.id) === idStr);
 
       if (idx === -1) {
         return;
       }
 
-      const prev = state.tasksFile.master.tasks[idx];
+      const prev = currentBranchTasks[idx];
       const next: Task = { ...prev, ...patch };
 
-      state.tasksFile.master.tasks[idx] = next;
+      state.tasksFile[state.currentBranch].tasks[idx] = next;
       state.dirty.file = true;
       state.dirty.byTaskId[idStr] = true;
 
@@ -115,6 +157,16 @@ const dataSlice = createSlice({
         }
       }
     },
+    switchBranch(state, action: PayloadAction<string>) {
+      const branchName = action.payload;
+      if (state.tasksFile && state.tasksFile[branchName]) {
+        state.currentBranch = branchName;
+        // Clear dirty state when switching branches
+        state.dirty = { file: false, byTaskId: {} };
+        // Clear errors when switching branches
+        state.errors = { general: [], byTaskId: {} };
+      }
+    },
   },
   extraReducers(builder) {
     builder.addCase(loadFromPath.fulfilled, (state, action) => {
@@ -141,9 +193,28 @@ const dataSlice = createSlice({
         state.errors.general.push('Failed to save file');
       }
     });
+    builder.addCase(createBranch.fulfilled, (state, action) => {
+      state.tasksFile = action.payload.tasksFile;
+      state.currentBranch = action.payload.branchName;
+      state.dirty = { file: false, byTaskId: {} };
+    });
+    builder.addCase(createBranch.rejected, (state, action) => {
+      if (typeof action.payload === 'string') {
+        state.errors.general.push(action.payload);
+      } else {
+        state.errors.general.push('Failed to create branch');
+      }
+    });
   },
 });
 
-export const { updateTask, replaceTasksFile, setFilePath, addGeneralError, clearGeneralErrors, setTaskDirty } =
-  dataSlice.actions;
+export const {
+  updateTask,
+  replaceTasksFile,
+  setFilePath,
+  addGeneralError,
+  clearGeneralErrors,
+  setTaskDirty,
+  switchBranch,
+} = dataSlice.actions;
 export default dataSlice.reducer;

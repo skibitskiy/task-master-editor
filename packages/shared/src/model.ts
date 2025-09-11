@@ -13,8 +13,10 @@ export interface Task {
   dependencies?: Array<number | string>;
 }
 
+type Branch = string;
+
 export interface TasksFile {
-  master: {
+  [branch: Branch]: {
     tasks: Task[];
     metadata?: {
       created?: string;
@@ -36,18 +38,20 @@ export const TaskSchema = z.object({
   dependencies: z.array(z.union([z.number(), z.string()])).optional(),
 });
 
-export const TasksFileSchema = z.object({
-  master: z.object({
-    tasks: z.array(TaskSchema),
-    metadata: z
-      .object({
-        created: z.string().optional(),
-        updated: z.string().optional(),
-        description: z.string().optional(),
-      })
-      .optional(),
-  }),
+// Schema for branch object
+const BranchSchema = z.object({
+  tasks: z.array(TaskSchema),
+  metadata: z
+    .object({
+      created: z.string().optional(),
+      updated: z.string().optional(),
+      description: z.string().optional(),
+    })
+    .optional(),
 });
+
+// Schema for the entire tasks file - supports any branch names
+export const TasksFileSchema = z.record(z.string(), BranchSchema);
 
 export function validateTasksFile(raw: unknown): TasksFile {
   return TasksFileSchema.parse(raw) as unknown as TasksFile;

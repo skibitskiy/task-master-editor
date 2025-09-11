@@ -335,15 +335,15 @@
         "title": "Добавить возможность создания и выбора ветки",
         "description": "Добавить возможность создания и выбора ветки",
         "details": "",
-        "status": "pending",
+        "status": "done",
         "priority": "high",
         "testStrategy": "",
         "dependencies": []
       },
       {
         "id": 28,
-        "title": "Добавить возможность создавать новую задачу",
-        "description": "Добавить возможность создавать новую задачу",
+        "title": "Исправить механизм сохранения задач",
+        "description": "Исправить механизм сохранения задач",
         "details": "",
         "status": "pending",
         "priority": "high",
@@ -352,13 +352,15 @@
       },
       {
         "id": 29,
-        "title": "Исправить механизм сохранения задач",
-        "description": "Исправить механизм сохранения задач",
+        "title": "Добавить возможность создавать новую задачу",
+        "description": "Добавить возможность создавать новую задачу",
         "details": "",
         "status": "pending",
         "priority": "high",
         "testStrategy": "",
-        "dependencies": []
+        "dependencies": [
+          28
+        ]
       }
     ],
     "metadata": {

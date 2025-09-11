@@ -59,6 +59,7 @@ const createMockStore = (tasksFile: TasksFile | null) => {
       data: {
         filePath: '/test/tasks.json',
         tasksFile,
+        currentBranch: 'master',
         dirty: { file: false, byTaskId: {} },
         errors: { general: [], byTaskId: {} },
       },
