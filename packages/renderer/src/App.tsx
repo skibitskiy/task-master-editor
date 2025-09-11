@@ -12,6 +12,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { FileSelectionScreen } from './components/file-selection-screen';
 import { UnsavedChangesModal } from './components/unsaved-changes-modal';
 import { EditorProvider } from './shared/editor-context';
+import { MenuHandler } from './components/MenuHandler';
 import { setToasterInstance, notifySuccess, notifyError } from './utils/notify';
 import { setupGlobalErrorHandlers } from './utils/globalErrorHandler';
 import { withIPCErrorHandling } from './utils/ipcErrorMapper';
@@ -173,7 +174,8 @@ const AppContent: React.FC = () => {
         if (loadResult.meta.requestStatus === 'fulfilled') {
           await store.dispatch(updateMRU(filePath));
           setHasValidFile(true);
-          notifySuccess('Файл загружен', `Открыт файл: ${filePath.split('/').pop()}`);
+          // Clear selected task when new file is loaded
+          setSelectedTaskId(null);
           return true;
         } else if (loadResult.meta.requestStatus === 'rejected') {
           // Handle validation errors with more specific messages
@@ -212,6 +214,11 @@ const AppContent: React.FC = () => {
       <ToasterProvider toaster={toaster}>
         <EditorProvider>
           <ErrorBoundary>
+            <MenuHandler
+              onFileSelected={(_path) => {
+                setHasValidFile(true);
+              }}
+            />
             <div className="app">
               {isLoading ? (
                 <Flex centerContent width="100%" height="100vh">

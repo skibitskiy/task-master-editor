@@ -1,1 +1,1 @@
-export { useDebounce, type UseDebounceOptions } from './use-debounce';
+export { useDebounce } from './use-debounce';

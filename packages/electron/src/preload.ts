@@ -56,7 +56,25 @@ const loggerApi = {
   error: (message: string, ...args: unknown[]) => ipcRenderer.send('log:error', message, ...args),
 };
 
+// Menu event handlers
+const menuApi = {
+  onOpenFile: (callback: (filePath: string) => void) => {
+    // Remove any existing listeners first
+    ipcRenderer.removeAllListeners('menu:open-file');
+    ipcRenderer.on('menu:open-file', (_event, filePath: string) => callback(filePath));
+  },
+  onSave: (callback: () => void) => {
+    // Remove any existing listeners first
+    ipcRenderer.removeAllListeners('menu:save');
+    ipcRenderer.on('menu:save', () => callback());
+  },
+  setDirtyState: (isDirty: boolean) => {
+    ipcRenderer.send('editor:dirty-state', isDirty);
+  },
+};
+
 contextBridge.exposeInMainWorld('api', api);
 contextBridge.exposeInMainWorld('electron', {
   log: loggerApi,
+  menu: menuApi,
 });

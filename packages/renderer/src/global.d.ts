@@ -10,6 +10,11 @@ declare global {
         warn: (message: string, ...args: unknown[]) => void;
         error: (message: string, ...args: unknown[]) => void;
       };
+      menu: {
+        onOpenFile: (callback: (filePath: string) => void) => void;
+        onSave: (callback: () => void) => void;
+        setDirtyState: (isDirty: boolean) => void;
+      };
     };
   }
 }

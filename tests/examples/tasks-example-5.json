@@ -1,0 +1,71 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Initialize settings menu",
+        "description": "Add a settings icon with dropdown in the header",
+        "details": "• Add a gear icon button to the header.\n• Use DropdownMenu with a single \"Preferences…\" entry.\n• Wire up open/close state and keyboard navigation.",
+        "status": "pending",
+        "priority": "medium",
+        "testStrategy": "1) Clicking gear opens the menu.\n2) Esc closes it.\n3) Focus returns to the button after close.",
+        "dependencies": []
+      },
+      {
+        "id": 2,
+        "title": "Implement theme toggle (light/dark)",
+        "description": "Add a theme switch in settings; persist to store",
+        "details": "• Add theme toggle control in Preferences.\n• Save to electron-store and apply immediately.\n• Respect system theme as default.",
+        "status": "in-progress",
+        "priority": "high",
+        "testStrategy": "1) Toggle changes theme instantly.\n2) Restart keeps last selected theme.\n3) System default applied when no preference set.",
+        "dependencies": [
+          1
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Add task search in list",
+        "description": "Filter tasks by title with debounce",
+        "details": "• Text input above list with clear button.\n• 200ms debounce.\n• Highlight match in results.",
+        "status": "pending",
+        "priority": "medium",
+        "testStrategy": "1) Typing filters items after debounce.\n2) Clear resets list.\n3) Highlighting only affects visible items.",
+        "dependencies": [
+          1
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Autosave dirty document",
+        "description": "Auto-save changes every 30s and on blur",
+        "details": "• Timer-based autosave if dirty.\n• Save on window blur.\n• Throttle concurrent saves and show status.",
+        "status": "pending",
+        "priority": "high",
+        "testStrategy": "1) Dirty edit triggers autosave after 30s.\n2) Blur triggers immediate save.\n3) No overlapping writes.",
+        "dependencies": [
+          3
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Keyboard shortcuts",
+        "description": "Register Cmd/Ctrl+F (search) and Cmd/Ctrl+Comma (settings)",
+        "details": "• Add accelerators for search and settings.\n• Prevent conflicts with editor bindings.\n• Show tooltip hints.",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "1) Shortcuts open correct UI.\n2) Do not trigger when input fields capture keys.\n3) Works on macOS/Windows/Linux.",
+        "dependencies": [
+          1,
+          3
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-11T00:00:00.000Z",
+      "updated": "2025-09-11T00:00:00.000Z",
+      "description": "Example tasks file with 5 tasks"
+    }
+  }
+}
+

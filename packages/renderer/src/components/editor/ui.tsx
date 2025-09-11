@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { TextInput } from '@gravity-ui/uikit';
 import { MarkdownEditorView } from '@gravity-ui/markdown-editor';
 import type { RootState, AppDispatch } from '../../redux/store';
-import { saveFile, updateTask } from '../../redux/dataSlice';
+import { updateTask } from '../../redux/dataSlice';
 import { notifySuccess, notifyError } from '../../utils/notify';
 import { EditorPanelHeader } from '../editor-panel-header';
 import { EditorPanelTabs } from '../editor-panel-tabs';
@@ -67,7 +67,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
     }
   }, [editorMode, descriptionEditor, detailsEditor, testStrategyEditor]);
 
-  // Handle save button click
+  // Handle save button click - only update Redux, don't auto-save to file
   const handleSave = useCallback(async () => {
     // Check for validation errors
     if (Object.keys(validationErrors).length > 0) {
@@ -75,7 +75,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
     }
 
     try {
-      // Dispatch save action and wait for completion
+      // Only dispatch updateTask, don't auto-save to file
       if (!taskId) throw new Error('Отсутствует ID задачи');
 
       const dependencies = localValues.dependencies
@@ -99,17 +99,10 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
         }),
       );
 
-      const result = await dispatch(saveFile());
-
-      if (saveFile.fulfilled.match(result)) {
-        notifySuccess('Сохранено', 'Все изменения успешно сохранены');
-      } else if (saveFile.rejected.match(result)) {
-        const errorMessage = typeof result.payload === 'string' ? result.payload : 'Неизвестная ошибка';
-        notifyError('Ошибка сохранения', errorMessage);
-      }
+      notifySuccess('Изменения применены', 'Изменения сохранены в памяти. Используйте Cmd+S для сохранения в файл');
     } catch (error) {
-      console.error('Save error:', error);
-      notifyError('Ошибка сохранения', 'Произошла неожиданная ошибка при сохранении файла');
+      console.error('Update task error:', error);
+      notifyError('Ошибка обновления', 'Произошла неожиданная ошибка при обновлении задачи');
     }
   }, [
     dispatch,

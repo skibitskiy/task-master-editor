@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain } = electron;
 import { logger } from './logger.js';
 import { createWindow } from './main.js';
 import { registerIpcHandlers } from './ipcHandlers.js';
+import { createApplicationMenu, setMainWindow, setDirtyState } from './menu.js';
 
 logger.info('Task Master Editor starting');
 
@@ -26,8 +27,21 @@ ipcMain.on('log:error', (_event, message, ...args) => {
   logger.error(`[Renderer] ${message}`, ...args);
 });
 
+// Handle dirty state changes from renderer
+ipcMain.on('editor:dirty-state', (_event, isDirty: boolean) => {
+  setDirtyState(isDirty);
+});
+
 app.on('ready', () => {
-  createWindow();
+  createApplicationMenu();
+  const window = createWindow();
+  setMainWindow(window);
+
+  // Clear mainWindow reference when window is closed
+  window.on('closed', () => {
+    setMainWindow(null);
+  });
+
   if (process.env.APP_AUTO_QUIT === '1') {
     setTimeout(() => {
       app.quit();

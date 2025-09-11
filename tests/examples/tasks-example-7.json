@@ -1,0 +1,96 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Welcome screen",
+        "description": "Show recent files and create/open actions",
+        "details": "• Grid with MRU file list.\n• Buttons: Create new, Open….\n• Toggle to skip screen next launch.",
+        "status": "done",
+        "priority": "low",
+        "testStrategy": "1) Recent files list updates after open/save.\n2) Skip option persists.\n3) Empty state shown when no MRU.",
+        "dependencies": []
+      },
+      {
+        "id": 2,
+        "title": "Import/Export tasks",
+        "description": "Support JSON import and export with validation",
+        "details": "• Validate schema on import.\n• Export current master as pretty JSON.\n• Non-destructive merge on import.",
+        "status": "pending",
+        "priority": "high",
+        "testStrategy": "1) Invalid schema rejected with clear error.\n2) Export round-trips without loss.\n3) Merge preserves IDs and dependencies.",
+        "dependencies": [
+          1
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Cloud sync (manual)",
+        "description": "Add manual sync button to push/pull tasks",
+        "details": "• Toolbar button \"Sync\" with last sync time.\n• Basic conflict dialog with choose-local/choose-remote.",
+        "status": "pending",
+        "priority": "medium",
+        "testStrategy": "1) Push then pull reproduces server state.\n2) Conflict dialog appears for divergent edits.\n3) Choice applies correctly.",
+        "dependencies": [
+          2
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Task reordering via drag-and-drop",
+        "description": "Enable reordering and persist order",
+        "details": "• Drag handle in list rows.\n• Keyboard reordering with Alt+Up/Down.\n• Persist order in file and reload reliably.",
+        "status": "in-progress",
+        "priority": "high",
+        "testStrategy": "1) Drag updates order visually and in data.\n2) Keyboard reorders within bounds.\n3) Reload preserves order.",
+        "dependencies": [
+          1
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Inline task editing",
+        "description": "Edit title and priority directly in the list",
+        "details": "• Click-to-edit title with Enter/Esc handling.\n• Priority dropdown pill.\n• Validation for non-empty title.",
+        "status": "pending",
+        "priority": "medium",
+        "testStrategy": "1) Enter saves, Esc cancels.\n2) Priority changes update immediately.\n3) Empty titles not allowed.",
+        "dependencies": [
+          4
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Bulk status updates",
+        "description": "Select multiple tasks and change status",
+        "details": "• Multi-select with Shift/Meta.\n• Context menu actions for status set.\n• Toast summary of changes.",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "1) Multi-select reflects correct count.\n2) Bulk status applies to all selected.\n3) Undo option available for 5s.",
+        "dependencies": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Accessibility pass",
+        "description": "Ensure list and editor meet a11y criteria",
+        "details": "• ARIA roles/labels for list, buttons, dialogs.\n• Keyboard navigation across all controls.\n• Contrast and focus ring checks.",
+        "status": "pending",
+        "priority": "medium",
+        "testStrategy": "1) Tab order logical and cyclical.\n2) Screen reader announces actions and context.\n3) Minimum contrast 4.5:1 maintained.",
+        "dependencies": [
+          1,
+          4
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-11T00:00:00.000Z",
+      "updated": "2025-09-11T00:00:00.000Z",
+      "description": "Example tasks file with 7 tasks"
+    }
+  }
+}
+
