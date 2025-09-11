@@ -82,6 +82,20 @@ const dataSlice = createSlice({
     clearGeneralErrors(state) {
       state.errors.general = [];
     },
+    setTaskDirty(state, action: PayloadAction<{ taskId: string; isDirty: boolean }>) {
+      const { taskId, isDirty } = action.payload;
+      if (isDirty) {
+        state.dirty.byTaskId[taskId] = true;
+        state.dirty.file = true;
+      } else {
+        delete state.dirty.byTaskId[taskId];
+        // Check if any tasks are still dirty
+        const hasAnyDirtyTasks = Object.keys(state.dirty.byTaskId).length > 0;
+        if (!hasAnyDirtyTasks) {
+          state.dirty.file = false;
+        }
+      }
+    },
   },
   extraReducers(builder) {
     builder.addCase(loadFromPath.fulfilled, (state, action) => {
@@ -105,5 +119,6 @@ const dataSlice = createSlice({
   },
 });
 
-export const { updateTask, replaceTasksFile, setFilePath, addGeneralError, clearGeneralErrors } = dataSlice.actions;
+export const { updateTask, replaceTasksFile, setFilePath, addGeneralError, clearGeneralErrors, setTaskDirty } =
+  dataSlice.actions;
 export default dataSlice.reducer;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Flex, Text, Button, Label, List } from '@gravity-ui/uikit';
 import { Plus } from '@gravity-ui/icons';
@@ -30,8 +30,9 @@ const getStatusLabelProps = (
 
 export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask }) => {
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
+  const dirtyState = useSelector((state: RootState) => state.data.dirty);
 
-  const tasks = tasksFile?.master.tasks || [];
+  const tasks = useMemo(() => tasksFile?.master.tasks || [], [tasksFile]);
 
   // Stable sorting by ID (convert to number for proper numeric sorting)
   const sortedTasks = React.useMemo(() => {
@@ -47,6 +48,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
     (task: Task, isActive: boolean, _index: number) => {
       const statusProps = getStatusLabelProps(task.status);
       const isSelected = selectedTaskId === String(task.id);
+      const isTaskDirty = dirtyState.byTaskId[String(task.id)] || false;
 
       return (
         <div
@@ -58,6 +60,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
               <Text variant="caption-1" color="secondary">
                 #{task.id}
               </Text>
+              {isTaskDirty && <span style={{ color: 'var(--g-color-text-warning)', fontSize: 16 }}>●</span>}
               <Text variant="body-2" className={styles.taskItemTitle}>
                 {task.title}
               </Text>
@@ -74,7 +77,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
         </div>
       );
     },
-    [selectedTaskId, onSelectTask],
+    [selectedTaskId, onSelectTask, dirtyState.byTaskId],
   );
 
   // Calculate item height dynamically based on content

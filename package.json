@@ -35,6 +35,7 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "@playwright/test": "^1.47.0",
+    "@types/lodash": "^4.17.20",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "concurrently": "^8.2.2",

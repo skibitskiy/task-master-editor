@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider, Toaster, ToasterComponent, ToasterProvider, Flex, Loader } from '@gravity-ui/uikit';
-import { Provider } from 'react-redux';
+import { Provider, useSelector, useDispatch } from 'react-redux';
 import { store } from './redux/store';
+import type { RootState, AppDispatch } from './redux/store';
 import { initSettings, updateMRU } from './redux/settingsSlice';
-import { loadFromPath } from './redux/dataSlice';
+import { loadFromPath, saveFile, setTaskDirty } from './redux/dataSlice';
+import { setSelectedTaskId, useCurrentTask } from './redux/task';
 import { TaskList } from './components/task-list';
 import { EditorPanel } from './components/editor-panel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { FileSelectionScreen } from './components/file-selection-screen';
+import { UnsavedChangesModal } from './components/unsaved-changes-modal';
+import { EditorProvider } from './shared/editor-context';
 import { setToasterInstance, notifySuccess, notifyError } from './utils/notify';
 import { setupGlobalErrorHandlers } from './utils/globalErrorHandler';
 import { withIPCErrorHandling } from './utils/ipcErrorMapper';
@@ -16,11 +20,15 @@ import './App.css';
 const toaster = new Toaster();
 setToasterInstance(toaster);
 
-export const App: React.FC = () => {
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+const AppContent: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const dirtyState = useSelector((state: RootState) => state.data.dirty);
+  const { taskId: selectedTaskId } = useCurrentTask();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [isLoading, setIsLoading] = useState(true);
   const [hasValidFile, setHasValidFile] = useState(false);
+  const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<(() => void) | null>(null);
 
   useEffect(() => {
     // Setup global error handlers
@@ -91,6 +99,72 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  // Handle navigation with unsaved changes check
+  const checkUnsavedChanges = (callback: () => void) => {
+    const state = store.getState();
+    const hasDirtyTasks = state.data.dirty.file;
+
+    if (hasDirtyTasks) {
+      setPendingNavigation(() => callback);
+      setShowUnsavedModal(true);
+    } else {
+      callback();
+    }
+  };
+
+  const handleSaveAndContinue = async () => {
+    try {
+      const result = await store.dispatch(saveFile());
+      if (saveFile.fulfilled.match(result)) {
+        // Clear dirty state for currently opened task
+        if (selectedTaskId) {
+          store.dispatch(setTaskDirty({ taskId: selectedTaskId, isDirty: false }));
+        }
+        notifySuccess('Сохранено', 'Все изменения успешно сохранены');
+        setShowUnsavedModal(false);
+        if (pendingNavigation) {
+          pendingNavigation();
+          setPendingNavigation(null);
+        }
+      } else if (saveFile.rejected.match(result)) {
+        const errorMessage = typeof result.payload === 'string' ? result.payload : 'Неизвестная ошибка';
+        notifyError('Ошибка сохранения', errorMessage);
+      }
+    } catch (error) {
+      notifyError('Ошибка сохранения', 'Произошла неожиданная ошибка при сохранении файла');
+    }
+  };
+
+  const handleDiscardChanges = () => {
+    // Clear dirty state for currently opened task
+    if (selectedTaskId) {
+      store.dispatch(setTaskDirty({ taskId: selectedTaskId, isDirty: false }));
+    }
+    setShowUnsavedModal(false);
+    if (pendingNavigation) {
+      pendingNavigation();
+      setPendingNavigation(null);
+    }
+  };
+
+  const handleCancelNavigation = () => {
+    setShowUnsavedModal(false);
+    setPendingNavigation(null);
+  };
+
+  // Handle task selection with unsaved changes check
+  const handleTaskSelect = (taskId: string | null) => {
+    // Check if current task has unsaved changes
+    const currentTaskDirty = selectedTaskId ? dirtyState.byTaskId[selectedTaskId] : false;
+
+    if (currentTaskDirty) {
+      setPendingNavigation(() => () => dispatch(setSelectedTaskId(taskId)));
+      setShowUnsavedModal(true);
+    } else {
+      dispatch(setSelectedTaskId(taskId));
+    }
+  };
+
   const handleFileSelected = async (filePath: string) => {
     setIsLoading(true);
     try {
@@ -134,9 +208,9 @@ export const App: React.FC = () => {
   };
 
   return (
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <ToasterProvider toaster={toaster}>
+    <ThemeProvider theme={theme}>
+      <ToasterProvider toaster={toaster}>
+        <EditorProvider>
           <ErrorBoundary>
             <div className="app">
               {isLoading ? (
@@ -144,26 +218,42 @@ export const App: React.FC = () => {
                   <Loader size="l" />
                 </Flex>
               ) : !hasValidFile ? (
-                <FileSelectionScreen onFileSelected={handleFileSelected} />
+                <FileSelectionScreen
+                  onFileSelected={(filePath) => checkUnsavedChanges(() => handleFileSelected(filePath))}
+                />
               ) : (
                 <Flex className="app-layout" grow>
                   <div className="app-sidebar">
                     <ErrorBoundary>
-                      <TaskList selectedTaskId={selectedTaskId} onSelectTask={setSelectedTaskId} />
+                      <TaskList selectedTaskId={selectedTaskId} onSelectTask={handleTaskSelect} />
                     </ErrorBoundary>
                   </div>
                   <div className="app-content">
                     <ErrorBoundary>
-                      <EditorPanel key={selectedTaskId} taskId={selectedTaskId} />
+                      <EditorPanel />
                     </ErrorBoundary>
                   </div>
                 </Flex>
               )}
               <ToasterComponent />
+              <UnsavedChangesModal
+                open={showUnsavedModal}
+                onClose={handleCancelNavigation}
+                onSave={handleSaveAndContinue}
+                onDiscard={handleDiscardChanges}
+              />
             </div>
           </ErrorBoundary>
-        </ToasterProvider>
-      </ThemeProvider>
+        </EditorProvider>
+      </ToasterProvider>
+    </ThemeProvider>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <Provider store={store}>
+      <AppContent />
     </Provider>
   );
 };

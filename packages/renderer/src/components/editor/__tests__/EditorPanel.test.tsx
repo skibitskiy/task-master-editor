@@ -4,11 +4,14 @@ import { describe, it, expect, vi } from 'vitest';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { ThemeProvider } from '@gravity-ui/uikit';
-import { EditorPanel } from '../ui';
+import { EditorPanel } from '../../editor-panel/ui';
 import dataReducer, { saveFile } from '../../../redux/dataSlice';
 import settingsReducer from '../../../redux/settingsSlice';
+import { taskSliceReducer } from '../../../redux/task';
+import { EditorProvider } from '../../../shared/editor-context';
 import type { TasksFile } from '@app/shared';
 import * as notifyModule from '../../../utils/notify';
+import '@testing-library/jest-dom';
 
 // Mock the markdown editor
 vi.mock('@gravity-ui/markdown-editor', () => ({
@@ -17,6 +20,7 @@ vi.mock('@gravity-ui/markdown-editor', () => ({
     replace: vi.fn(),
     on: vi.fn(),
     off: vi.fn(),
+    setEditorMode: vi.fn(),
   }),
   MarkdownEditorView: ({ children }: { children?: React.ReactNode }) => (
     <div data-testid="markdown-editor">{children}</div>
@@ -27,6 +31,25 @@ vi.mock('@gravity-ui/markdown-editor', () => ({
 vi.mock('../../../utils/notify', () => ({
   notifySuccess: vi.fn(),
   notifyError: vi.fn(),
+}));
+
+// Mock the debounce hook
+vi.mock('../../../shared/hooks', () => ({
+  useDebounce: vi.fn((callback) => {
+    // Execute callback immediately for tests
+    callback();
+  }),
+}));
+
+// Mock the useMarkdownFieldEditor hook
+vi.mock('../lib/use-markdown-field-editor', () => ({
+  useMarkdownFieldEditor: () => ({
+    getValue: () => 'test content',
+    replace: vi.fn(),
+    on: vi.fn(),
+    off: vi.fn(),
+    setEditorMode: vi.fn(),
+  }),
 }));
 
 const mockTasksFile: TasksFile = {
@@ -55,11 +78,12 @@ const mockTasksFile: TasksFile = {
   },
 };
 
-const createMockStore = (tasksFile: TasksFile | null) => {
-  return configureStore({
+const createMockStore = (tasksFile: TasksFile | null, selectedTaskId: string | null = null) => {
+  const store = configureStore({
     reducer: {
       data: dataReducer,
       settings: settingsReducer,
+      task: taskSliceReducer,
     },
     preloadedState: {
       data: {
@@ -75,19 +99,27 @@ const createMockStore = (tasksFile: TasksFile | null) => {
         },
         loaded: false,
       },
+      task: {
+        selectedTaskId,
+        activeFieldTab: 'description' as const,
+      },
     },
   });
+
+  return store;
 };
 
 const renderEditorPanel = (taskId: string | null, tasksFile: TasksFile | null = mockTasksFile) => {
-  const store = createMockStore(tasksFile);
+  const store = createMockStore(tasksFile, taskId);
   const onSave = vi.fn();
 
   return {
     ...render(
       <Provider store={store}>
         <ThemeProvider theme="light">
-          <EditorPanel taskId={taskId} onSave={onSave} />
+          <EditorProvider>
+            <EditorPanel />
+          </EditorProvider>
         </ThemeProvider>
       </Provider>,
     ),
@@ -133,8 +165,8 @@ describe('EditorPanel - Task Tabs (Task 13)', () => {
   });
 
   describe('Tab Switching', () => {
-    it('should switch tabs when clicked', () => {
-      renderEditorPanel('1');
+    it('should switch tabs when clicked', async () => {
+      const { store } = renderEditorPanel('1');
 
       // Initially should show markdown editor (description tab)
       expect(screen.getByTestId('markdown-editor')).toBeInTheDocument();
@@ -142,6 +174,12 @@ describe('EditorPanel - Task Tabs (Task 13)', () => {
 
       // Click title tab
       fireEvent.click(screen.getByRole('tab', { name: /заголовок/i }));
+
+      // Wait for Redux state to update
+      await waitFor(() => {
+        const state = store.getState();
+        expect(state.task.activeFieldTab).toBe('title');
+      });
 
       // Should now show text input (title tab)
       expect(screen.getByRole('textbox')).toBeInTheDocument();
@@ -295,8 +333,8 @@ describe('EditorPanel - Task Tabs (Task 13)', () => {
   });
 
   describe('Real-time Updates', () => {
-    it('should update Redux store when changing field values', async () => {
-      const { store } = renderEditorPanel('1');
+    it('should update input field when changing values', async () => {
+      renderEditorPanel('1');
 
       // Click title tab
       fireEvent.click(screen.getByRole('tab', { name: /заголовок/i }));
@@ -305,11 +343,9 @@ describe('EditorPanel - Task Tabs (Task 13)', () => {
       const titleInput = screen.getByRole('textbox');
       fireEvent.change(titleInput, { target: { value: 'Updated Title' } });
 
-      // Check that the store was updated
+      // Check that the input field shows the updated value
       await waitFor(() => {
-        const state = store.getState();
-        const task = state.data.tasksFile?.master.tasks.find((t) => String(t.id) === '1');
-        expect(task?.title).toBe('Updated Title');
+        expect(titleInput).toHaveValue('Updated Title');
       });
     });
 

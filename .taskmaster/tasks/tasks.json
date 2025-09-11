@@ -195,7 +195,7 @@
         "title": "Индикаторы несохранённых изменений",
         "description": "Отслеживание dirty-state на уровне задачи и файла.",
         "details": "• Маркеры «●» на вкладках и в списке.\n• Диалог подтверждения при выходе при наличии несохранённых изменений.\\\n• Использовать компонент Modal из Gravity-UI\n• Добавить в модалку подтверждения кнопки \"сохранить\", \"не сохранять\"\n\n```\nimport {useState} from 'react';\nimport {Button, Modal} from '@gravity-ui/uikit';\n\nconst [open, setOpen] = useState(false);\n\n<Button onClick={() => setOpen(true)}>Open Modal</Button>\n<Modal open={open} onClose={() => setOpen(false)}>\n    Content\n</Modal>\n```\n\nОписание пропсов модалки в таблице\n\n<table><thead><tr><th align=\"left\">Имя</th><th align=\"left\">Описание</th><th align=\"center\">Тип</th><th align=\"center\">Значение по умолчанию</th></tr></thead><tbody><tr><td align=\"left\">autoFocus</td><td align=\"left\">В открытом состоянии фокус будет установлен на первый интерактивный элемент в содержимом.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>true</code></td></tr><tr><td align=\"left\">children</td><td align=\"left\">Любое содержимое React.</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">className</td><td align=\"left\">HTML-атрибут <code>class</code> для корневого узла.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">container</td><td align=\"left\">DOM-элемент, в который монтируется компонент через <code>Portal</code>.</td><td align=\"center\"><code>HTMLElement</code></td><td align=\"center\"><code>document.body</code></td></tr><tr><td align=\"left\">contentClassName</td><td align=\"left\">Атрибут <code>class</code> в HTML для узла с содержимым.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">disableBodyScrollLock</td><td align=\"left\">Отключает блокировку прокрутки, пока модальное окно открыто.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disableEscapeKeyDown</td><td align=\"left\">Отключает закрытие при нажатии на клавишу <code>Esc</code>.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disableOutsideClick</td><td align=\"left\">Отключает закрытие элемента по клику вне его области.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disablePortal</td><td align=\"left\">Отключает использование <code>Portal</code></td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">focusTrap</td><td align=\"left\">Включает фиксацию фокуса внутри элемента.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>true</code></td></tr><tr><td align=\"left\">keepMounted</td><td align=\"left\">Компонент <code>Modal</code> не будет удален из DOM при скрытии.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">onClose</td><td align=\"left\">Обработчик события закрытия <code>Modal</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onEnterKeyDown</td><td align=\"left\">Обработчик события нажатия на клавишу <code>Enter</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onEscapeKeyDown</td><td align=\"left\">Обработчик события нажатия на клавишу <code>Esc</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionEnter</td><td align=\"left\">Обработчик начала анимации открытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionExit</td><td align=\"left\">Обработчик начала анимации закрытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionEntered</td><td align=\"left\">Обработчик завершения анимации открытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionExited</td><td align=\"left\">Обработчик завершения анимации закрытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onOutsideClick</td><td align=\"left\">Обработчик события клика вне элемента.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">open</td><td align=\"left\">Управляет видимостью <code>Modal</code>.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">qa</td><td align=\"left\">Атрибут для тестирования (<code>data-qa</code>).</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">restoreFocusRef</td><td align=\"left\">Элемент, на который вернется фокус.</td><td align=\"center\"><code>React.RefObject</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">style</td><td align=\"left\">HTML-атрибут <code>style</code> для корневого узла.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">aria-label</td><td align=\"left\">HTML-атрибут <code>aria-label</code> для описания <code>Modal</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">aria-labelledby</td><td align=\"left\">Идентификатор видимого элемента заголовка в <code>Modal</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">contentOverflow</td><td align=\"left\">Определяет, имеет ли <code>Modal</code> внутреннюю полосу прокрутки или увеличивается в размерах вместе с содержимым.</td><td align=\"center\"><code>visible</code> <code>auto</code></td><td align=\"center\"><code>visible</code></td></tr></tbody></table>\n",
-        "status": "pending",
+        "status": "done",
         "priority": "medium",
         "testStrategy": "1) Любое изменение включает индикаторы на вкладке и в списке. \n2) Сохранение сбрасывает индикаторы. \n3) Попытка закрыть приложение с несохранёнными изменениями вызывает подтверждение.",
         "dependencies": [
@@ -289,7 +289,8 @@
         "priority": "low",
         "testStrategy": "",
         "dependencies": [
-          5, 21
+          5,
+          21
         ]
       },
       {
@@ -300,7 +301,10 @@
         "status": "pending",
         "priority": "low",
         "testStrategy": "",
-        "dependencies": [5, 23]
+        "dependencies": [
+          5,
+          23
+        ]
       },
       {
         "id": 25,
@@ -310,12 +314,26 @@
         "status": "pending",
         "priority": "low",
         "testStrategy": "",
-        "dependencies": [9]
+        "dependencies": [
+          9
+        ]
+      },
+      {
+        "id": 26,
+        "title": "Сделать заголовок задачи редактируемым",
+        "description": "Убрать таб для изменения заголовка задачи и перенести логику изменения заголовка в шапку редактора",
+        "details": "При клике на заголовок задачи в шапке, он должен превращаться в Input из gravity-ui. Заголовок должен сохраняться при потере фокуса или при клике на enter. При клике на escape, заголовок должен возвращаться к исходному значению. Если оставить поле пустым, то под ним должна появиться ошибка \"Название задачи не может быть пустым\".",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "",
+        "dependencies": [
+          14
+        ]
       }
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-10T12:19:25.015Z",
+      "updated": "2025-09-11T06:39:44.121Z",
       "description": "Tasks for master context"
     }
   }
