@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { TextInput } from '@gravity-ui/uikit';
 import { MarkdownEditorView } from '@gravity-ui/markdown-editor';
 import type { RootState, AppDispatch } from '../../redux/store';
-import { updateTask } from '../../redux/dataSlice';
+import { saveFile } from '../../redux/dataSlice';
 import { notifySuccess, notifyError } from '../../utils/notify';
 import { EditorPanelHeader } from '../editor-panel-header';
 import { EditorPanelTabs } from '../editor-panel-tabs';
@@ -30,8 +30,15 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
   const dirtyState = useSelector((state: RootState) => state.data.dirty);
   const isTaskDirty = taskId ? dirtyState.byTaskId[taskId] : false;
 
-  const { localValues, validationErrors, setValidationErrors, handleFieldChange, validateField, fieldDirtyState } =
-    useEditorContext();
+  const {
+    localValues,
+    validationErrors,
+    setValidationErrors,
+    handleFieldChange,
+    validateField,
+    fieldDirtyState,
+    updateCurrentTask,
+  } = useEditorContext();
 
   // Get current content for the active field
   const currentContent = React.useMemo(() => {
@@ -80,44 +87,15 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
         throw new Error('Отсутствует ID задачи');
       }
 
-      const dependencies = localValues.dependencies
-        .split(',')
-        .map((d) => parseInt(d.trim()))
-        .filter(Boolean);
-
-      dispatch(
-        updateTask({
-          id: parseInt(taskId),
-          patch: {
-            title: localValues.title,
-            description: localValues.description,
-            details: localValues.details,
-            dependencies: dependencies.length > 0 ? dependencies : undefined,
-            testStrategy: localValues.testStrategy,
-            id: parseInt(taskId),
-            priority: task?.priority,
-            status: task?.status,
-          },
-        }),
-      );
+      updateCurrentTask();
+      dispatch(saveFile());
 
       notifySuccess('Изменения применены', 'Изменения сохранены в памяти. Используйте Cmd+S для сохранения в файл');
     } catch (error) {
       console.error('Update task error:', error);
       notifyError('Ошибка обновления', 'Произошла неожиданная ошибка при обновлении задачи');
     }
-  }, [
-    dispatch,
-    validationErrors,
-    taskId,
-    localValues.dependencies,
-    localValues.title,
-    localValues.description,
-    localValues.details,
-    localValues.testStrategy,
-    task?.priority,
-    task?.status,
-  ]);
+  }, [validationErrors, taskId, updateCurrentTask, dispatch]);
 
   // EditorPanelTabs props
   const availableTabs = [

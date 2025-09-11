@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import type { Task } from '@app/shared';
-import { setTaskDirty } from '../../redux/dataSlice';
+import { setTaskDirty, updateTask } from '../../redux/dataSlice';
 import type { AppDispatch } from '../../redux/store';
-import { useDebounce } from '../hooks';
+import { useDebounce, useEventCallback } from '../hooks';
 import type { EditorContextType, TaskFieldTab } from './types';
 import { useCurrentTask } from '../../redux/task';
 
@@ -163,6 +163,27 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
 
   useDebounce(setTaskDirtyCallback, [fieldDirtyState, taskId, dispatch, task], 300);
 
+  const updateCurrentTask = useEventCallback(() => {
+    if (!taskId || !task) {
+      throw new Error('Задача не найдена');
+    }
+    dispatch(
+      updateTask({
+        id: parseInt(taskId),
+        patch: {
+          title: localValues.title,
+          description: localValues.description,
+          details: localValues.details,
+          dependencies: localValues.dependencies
+            .split(',')
+            .map((d) => parseInt(d.trim()))
+            .filter((d) => !isNaN(d)),
+          testStrategy: localValues.testStrategy,
+        },
+      }),
+    );
+  });
+
   const value = useMemo(
     () => ({
       task,
@@ -175,6 +196,7 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
       setValidationErrors,
       clearLocalValues,
       resetToTaskValues,
+      updateCurrentTask,
     }),
     [
       task,
@@ -186,6 +208,7 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
       validateField,
       clearLocalValues,
       resetToTaskValues,
+      updateCurrentTask,
     ],
   );
 

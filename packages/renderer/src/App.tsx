@@ -11,7 +11,7 @@ import { EditorPanel } from './components/editor-panel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { FileSelectionScreen } from './components/file-selection-screen';
 import { UnsavedChangesModal } from './components/unsaved-changes-modal';
-import { EditorProvider } from './shared/editor-context';
+import { EditorProvider, useEditorContext } from './shared/editor-context';
 import { MenuHandler } from './components/MenuHandler';
 import { setToasterInstance, notifySuccess, notifyError } from './utils/notify';
 import { setupGlobalErrorHandlers } from './utils/globalErrorHandler';
@@ -30,6 +30,8 @@ const AppContent: React.FC = () => {
   const [hasValidFile, setHasValidFile] = useState(false);
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<(() => void) | null>(null);
+
+  const { updateCurrentTask } = useEditorContext();
 
   useEffect(() => {
     // Setup global error handlers
@@ -115,6 +117,7 @@ const AppContent: React.FC = () => {
 
   const handleSaveAndContinue = async () => {
     try {
+      updateCurrentTask();
       const result = await store.dispatch(saveFile());
       if (saveFile.fulfilled.match(result)) {
         // Clear dirty state for currently opened task
@@ -212,55 +215,57 @@ const AppContent: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <ToasterProvider toaster={toaster}>
-        <EditorProvider>
-          <ErrorBoundary>
-            <MenuHandler
-              onFileSelected={(_path) => {
-                setHasValidFile(true);
-              }}
-            />
-            <div className="app">
-              {isLoading ? (
-                <Flex centerContent width="100%" height="100vh">
-                  <Loader size="l" />
-                </Flex>
-              ) : !hasValidFile ? (
-                <FileSelectionScreen
-                  onFileSelected={(filePath) => checkUnsavedChanges(() => handleFileSelected(filePath))}
-                />
-              ) : (
-                <Flex className="app-layout" grow>
-                  <div className="app-sidebar">
-                    <ErrorBoundary>
-                      <TaskList selectedTaskId={selectedTaskId} onSelectTask={handleTaskSelect} />
-                    </ErrorBoundary>
-                  </div>
-                  <div className="app-content">
-                    <ErrorBoundary>
-                      <EditorPanel />
-                    </ErrorBoundary>
-                  </div>
-                </Flex>
-              )}
-              <ToasterComponent />
-              <UnsavedChangesModal
-                open={showUnsavedModal}
-                onClose={handleCancelNavigation}
-                onSave={handleSaveAndContinue}
-                onDiscard={handleDiscardChanges}
+        <ErrorBoundary>
+          <MenuHandler
+            onFileSelected={(_path) => {
+              setHasValidFile(true);
+            }}
+          />
+          <div className="app">
+            {isLoading ? (
+              <Flex centerContent width="100%" height="100vh">
+                <Loader size="l" />
+              </Flex>
+            ) : !hasValidFile ? (
+              <FileSelectionScreen
+                onFileSelected={(filePath) => checkUnsavedChanges(() => handleFileSelected(filePath))}
               />
-            </div>
-          </ErrorBoundary>
-        </EditorProvider>
+            ) : (
+              <Flex className="app-layout" grow>
+                <div className="app-sidebar">
+                  <ErrorBoundary>
+                    <TaskList selectedTaskId={selectedTaskId} onSelectTask={handleTaskSelect} />
+                  </ErrorBoundary>
+                </div>
+                <div className="app-content">
+                  <ErrorBoundary>
+                    <EditorPanel />
+                  </ErrorBoundary>
+                </div>
+              </Flex>
+            )}
+            <ToasterComponent />
+            <UnsavedChangesModal
+              open={showUnsavedModal}
+              onClose={handleCancelNavigation}
+              onSave={handleSaveAndContinue}
+              onDiscard={handleDiscardChanges}
+            />
+          </div>
+        </ErrorBoundary>
       </ToasterProvider>
     </ThemeProvider>
   );
 };
 
+const MemoizedAppContent = React.memo(AppContent);
+
 export const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <AppContent />
+      <EditorProvider>
+        <MemoizedAppContent />
+      </EditorProvider>
     </Provider>
   );
 };

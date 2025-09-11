@@ -5,7 +5,7 @@ import { Code } from '@gravity-ui/icons';
 import { useCurrentTask } from '../../redux/task';
 import { Editor } from '../editor';
 
-export const EditorPanel: React.FC = () => {
+const EditorPanel: React.FC = () => {
   const { task } = useCurrentTask();
 
   if (!task) {
@@ -28,3 +28,7 @@ export const EditorPanel: React.FC = () => {
 
   return <Editor key={task.id} task={task} />;
 };
+
+const MemoizedEditorPanel = React.memo(EditorPanel);
+
+export { MemoizedEditorPanel as EditorPanel };

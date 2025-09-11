@@ -22,4 +22,5 @@ export interface EditorContextType {
   setValidationErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   clearLocalValues: () => void;
   resetToTaskValues: () => void;
+  updateCurrentTask: () => void;
 }

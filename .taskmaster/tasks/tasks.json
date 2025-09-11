@@ -345,7 +345,7 @@
         "title": "Исправить механизм сохранения задач",
         "description": "Исправить механизм сохранения задач",
         "details": "",
-        "status": "pending",
+        "status": "done",
         "priority": "high",
         "testStrategy": "",
         "dependencies": []

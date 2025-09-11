@@ -5,6 +5,7 @@ import { loadFromPath, saveFile } from '../redux/dataSlice';
 import { updateMRU } from '../redux/settingsSlice';
 import { notifySuccess, notifyError } from '../utils/notify';
 import { withIPCErrorHandling } from '../utils/ipcErrorMapper';
+import { useEditorContext } from '../shared/editor-context';
 
 interface MenuHandlerProps {
   onFileSelected: (filePath: string) => void;
@@ -12,6 +13,7 @@ interface MenuHandlerProps {
 
 export const MenuHandler: React.FC<MenuHandlerProps> = ({ onFileSelected }) => {
   const dispatch = useAppDispatch();
+  const { updateCurrentTask } = useEditorContext();
   const isDirty = useSelector((state: RootState) => state.data.dirty.file);
 
   // Sync dirty state with main process
@@ -61,6 +63,7 @@ export const MenuHandler: React.FC<MenuHandlerProps> = ({ onFileSelected }) => {
       }
 
       const result = await withIPCErrorHandling(async () => {
+        updateCurrentTask();
         const saveResult = await dispatch(saveFile());
         if (saveResult.meta.requestStatus === 'fulfilled') {
           notifySuccess('Файл сохранен', `Изменения сохранены в ${currentFilePath.split('/').pop()}`);
