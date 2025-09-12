@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { removeFromMRU } from '../../redux/settingsSlice';
 import type { AppDispatch, RootState } from '../../redux/store';
+import { getProjectNameFromPath } from '../../shared/lib/get-project-name-from-path';
 import { withIPCErrorHandling } from '../../utils/ipcErrorMapper';
 import { notifyError } from '../../utils/notify';
 import styles from './styles.module.css';
@@ -29,15 +30,6 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
     mruEnabled,
     prefs,
   });
-
-  const getProjectName = (filePath: string) => {
-    const parts = filePath.split(/[/\\]/);
-    const tasksIndex = parts.findIndex((part) => part === 'tasks.json');
-    if (tasksIndex > 0) {
-      return parts[tasksIndex - 1];
-    }
-    return parts[parts.length - 2] || 'Проект';
-  };
 
   const handleSelectFile = async () => {
     setIsSelecting(true);
@@ -127,7 +119,7 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
                     >
                       <Icon data={FileIcon} size={16} />
                       <Flex direction="column" grow>
-                        <Text variant="body-2">{getProjectName(path)}</Text>
+                        <Text variant="body-2">{getProjectNameFromPath(path)}</Text>
                         <Text variant="caption-2" color="secondary">
                           {path}
                         </Text>

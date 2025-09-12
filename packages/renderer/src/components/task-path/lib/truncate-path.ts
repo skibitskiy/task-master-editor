@@ -1,15 +1,13 @@
+import { getProjectNameFromPath } from '../../../shared/lib/get-project-name-from-path';
+
 export const truncatePath = (filePath: string, maxLength = 30): string => {
-  const splittedPath = filePath.split('/');
+  const projectName = getProjectNameFromPath(filePath);
 
-  const taskMasterIndex = splittedPath.indexOf('.taskmaster');
-
-  if (taskMasterIndex !== -1) {
-    const projectName = splittedPath[taskMasterIndex - 1];
-
-    if (projectName) {
-      return projectName;
-    }
+  if (projectName) {
+    return projectName;
   }
+
+  const splittedPath = filePath.split('/');
 
   if (filePath.length <= maxLength) {
     return filePath;
