@@ -5,13 +5,13 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-.yfm {
+.yfm.yfm.yfm {
     --yfm-color-text: white;
   }
 }
 
 @media (prefers-color-scheme: light) {
-  .yfm {
+  .yfm.yfm.yfm {
       --yfm-color-text: black;
     }
   }
