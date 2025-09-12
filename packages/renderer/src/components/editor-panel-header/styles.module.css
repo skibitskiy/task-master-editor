@@ -1,0 +1,16 @@
+.dirtyIndicator {
+    display: inline-block;
+    margin-left: 8px;
+    color: var(--g-color-text-warning);
+}
+
+.dirtyIndicator svg {
+    vertical-align: baseline;
+}
+
+.title {
+    cursor: pointer;
+}
+.titleContainer {
+    flex-basis: 100%;
+}

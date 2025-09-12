@@ -322,8 +322,8 @@
         "id": 26,
         "title": "Сделать заголовок задачи редактируемым",
         "description": "Убрать таб для изменения заголовка задачи и перенести логику изменения заголовка в шапку редактора",
-        "details": "При клике на заголовок задачи в шапке, он должен превращаться в Input из gravity-ui. Заголовок должен сохраняться при потере фокуса или при клике на enter. При клике на escape, заголовок должен возвращаться к исходному значению. Если оставить поле пустым, то под ним должна появиться ошибка \"Название задачи не может быть пустым\".",
-        "status": "pending",
+        "details": "При клике на заголовок задачи в шапке, он должен превращаться в Input из gravity-ui. Заголовок должен сохраняться при потере фокуса или при клике на enter. При клике на escape, заголовок должен возвращаться к исходному значению. Если оставить поле пустым, то под ним должна появиться ошибка \"Название задачи не может быть пустым\".\n\nКомпонент: packages/renderer/src/components/editor-panel-header/ui.tsx\\\nInput из gravity-ui: size=m. Сверху и снизу добавь паддинг по 1px, чтобы высота инпута совпадала с высотой заголовка",
+        "status": "done",
         "priority": "low",
         "testStrategy": "",
         "dependencies": [
@@ -367,40 +367,40 @@
         "title": "Добавить в шапку списка текущую директорию",
         "description": "В шапке должен быть путь текущего файла.\nПусть путь будет обрезан слева и состоять из максимум 30 символов.\nШрифт мелкий, но не слишком. При наведении появляется тултип с полным путем (import \\{Popup\\} from '@gravity-ui/uikit').\n\n```\nconst [buttonElement, setButtonElement] = React.useState(null);\nconst [open, setOpen] = React.useState(false);\n\n<Button ref={setButtonElement} onClick={() => setOpen((prevOpen) => !prevOpen)}>\n  Toggle Popup\n</Button>\n<Popup anchorElement={buttonElement} open={open} placement=\"bottom\">\n  Content\n</Popup>\n```",
         "details": "",
+        "status": "done",
         "testStrategy": "",
-        "dependencies": [],
-        "status": "done"
+        "dependencies": []
       },
       {
         "id": 31,
         "title": "Добавить стейт кнопки редактор/предпросмотр в Redux Store. ",
         "description": "Добавить стейт кнопки редактор/предпросмотр из шапки редактора в Redux Store. Сделать так, чтоб он сохранял состояние при переходе между задачами\nПусть дефолтным значением для кнопки будет **предпросмотр**.",
         "details": "",
+        "status": "done",
         "testStrategy": "",
-        "dependencies": [],
-        "status": "done"
+        "dependencies": []
       },
       {
         "id": 32,
         "title": "Исправить сохранение недавних проектов",
         "description": "Ранее открытые проекты не сохраняются в недавних проектах и не отображаются в интерфейсе на стартовой страницы",
         "details": "",
-        "dependencies": [],
-        "testStrategy": ""
+        "testStrategy": "",
+        "dependencies": []
       },
       {
         "id": 33,
         "title": "Починить работу горячих клавиш",
         "description": "Горячие клавиши для открытия задачи и сохранения задачи не всегда срабатывают. Они работают до определенного момента, затем перестают работать. Необходимо найти причину и исправить её.",
         "details": "",
-        "dependencies": [],
+        "status": "deferred",
         "testStrategy": "",
-        "status": "deferred"
+        "dependencies": []
       }
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-12T15:59:39.774Z",
+      "updated": "2025-09-12T17:15:01.185Z",
       "description": "Tasks for master context"
     }
   }

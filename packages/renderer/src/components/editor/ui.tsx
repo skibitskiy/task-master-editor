@@ -150,18 +150,42 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
     }
   };
 
+  const handleTitleChange = useCallback(
+    (newTitle: string) => {
+      handleFieldChange('title', newTitle);
+    },
+    [handleFieldChange],
+  );
+
+  const handleTitleBlur = useCallback(() => {
+    const currentTitle = localValues?.title || '';
+    const error = validateField('title', currentTitle);
+    if (error) {
+      setValidationErrors((prev) => ({ ...prev, title: error }));
+    } else {
+      setValidationErrors((prev) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { title, ...rest } = prev;
+        return rest;
+      });
+    }
+  }, [localValues?.title, validateField, setValidationErrors]);
+
   return (
     <div className="editor-panel">
       <div className="editor-header">
         <EditorPanelHeader
           taskId={String(task?.id)}
-          taskTitle={task?.title || ''}
+          taskTitle={localValues?.title || ''}
           editorMode={editorMode}
           showModeToggle={activeFieldTab !== 'title' && activeFieldTab !== 'dependencies'}
           onToggleMode={() => dispatch(toggleEditorMode())}
           onSave={handleSave}
           onDelete={handleDelete}
           onGptSettings={() => setGptSettingsOpen(true)}
+          onTitleChange={handleTitleChange}
+          onTitleBlur={handleTitleBlur}
+          titleError={validationErrors.title}
           isTaskDirty={!!isTaskDirty}
           hasErrors={Object.keys(validationErrors).length > 0}
         />
