@@ -153,12 +153,13 @@ export function validateSettingsGetResult(raw: unknown): SettingsGetResult {
 
 export function validateSettingsUpdateInput(raw: unknown): SettingsUpdateInput {
   const o = (raw ?? {}) as Record<string, unknown>;
+  const settingsObj = (o.settings ?? {}) as Record<string, unknown>;
   const partial = {} as Partial<SettingsData>;
-  if ('recentPaths' in o) {
-    partial.recentPaths = validateSettingsData({ recentPaths: o.recentPaths }).recentPaths;
+  if ('recentPaths' in settingsObj) {
+    partial.recentPaths = validateSettingsData({ recentPaths: settingsObj.recentPaths }).recentPaths;
   }
-  if ('preferences' in o) {
-    const prefs = o.preferences as Record<string, unknown>;
+  if ('preferences' in settingsObj) {
+    const prefs = settingsObj.preferences as Record<string, unknown>;
     if (prefs != null && typeof prefs !== 'object') {
       throw new Error('preferences must be object');
     }

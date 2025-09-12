@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Flex, Card, Button, Text, Icon, Spin, List } from '@gravity-ui/uikit';
-import { File as FileIcon, Clock } from '@gravity-ui/icons';
-import { useSelector } from 'react-redux';
-import type { RootState } from '../../redux/store';
+import { File as FileIcon, Clock, CircleXmarkFill } from '@gravity-ui/icons';
+import { useSelector, useDispatch } from 'react-redux';
+import type { RootState, AppDispatch } from '../../redux/store';
+import { removeFromMRU } from '../../redux/settingsSlice';
 import { withIPCErrorHandling } from '../../utils/ipcErrorMapper';
 import { notifyError } from '../../utils/notify';
 import styles from './styles.module.css';
@@ -13,8 +14,20 @@ interface FileSelectionScreenProps {
 
 export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFileSelected }) => {
   const [isSelecting, setIsSelecting] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   const settingsState = useSelector((state: RootState) => state.settings);
-  const recentPaths = settingsState.data.recentPaths;
+  const recentPaths = settingsState.loaded ? settingsState.data.recentPaths : [];
+  const prefs = settingsState.loaded
+    ? (settingsState.data.preferences as Record<string, unknown> | undefined)
+    : undefined;
+  const mruEnabled = prefs?.mruEnabled ?? true;
+
+  console.log('🔍 FileSelectionScreen state:', {
+    settingsLoaded: settingsState.loaded,
+    recentPaths,
+    mruEnabled,
+    prefs,
+  });
 
   const getProjectName = (filePath: string) => {
     const parts = filePath.split(/[/\\]/);
@@ -54,6 +67,18 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
 
   const handleRecentFileSelect = (filePath: string) => {
     onFileSelected(filePath);
+  };
+
+  const handleDeleteRecentPath = async (pathToDelete: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent file selection when clicking delete
+    console.log('🗑️ Trying to delete path:', pathToDelete);
+    try {
+      const result = await dispatch(removeFromMRU(pathToDelete));
+      console.log('🗑️ Delete result:', result);
+    } catch (error) {
+      console.error('🗑️ Delete error:', error);
+      notifyError('Ошибка удаления', 'Не удалось удалить проект из недавних');
+    }
   };
 
   return (
@@ -106,6 +131,9 @@ export const FileSelectionScreen: React.FC<FileSelectionScreenProps> = ({ onFile
                           {path}
                         </Text>
                       </Flex>
+                      <div onClick={(event) => handleDeleteRecentPath(path, event)} className={styles.deleteButton}>
+                        <Icon data={CircleXmarkFill} size={16} className={styles.deleteIcon} />
+                      </div>
                     </Flex>
                   )}
                 />

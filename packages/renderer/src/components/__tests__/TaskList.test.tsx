@@ -7,6 +7,7 @@ import { TaskList } from '../task-list';
 import dataReducer from '../../redux/dataSlice';
 import settingsReducer from '../../redux/settingsSlice';
 import type { TasksFile } from '@app/shared';
+import { TaskListProps } from '../task-list/lib/types';
 
 // Mock data
 const mockTasksFile: TasksFile = {
@@ -77,9 +78,10 @@ const createMockStore = (tasksFile: TasksFile | null) => {
 // Helper to render TaskList with store and theme
 const renderTaskList = (tasksFile: TasksFile | null, props = {}) => {
   const store = createMockStore(tasksFile);
-  const defaultProps = {
+  const defaultProps: TaskListProps = {
     selectedTaskId: null,
     onSelectTask: vi.fn(),
+    onBackToProjects: vi.fn(),
   };
 
   return {

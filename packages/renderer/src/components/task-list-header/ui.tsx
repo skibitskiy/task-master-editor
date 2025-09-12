@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Flex, Text, Button, Select } from '@gravity-ui/uikit';
-import { Plus } from '@gravity-ui/icons';
+import { Flex, Text, Button, Select, Icon } from '@gravity-ui/uikit';
+import { Plus, ChevronLeft } from '@gravity-ui/icons';
 import type { RootState, AppDispatch } from '../../redux/store';
 import { switchBranch, createBranch, addNewTaskAsync } from '../../redux/dataSlice';
 import { clearSelectedTask, setSelectedTaskId } from '../../redux/task/taskSlice';
@@ -10,7 +10,11 @@ import { TaskPath } from '../task-path';
 import type { BranchOption } from './lib/types';
 import styles from './styles.module.css';
 
-export const TaskListHeader: React.FC = () => {
+interface TaskListHeaderProps {
+  onBackToProjects: () => void;
+}
+
+export const TaskListHeader: React.FC<TaskListHeaderProps> = ({ onBackToProjects }) => {
   const dispatch = useDispatch<AppDispatch>();
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
   const currentBranch = useSelector((state: RootState) => state.data.currentBranch);
@@ -57,6 +61,10 @@ export const TaskListHeader: React.FC = () => {
   return (
     <>
       <div className={styles.container}>
+        <Text className={styles.backToProjects} variant="body-short" onClick={onBackToProjects}>
+          <Icon data={ChevronLeft} />
+          Проекты
+        </Text>
         <Flex direction="column" gap={3}>
           <Flex alignItems="center" justifyContent="space-between">
             <Flex direction="column" gap={1}>

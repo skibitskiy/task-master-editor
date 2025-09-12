@@ -24,23 +24,19 @@ type InternalSettings = SettingsData;
 let cachedSettings: InternalSettings | null = null;
 async function settingsPath(): Promise<string> {
   const dir = app.getPath('userData');
-  return `${dir}/settings.json`;
+  const path = `${dir}/settings.json`;
+  return path;
 }
 
 async function loadSettings(): Promise<InternalSettings> {
   if (cachedSettings) {
-    log.info('🔍 Using cached settings:', cachedSettings);
     return cachedSettings;
   }
   try {
     const p = await settingsPath();
-    log.info('🔍 Settings path:', p);
     const raw = await fs.readFile(p, 'utf-8');
-    log.info('🔍 Settings file content:', raw);
     cachedSettings = validateSettingsData(JSON.parse(raw));
-    log.info('🔍 Parsed settings:', cachedSettings);
   } catch (err) {
-    log.info('🔍 Failed to load settings, using defaults:', err);
     cachedSettings = { recentPaths: [], preferences: {} };
   }
   return cachedSettings!;
@@ -113,12 +109,15 @@ export function registerIpcHandlers() {
 
   ipcMain.handle(Channels.settingsGet, async () => {
     const settings = await loadSettings();
-    log.info('🔍 Loading settings:', settings);
     return validateSettingsGetResult({ settings });
   });
 
   ipcMain.handle(Channels.settingsUpdate, async (_event: unknown, rawInput: unknown) => {
     const input = validateSettingsUpdateInput(rawInput);
+
+    // Clear cache to ensure we read from file
+    cachedSettings = null;
+
     const current = await loadSettings();
     const merged: InternalSettings = {
       recentPaths: input.settings.recentPaths ?? current.recentPaths,

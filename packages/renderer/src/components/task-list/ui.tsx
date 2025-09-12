@@ -8,7 +8,7 @@ import { TaskListHeader } from '../task-list-header';
 import { TaskItem } from './task-item';
 import styles from './styles.module.css';
 
-export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask }) => {
+export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask, onBackToProjects }) => {
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
   const currentBranch = useSelector((state: RootState) => state.data.currentBranch);
   const dirtyState = useSelector((state: RootState) => state.data.dirty);
@@ -72,7 +72,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
 
   return (
     <Flex direction="column" className={styles.taskList} grow gap={4}>
-      <TaskListHeader />
+      <TaskListHeader onBackToProjects={onBackToProjects} />
       <Flex direction="column" grow>
         {sortedTasks.length === 0 ? (
           <div className="editor-placeholder">

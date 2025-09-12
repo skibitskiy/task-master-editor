@@ -234,7 +234,11 @@ const AppContent: React.FC = () => {
               <Flex className="app-layout" grow>
                 <div className="app-sidebar">
                   <ErrorBoundary>
-                    <TaskList selectedTaskId={selectedTaskId} onSelectTask={handleTaskSelect} />
+                    <TaskList
+                      selectedTaskId={selectedTaskId}
+                      onSelectTask={handleTaskSelect}
+                      onBackToProjects={() => checkUnsavedChanges(() => setHasValidFile(false))}
+                    />
                   </ErrorBoundary>
                 </div>
                 <div className="app-content">
