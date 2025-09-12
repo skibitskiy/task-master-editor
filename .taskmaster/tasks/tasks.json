@@ -361,11 +361,44 @@
         "dependencies": [
           28
         ]
+      },
+      {
+        "id": 30,
+        "title": "Добавить в шапку списка текущую директорию",
+        "description": "В шапке должен быть путь текущего файла.\nПусть путь будет обрезан слева и состоять из максимум 30 символов.\nШрифт мелкий, но не слишком. При наведении появляется тултип с полным путем (import \\{Popup\\} from '@gravity-ui/uikit').\n\n```\nconst [buttonElement, setButtonElement] = React.useState(null);\nconst [open, setOpen] = React.useState(false);\n\n<Button ref={setButtonElement} onClick={() => setOpen((prevOpen) => !prevOpen)}>\n  Toggle Popup\n</Button>\n<Popup anchorElement={buttonElement} open={open} placement=\"bottom\">\n  Content\n</Popup>\n```",
+        "details": "",
+        "testStrategy": "",
+        "dependencies": [],
+        "status": "done"
+      },
+      {
+        "id": 31,
+        "title": "Добавить стейт кнопки редактор/предпросмотр в Redux Store. ",
+        "description": "Добавить стейт кнопки редактор/предпросмотр из шапки редактора в Redux Store. Сделать так, чтоб он сохранял состояние при переходе между задачами\nПусть дефолтным значением для кнопки будет **предпросмотр**.",
+        "details": "",
+        "testStrategy": "",
+        "dependencies": []
+      },
+      {
+        "id": 32,
+        "title": "Исправить сохранение недавних проектов",
+        "description": "Ранее открытые проекты не сохраняются в недавних проектах и не отображаются в интерфейсе на стартовой страницы",
+        "details": "",
+        "dependencies": [],
+        "testStrategy": ""
+      },
+      {
+        "id": 33,
+        "title": "Починить работу горячих клавиш",
+        "description": "Горячие клавиши для открытия задачи и сохранения задачи не работают. ",
+        "details": "",
+        "dependencies": [],
+        "testStrategy": ""
       }
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-11T20:59:49.444Z",
+      "updated": "2025-09-12T14:42:45.942Z",
       "description": "Tasks for master context"
     }
   }

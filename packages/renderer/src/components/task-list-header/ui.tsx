@@ -6,6 +6,7 @@ import type { RootState, AppDispatch } from '../../redux/store';
 import { switchBranch, createBranch, addNewTaskAsync } from '../../redux/dataSlice';
 import { clearSelectedTask, setSelectedTaskId } from '../../redux/task/taskSlice';
 import { CreateBranchModal } from '../create-branch-modal';
+import { TaskPath } from '../task-path';
 import type { BranchOption } from './lib/types';
 
 export const TaskListHeader: React.FC = () => {
@@ -57,7 +58,10 @@ export const TaskListHeader: React.FC = () => {
       <div style={{ padding: '16px', borderBottom: '1px solid var(--g-color-line-generic)' }}>
         <Flex direction="column" gap={3}>
           <Flex alignItems="center" justifyContent="space-between">
-            <Text variant="header-1">Задачи</Text>
+            <Flex direction="column" gap={1}>
+              <Text variant="header-1">Задачи</Text>
+              <TaskPath />
+            </Flex>
             <Button view="action" size="s" title="Добавить задачу" onClick={handleAddNewTask}>
               <Button.Icon>
                 <Plus />
@@ -73,7 +77,7 @@ export const TaskListHeader: React.FC = () => {
               value={[currentBranch]}
               onUpdate={handleBranchChange}
               size="s"
-              width={200}
+              width={'max'}
               renderPopup={({ renderFilter, renderList }) => {
                 return (
                   <React.Fragment>

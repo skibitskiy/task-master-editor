@@ -1,0 +1,13 @@
+.pathText {
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.popupContainer {
+  max-width: 400px;
+}
+
+.popupContent {
+  display: inline-block;
+  padding: 4px 8px;
+}
