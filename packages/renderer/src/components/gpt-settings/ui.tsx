@@ -114,16 +114,6 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
     }
   };
 
-  const handleClear = () => {
-    gptService.setConfig({ apiKey: '', model: 'anthropic/claude-3.5-sonnet' });
-    localStorage.removeItem('gptConfig');
-    setApiKey('');
-    setModel('anthropic/claude-3.5-sonnet');
-    setBaseUrl('');
-    setTestResult(null);
-    notifySuccess('Настройки очищены', 'Конфигурация была удалена');
-  };
-
   const handleAddCustomModel = async () => {
     if (!customModelValue.trim()) {
       notifyError('Ошибка', 'Идентификатор модели не может быть пустым');
@@ -271,10 +261,6 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
 
               <Button onClick={handleSave} disabled={!apiKey.trim()} view="action" size="l">
                 Сохранить
-              </Button>
-
-              <Button onClick={handleClear} view="outlined-danger" size="l">
-                Очистить
               </Button>
 
               <Button onClick={onClose} view="normal" size="l">

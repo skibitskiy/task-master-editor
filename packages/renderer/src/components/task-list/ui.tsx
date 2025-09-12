@@ -74,7 +74,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
   return (
     <Flex direction="column" className={styles.taskList} grow gap={4}>
       <TaskListHeader onBackToProjects={onBackToProjects} />
-      <Flex direction="column" grow>
+      <Flex className={styles.taskListContent} direction="column" grow>
         {sortedTasks.length === 0 ? (
           <div className="editor-placeholder">
             <Text color="secondary">Задач нет</Text>

@@ -5,7 +5,7 @@
 }
 
 .container {
-  padding: 16px;
+  padding: 16px 8px;
   border-bottom: 1px solid var(--g-color-line-generic);
 }
 .createBranch {

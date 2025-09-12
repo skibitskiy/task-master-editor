@@ -43,8 +43,8 @@ const renderAnswer = (data: GptAnswer) => {
 
 export const gptWidgetOptions: GptWidgetOptions<GptAnswer, string> = {
   answerRender: renderAnswer,
-  customPromptPlaceholder: 'Введите ваш запрос для GPT...',
-  disabledPromptPlaceholder: 'GPT недоступен - настройте API ключ',
+  customPromptPlaceholder: 'Введите запрос',
+  disabledPromptPlaceholder: 'Введите вопрос',
   gptAlertProps: {
     showedGptAlert: true,
     onCloseGptAlert: () => {
@@ -106,17 +106,7 @@ export const gptWidgetOptions: GptWidgetOptions<GptAnswer, string> = {
   },
   onUpdate: (event) => {
     if (event?.rawText) {
-      // Handle text updates if needed
       console.log('GPT text updated:', event.rawText.length, 'characters');
     }
   },
-  // onLike: async () => {
-  //   notifySuccess('Спасибо за отзыв', 'Ваша оценка поможет улучшить GPT');
-  // },
-  // onDislike: async () => {
-  //   notifySuccess('Спасибо за отзыв', 'Ваша оценка поможет улучшить GPT');
-  // },
-  // onClose: () => {
-  //   // Handle GPT widget close
-  // },
 };
