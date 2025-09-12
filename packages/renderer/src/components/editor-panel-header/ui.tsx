@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flex, Text, Button } from '@gravity-ui/uikit';
-import { FloppyDisk, Eye, Code, TrashBin } from '@gravity-ui/icons';
+import { FloppyDisk, Eye, Code, TrashBin, Gear } from '@gravity-ui/icons';
 
 interface EditorPanelHeaderProps {
   taskId: string;
@@ -10,6 +10,7 @@ interface EditorPanelHeaderProps {
   onToggleMode: () => void;
   onSave: () => void;
   onDelete: () => void;
+  onGptSettings: () => void;
   isTaskDirty: boolean;
   hasErrors: boolean;
 }
@@ -22,15 +23,22 @@ export const EditorPanelHeader: React.FC<EditorPanelHeaderProps> = ({
   onToggleMode,
   onSave,
   onDelete,
+  onGptSettings,
   isTaskDirty,
   hasErrors,
 }) => {
   return (
-    <Flex alignItems="center" justifyContent="space-between">
-      <Text variant="header-2">
+    <Flex alignItems="center" justifyContent="space-between" wrap gapRow={4}>
+      <Text style={{ flexBasis: '100%' }} variant="header-2">
         #{taskId} {taskTitle}
       </Text>
       <Flex gap={2}>
+        <Button view="outlined" size="m" onClick={onGptSettings} title="Настройки ИИ">
+          <Button.Icon>
+            <Gear />
+          </Button.Icon>
+          ИИ
+        </Button>
         {showModeToggle && (
           <Button view="outlined" size="m" onClick={onToggleMode}>
             <Button.Icon>{editorMode === 'editor' ? <Eye /> : <Code />}</Button.Icon>

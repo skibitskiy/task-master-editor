@@ -8,6 +8,7 @@ import { notifySuccess, notifyError } from '../../utils/notify';
 import { EditorPanelHeader } from '../editor-panel-header';
 import { EditorPanelTabs } from '../editor-panel-tabs';
 import { DeleteTaskModal } from '../delete-task-modal';
+import { GptSettingsModal } from '../gpt-settings';
 import { useMarkdownFieldEditor } from './lib/use-markdown-field-editor';
 import { tabTypeGuard } from './lib/tab-type-guard';
 import { useEditorContext } from '../../shared/editor-context';
@@ -22,6 +23,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [editorMode, setEditorMode] = useState<'editor' | 'preview'>('editor');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [gptSettingsOpen, setGptSettingsOpen] = useState(false);
 
   const taskId = task?.id.toString();
 
@@ -48,21 +50,26 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
   }, [localValues, activeFieldTab]);
 
   // Initialize individual markdown editors for each markdown field
-  const descriptionEditor = useMarkdownFieldEditor({
+  const descriptionEditorData = useMarkdownFieldEditor({
     field: 'description',
     initialValue: task?.description || '',
     onChange: handleFieldChange,
   });
-  const detailsEditor = useMarkdownFieldEditor({
+  const detailsEditorData = useMarkdownFieldEditor({
     field: 'details',
     initialValue: task?.details || '',
     onChange: handleFieldChange,
   });
-  const testStrategyEditor = useMarkdownFieldEditor({
+  const testStrategyEditorData = useMarkdownFieldEditor({
     field: 'testStrategy',
     initialValue: task?.testStrategy || '',
     onChange: handleFieldChange,
   });
+
+  // Extract editors for compatibility
+  const descriptionEditor = descriptionEditorData.editor;
+  const detailsEditor = detailsEditorData.editor;
+  const testStrategyEditor = testStrategyEditorData.editor;
 
   useEffect(() => {
     if (editorMode === 'preview') {
@@ -152,6 +159,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
           onToggleMode={() => setEditorMode(editorMode === 'editor' ? 'preview' : 'editor')}
           onSave={handleSave}
           onDelete={handleDelete}
+          onGptSettings={() => setGptSettingsOpen(true)}
           isTaskDirty={!!isTaskDirty}
           hasErrors={Object.keys(validationErrors).length > 0}
         />
@@ -194,15 +202,36 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
           </div>
         ) : activeFieldTab === 'testStrategy' ? (
           <div className="test-strategy-editor">
-            <MarkdownEditorView key={'test-strategy-editor'} editor={testStrategyEditor} autofocus stickyToolbar />
+            <MarkdownEditorView
+              key={'test-strategy-editor'}
+              editor={testStrategyEditor}
+              autofocus
+              stickyToolbar
+              wysiwygToolbarConfig={testStrategyEditorData.toolbarConfigs.wysiwyg}
+              markupToolbarConfig={testStrategyEditorData.toolbarConfigs.markup}
+            />
           </div>
         ) : activeFieldTab === 'description' ? (
           <div className="markdown-editor-wrapper">
-            <MarkdownEditorView key={'description-editor'} editor={descriptionEditor} autofocus stickyToolbar />
+            <MarkdownEditorView
+              key={'description-editor'}
+              editor={descriptionEditor}
+              autofocus
+              stickyToolbar
+              wysiwygToolbarConfig={descriptionEditorData.toolbarConfigs.wysiwyg}
+              markupToolbarConfig={descriptionEditorData.toolbarConfigs.markup}
+            />
           </div>
         ) : (
           <div className="markdown-editor-wrapper">
-            <MarkdownEditorView key={'details-editor'} editor={detailsEditor} autofocus stickyToolbar />
+            <MarkdownEditorView
+              key={'details-editor'}
+              editor={detailsEditor}
+              autofocus
+              stickyToolbar
+              wysiwygToolbarConfig={detailsEditorData.toolbarConfigs.wysiwyg}
+              markupToolbarConfig={detailsEditorData.toolbarConfigs.markup}
+            />
           </div>
         )}
       </div>
@@ -214,6 +243,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
         taskId={String(task?.id)}
         taskTitle={task?.title || ''}
       />
+      <GptSettingsModal open={gptSettingsOpen} onClose={() => setGptSettingsOpen(false)} />
     </div>
   );
 };
