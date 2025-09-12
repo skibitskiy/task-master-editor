@@ -1,28 +1,8 @@
 import React from 'react';
 import { Flex, Text, Label } from '@gravity-ui/uikit';
-import type { TaskStatus } from '@app/shared';
 import type { TaskItemProps } from './lib/types';
 import styles from './styles.module.css';
-
-const getStatusLabelProps = (
-  status?: TaskStatus,
-): { theme: 'normal' | 'info' | 'success' | 'warning' | 'danger' | 'utility'; text: string } => {
-  switch (status) {
-    case 'done':
-      return { theme: 'success', text: 'Готово' };
-    case 'in-progress':
-      return { theme: 'info', text: 'В работе' };
-    case 'blocked':
-      return { theme: 'danger', text: 'Заблокировано' };
-    case 'deferred':
-      return { theme: 'warning', text: 'Отложено' };
-    case 'cancelled':
-      return { theme: 'utility', text: 'Отменено' };
-    case 'pending':
-    default:
-      return { theme: 'normal', text: 'Ожидает' };
-  }
-};
+import { getStatusLabelProps } from './lib/get-status-label-props';
 
 export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, isTaskDirty, onSelectTask }) => {
   const statusProps = getStatusLabelProps(task.status);
