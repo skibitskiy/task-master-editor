@@ -13,6 +13,7 @@ import { useMarkdownFieldEditor } from './lib/use-markdown-field-editor';
 import { tabTypeGuard } from './lib/tab-type-guard';
 import { useEditorContext } from '../../shared/editor-context';
 import { setActiveFieldTab, clearSelectedTask } from '../../redux/task';
+import { toggleEditorMode } from '../../redux/editorSlice';
 import { Task } from '@app/shared';
 
 type EditorProps = {
@@ -21,9 +22,10 @@ type EditorProps = {
 
 export const Editor: React.FC<EditorProps> = ({ task }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [editorMode, setEditorMode] = useState<'editor' | 'preview'>('editor');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [gptSettingsOpen, setGptSettingsOpen] = useState(false);
+
+  const editorMode = useSelector((state: RootState) => state.editor.mode);
 
   const taskId = task?.id.toString();
 
@@ -156,7 +158,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
           taskTitle={task?.title || ''}
           editorMode={editorMode}
           showModeToggle={activeFieldTab !== 'title' && activeFieldTab !== 'dependencies'}
-          onToggleMode={() => setEditorMode(editorMode === 'editor' ? 'preview' : 'editor')}
+          onToggleMode={() => dispatch(toggleEditorMode())}
           onSave={handleSave}
           onDelete={handleDelete}
           onGptSettings={() => setGptSettingsOpen(true)}
