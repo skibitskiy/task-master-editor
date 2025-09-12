@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import type { TaskFieldTab } from '../../shared/editor-context/types';
 
 export interface TaskState {
@@ -31,4 +32,4 @@ const taskSliceReducer = taskSlice.reducer;
 
 const { setSelectedTaskId, clearSelectedTask, setActiveFieldTab } = taskSlice.actions;
 
-export { setSelectedTaskId, clearSelectedTask, setActiveFieldTab, taskSliceReducer };
+export { clearSelectedTask, setActiveFieldTab, setSelectedTaskId, taskSliceReducer };

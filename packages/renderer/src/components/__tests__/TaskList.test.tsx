@@ -1,12 +1,13 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import type { TasksFile } from '@app/shared';
 import { ThemeProvider } from '@gravity-ui/uikit';
-import { TaskList } from '../task-list';
+import { configureStore } from '@reduxjs/toolkit';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { describe, expect, it, vi } from 'vitest';
+
 import dataReducer from '../../redux/dataSlice';
 import settingsReducer from '../../redux/settingsSlice';
-import type { TasksFile } from '@app/shared';
+import { TaskList } from '../task-list';
 import { TaskListProps } from '../task-list/lib/types';
 
 // Mock data

@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { setupGlobalErrorHandlers, logError, logWarning, logInfo } from '../globalErrorHandler';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { logError, logInfo, logWarning, setupGlobalErrorHandlers } from '../globalErrorHandler';
 import * as notify from '../notify';
 
 vi.mock('../notify', () => ({

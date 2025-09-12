@@ -1,5 +1,6 @@
+import { Button, Flex, Modal, Text, TextInput } from '@gravity-ui/uikit';
 import React, { useState } from 'react';
-import { Modal, Button, Flex, Text, TextInput } from '@gravity-ui/uikit';
+
 import type { CreateBranchModalProps } from './lib/types';
 
 export const CreateBranchModal: React.FC<CreateBranchModalProps> = ({ open, onClose, onCreate }) => {

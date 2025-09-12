@@ -1,5 +1,5 @@
-import { notifyError, notifyWarning } from './notify';
 import { logError } from './globalErrorHandler';
+import { notifyError, notifyWarning } from './notify';
 
 export interface IPCError {
   code: string;

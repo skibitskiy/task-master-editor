@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import type { SettingsData, SettingsGetResult } from '@app/shared';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface SettingsState {
   data: SettingsData;

@@ -1,15 +1,16 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { configureStore } from '@reduxjs/toolkit';
-import dataReducer, { updateTask, replaceTasksFile, loadFromPath, saveFile } from '../../src/redux/dataSlice';
 import type {
-  PreloadAPI,
   FileReadInput,
   FileReadResult,
   FileWriteInput,
   FileWriteResult,
-  TasksFile,
+  PreloadAPI,
   Task,
+  TasksFile,
 } from '@app/shared';
+import { configureStore } from '@reduxjs/toolkit';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import dataReducer, { loadFromPath, replaceTasksFile, saveFile, updateTask } from '../../src/redux/dataSlice';
 
 function makeStore() {
   return configureStore({ reducer: { data: dataReducer } });

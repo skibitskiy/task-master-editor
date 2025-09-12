@@ -1,5 +1,6 @@
-import { _electron as electron, test, expect } from '@playwright/test';
 import path from 'node:path';
+
+import { _electron as electron, expect, test } from '@playwright/test';
 import electronPath from 'electron';
 
 test.beforeAll(async () => {

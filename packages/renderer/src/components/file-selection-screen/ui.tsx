@@ -1,9 +1,10 @@
+import { CircleXmarkFill, Clock, File as FileIcon } from '@gravity-ui/icons';
+import { Button, Card, Flex, Icon, List, Spin, Text } from '@gravity-ui/uikit';
 import React, { useState } from 'react';
-import { Flex, Card, Button, Text, Icon, Spin, List } from '@gravity-ui/uikit';
-import { File as FileIcon, Clock, CircleXmarkFill } from '@gravity-ui/icons';
-import { useSelector, useDispatch } from 'react-redux';
-import type { RootState, AppDispatch } from '../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { removeFromMRU } from '../../redux/settingsSlice';
+import type { AppDispatch, RootState } from '../../redux/store';
 import { withIPCErrorHandling } from '../../utils/ipcErrorMapper';
 import { notifyError } from '../../utils/notify';
 import styles from './styles.module.css';

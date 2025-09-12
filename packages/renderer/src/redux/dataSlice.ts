@@ -1,6 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import type { Task, TasksFile } from '@app/shared';
 import { parseTasksJson } from '@app/shared';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import { collectTaskErrors, validateTask } from './helpers.js';
 
 export interface DataState {

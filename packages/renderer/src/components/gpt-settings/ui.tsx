@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Card, TextInput, Button, Text, Alert, Select, Flex } from '@gravity-ui/uikit';
-import { gptService, type GptConfig } from '../../services/gpt-service';
-import { notifySuccess, notifyError } from '../../utils/notify';
+import { Alert, Button, Card, Flex, Modal, Select, Text, TextInput } from '@gravity-ui/uikit';
+import React, { useEffect, useState } from 'react';
+
+import { type GptConfig, gptService } from '../../services/gpt-service';
+import { notifyError, notifySuccess } from '../../utils/notify';
 
 interface GptSettingsModalProps {
   open: boolean;

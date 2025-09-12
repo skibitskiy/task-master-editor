@@ -1,9 +1,9 @@
 import * as electron from 'electron';
 const { app, BrowserWindow, ipcMain } = electron;
+import { registerIpcHandlers } from './ipcHandlers.js';
 import { logger } from './logger.js';
 import { createWindow } from './main.js';
-import { registerIpcHandlers } from './ipcHandlers.js';
-import { createApplicationMenu, setMainWindow, setDirtyState } from './menu.js';
+import { createApplicationMenu, setDirtyState, setMainWindow } from './menu.js';
 
 logger.info('Task Master Editor starting');
 

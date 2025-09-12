@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { validateTask, collectTaskErrors } from '../../src/redux/helpers';
-import type { TasksFile, Task } from '@app/shared';
+import type { Task, TasksFile } from '@app/shared';
+import { describe, expect, it } from 'vitest';
+
+import { collectTaskErrors, validateTask } from '../../src/redux/helpers';
 
 describe('helpers: parsing and validation', () => {
   it('validateTask detects basic issues', () => {

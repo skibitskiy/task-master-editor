@@ -1,9 +1,9 @@
+import { Flex, Popup, Text } from '@gravity-ui/uikit';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Text, Popup, Flex } from '@gravity-ui/uikit';
-import { truncatePath } from './lib/truncate-path';
 import { RootState } from '../../redux/store';
+import { truncatePath } from './lib/truncate-path';
 import styles from './styles.module.css';
 
 export const TaskPath: React.FC = () => {

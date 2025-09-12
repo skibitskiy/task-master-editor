@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Flex, Text, Button, TextInput, Icon } from '@gravity-ui/uikit';
-import { FloppyDisk, Eye, Code, TrashBin, Gear } from '@gravity-ui/icons';
-import { CircleFill } from '@gravity-ui/icons';
+import { CircleFill, Code, Eye, FloppyDisk, Gear, TrashBin } from '@gravity-ui/icons';
+import { Button, Flex, Icon, Text, TextInput } from '@gravity-ui/uikit';
+import React, { useEffect, useRef, useState } from 'react';
+
 import styles from './styles.module.css';
 
 interface EditorPanelHeaderProps {

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Flex, TabProvider, TabList, Tab } from '@gravity-ui/uikit';
 import { CircleExclamation } from '@gravity-ui/icons';
+import { Flex, Tab, TabList, TabProvider } from '@gravity-ui/uikit';
+import React from 'react';
 
 interface TabInfo {
   id: string;

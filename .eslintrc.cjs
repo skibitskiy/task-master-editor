@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint', 'prettier', 'simple-import-sort'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -15,6 +15,8 @@ module.exports = {
     curly: 'error',
     'brace-style': ['error', '1tbs', { allowSingleLine: false }],
     'max-statements-per-line': ['error', { max: 1 }],
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
     'prettier/prettier': [
       'error',
       {

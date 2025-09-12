@@ -1,17 +1,18 @@
-import React from 'react';
 import {
-  useMarkdownEditor,
-  gptExtension,
-  mGptExtension,
-  wGptItemData,
-  mGptToolbarItem,
-  wysiwygToolbarConfigs,
-  markupToolbarConfigs,
   type ExtensionBuilder,
+  gptExtension,
+  markupToolbarConfigs,
+  mGptExtension,
+  mGptToolbarItem,
+  useMarkdownEditor,
+  wGptItemData,
+  wysiwygToolbarConfigs,
 } from '@gravity-ui/markdown-editor';
 import cloneDeep from 'lodash/cloneDeep';
-import type { TaskFieldTab } from './types';
+import React from 'react';
+
 import { gptWidgetOptions } from './gpt-widget-config';
+import type { TaskFieldTab } from './types';
 
 interface UseMarkdownFieldEditorParams {
   field: Extract<TaskFieldTab, 'description' | 'details' | 'testStrategy'>;

@@ -1,9 +1,10 @@
+import { ChevronLeft, Plus } from '@gravity-ui/icons';
+import { Button, Flex, Icon, Select, Text } from '@gravity-ui/uikit';
 import React, { useMemo, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Flex, Text, Button, Select, Icon } from '@gravity-ui/uikit';
-import { Plus, ChevronLeft } from '@gravity-ui/icons';
-import type { RootState, AppDispatch } from '../../redux/store';
-import { switchBranch, createBranch, addNewTaskAsync } from '../../redux/dataSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { addNewTaskAsync, createBranch, switchBranch } from '../../redux/dataSlice';
+import type { AppDispatch, RootState } from '../../redux/store';
 import { clearSelectedTask, setSelectedTaskId } from '../../redux/task/taskSlice';
 import { CreateBranchModal } from '../create-branch-modal';
 import { TaskPath } from '../task-path';

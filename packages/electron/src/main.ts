@@ -1,10 +1,12 @@
 import electron from 'electron';
 const { BrowserWindow, shell } = electron;
-import type { WebContents, BrowserWindowConstructorOptions } from 'electron';
+import { existsSync } from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import type { BrowserWindowConstructorOptions, WebContents } from 'electron';
 import log from 'electron-log/main.js';
-import { existsSync } from 'node:fs';
+
 import { isUrlAllowed } from './security.js';
 
 const isDev = process.env.NODE_ENV === 'development';

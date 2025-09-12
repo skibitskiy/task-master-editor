@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from 'react';
 import debounce from 'lodash/debounce';
+import { useEffect, useMemo } from 'react';
+
 import { useEventCallback } from '../use-event-callback';
 
 export function useDebounce<T extends () => unknown>(callback: T, deps: unknown[], delay: number) {

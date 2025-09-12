@@ -1,8 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
+
 import data from './dataSlice.js';
-import settings from './settingsSlice.js';
 import editor from './editorSlice.js';
+import settings from './settingsSlice.js';
 import { taskSliceReducer } from './task/taskSlice.js';
 
 export const store = configureStore({

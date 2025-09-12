@@ -2,17 +2,17 @@ import electron from 'electron';
 const { contextBridge, ipcRenderer } = electron;
 import {
   Channels,
-  validateWorkspaceSelectOptions,
-  validateWorkspaceSelectResult,
+  type FileReadInput,
+  type FileWriteInput,
+  type PreloadAPI,
   validateFileReadInput,
   validateFileReadResult,
   validateFileWriteInput,
   validateFileWriteResult,
   validateSettingsUpdateInput,
-  type PreloadAPI,
+  validateWorkspaceSelectOptions,
+  validateWorkspaceSelectResult,
   type WorkspaceSelectOptions,
-  type FileReadInput,
-  type FileWriteInput,
 } from '@app/shared';
 
 const api: PreloadAPI = {

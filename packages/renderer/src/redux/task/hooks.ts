@@ -1,7 +1,8 @@
-import { useSelector } from 'react-redux';
 import type { Task } from '@app/shared';
-import type { RootState } from '../store';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+
+import type { RootState } from '../store';
 
 export const useCurrentTask = (): { task: Task | null; taskId: string | null } => {
   const selectedTaskId = useSelector((state: RootState) => state.task?.selectedTaskId || null);

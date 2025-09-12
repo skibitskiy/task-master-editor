@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
 import type { Task } from '@app/shared';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import type { TaskFieldTab } from './types';
-import { getCurrentFieldContent } from './task-fields';
-import type { AppDispatch } from '../../../redux/store';
 import { setTaskDirty } from '../../../redux/dataSlice';
+import type { AppDispatch } from '../../../redux/store';
 import { useDebounce } from '../../../shared/hooks';
+import { getCurrentFieldContent } from './task-fields';
+import type { TaskFieldTab } from './types';
 
 interface UseTaskFormParams {
   task: Task | null | undefined;

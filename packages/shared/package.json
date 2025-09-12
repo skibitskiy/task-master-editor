@@ -16,6 +16,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "rimraf": "^5.0.5",
     "typescript": "^5.4.5",
     "vitest": "^3.2.4"

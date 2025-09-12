@@ -1,11 +1,12 @@
-import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import type { Task } from '@app/shared';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
+
 import { setTaskDirty, updateTask } from '../../redux/dataSlice';
 import type { AppDispatch } from '../../redux/store';
+import { useCurrentTask } from '../../redux/task';
 import { useDebounce, useEventCallback } from '../hooks';
 import type { EditorContextType, TaskFieldTab } from './types';
-import { useCurrentTask } from '../../redux/task';
 
 const EditorContext = createContext<EditorContextType | null>(null);
 

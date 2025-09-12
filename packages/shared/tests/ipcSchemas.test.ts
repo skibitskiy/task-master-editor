@@ -1,12 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import {
-  validateWorkspaceSelectOptions,
-  validateWorkspaceSelectResult,
   validateFileReadInput,
   validateFileReadResult,
   validateFileWriteInput,
   validateFileWriteResult,
   validateSettingsUpdateInput,
+  validateWorkspaceSelectOptions,
+  validateWorkspaceSelectResult,
 } from '../src/ipc';
 
 describe('IPC schemas', () => {

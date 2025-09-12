@@ -1,6 +1,7 @@
 import electron from 'electron';
 const { Menu, app, dialog } = electron;
-import type { MenuItemConstructorOptions, BrowserWindow as BrowserWindowType } from 'electron';
+import type { BrowserWindow as BrowserWindowType, MenuItemConstructorOptions } from 'electron';
+
 import { logger } from './logger.js';
 
 let mainWindow: BrowserWindowType | null = null;

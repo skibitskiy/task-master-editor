@@ -1,6 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Toaster } from '@gravity-ui/uikit';
-import { setToasterInstance, notify, notifySuccess, notifyError, notifyWarning, notifyInfo } from '../notify';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { notify, notifyError, notifyInfo, notifySuccess, notifyWarning, setToasterInstance } from '../notify';
 
 describe('notify utility', () => {
   let mockToaster: Toaster;

@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
 import path from 'path';
+import { defineConfig } from 'vitest/config';
 
 // Plugin to handle all CSS imports
 function cssPlugin() {

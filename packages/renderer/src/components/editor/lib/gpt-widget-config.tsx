@@ -1,5 +1,6 @@
 import type { GptWidgetOptions } from '@gravity-ui/markdown-editor';
-import { gptService, type GptRequest } from '../../../services/gpt-service';
+
+import { type GptRequest, gptService } from '../../../services/gpt-service';
 import { notifyError, notifySuccess } from '../../../utils/notify';
 
 interface GptAnswer {

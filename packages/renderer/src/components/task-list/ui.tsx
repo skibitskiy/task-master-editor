@@ -1,12 +1,13 @@
+import type { Task } from '@app/shared';
+import { Flex, List, Text } from '@gravity-ui/uikit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Flex, Text, List } from '@gravity-ui/uikit';
+
 import type { RootState } from '../../redux/store';
-import type { Task } from '@app/shared';
-import type { TaskListProps } from './lib/types';
 import { TaskListHeader } from '../task-list-header';
-import { TaskItem } from './task-item';
+import type { TaskListProps } from './lib/types';
 import styles from './styles.module.css';
+import { TaskItem } from './task-item';
 
 export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask, onBackToProjects }) => {
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);

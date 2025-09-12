@@ -1,5 +1,6 @@
+import { Button, Flex, Modal, Text } from '@gravity-ui/uikit';
 import React from 'react';
-import { Modal, Flex, Text, Button } from '@gravity-ui/uikit';
+
 import type { DeleteTaskModalProps } from './lib/types';
 
 export const DeleteTaskModal: React.FC<DeleteTaskModalProps> = ({ open, onClose, onDelete, taskId, taskTitle }) => {

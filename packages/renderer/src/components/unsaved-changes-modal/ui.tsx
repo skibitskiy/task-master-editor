@@ -1,5 +1,6 @@
+import { Button, Flex, Modal, Text } from '@gravity-ui/uikit';
 import React from 'react';
-import { Modal, Button, Flex, Text } from '@gravity-ui/uikit';
+
 import styles from './styles.module.css';
 
 interface UnsavedChangesModalProps {

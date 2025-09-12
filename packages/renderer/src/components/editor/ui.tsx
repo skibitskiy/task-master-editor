@@ -1,20 +1,21 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { TextInput } from '@gravity-ui/uikit';
+import { Task } from '@app/shared';
 import { MarkdownEditorView } from '@gravity-ui/markdown-editor';
-import type { RootState, AppDispatch } from '../../redux/store';
-import { saveFile, deleteTask } from '../../redux/dataSlice';
-import { notifySuccess, notifyError } from '../../utils/notify';
+import { TextInput } from '@gravity-ui/uikit';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { deleteTask, saveFile } from '../../redux/dataSlice';
+import { toggleEditorMode } from '../../redux/editorSlice';
+import type { AppDispatch, RootState } from '../../redux/store';
+import { clearSelectedTask, setActiveFieldTab } from '../../redux/task';
+import { useEditorContext } from '../../shared/editor-context';
+import { notifyError, notifySuccess } from '../../utils/notify';
+import { DeleteTaskModal } from '../delete-task-modal';
 import { EditorPanelHeader } from '../editor-panel-header';
 import { EditorPanelTabs } from '../editor-panel-tabs';
-import { DeleteTaskModal } from '../delete-task-modal';
 import { GptSettingsModal } from '../gpt-settings';
-import { useMarkdownFieldEditor } from './lib/use-markdown-field-editor';
 import { tabTypeGuard } from './lib/tab-type-guard';
-import { useEditorContext } from '../../shared/editor-context';
-import { setActiveFieldTab, clearSelectedTask } from '../../redux/task';
-import { toggleEditorMode } from '../../redux/editorSlice';
-import { Task } from '@app/shared';
+import { useMarkdownFieldEditor } from './lib/use-markdown-field-editor';
 
 type EditorProps = {
   task: Task;

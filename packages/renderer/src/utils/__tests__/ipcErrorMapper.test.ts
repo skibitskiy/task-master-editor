@@ -1,7 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mapIPCError, handleIPCError, createIPCErrorHandler, withIPCErrorHandling } from '../ipcErrorMapper';
-import * as notify from '../notify';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import * as globalErrorHandler from '../globalErrorHandler';
+import { createIPCErrorHandler, handleIPCError, mapIPCError, withIPCErrorHandling } from '../ipcErrorMapper';
+import * as notify from '../notify';
 
 vi.mock('../notify', () => ({
   notifyError: vi.fn(),

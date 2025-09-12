@@ -1,4 +1,5 @@
 import type { Task } from '@app/shared';
+
 import type { TaskFieldTab } from './types';
 
 export const getCurrentFieldContent = (task: Task, field: TaskFieldTab): string => {

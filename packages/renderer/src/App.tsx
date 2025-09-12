@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { ThemeProvider, Toaster, ToasterComponent, ToasterProvider, Flex, Loader } from '@gravity-ui/uikit';
-import { Provider, useSelector, useDispatch } from 'react-redux';
-import { store } from './redux/store';
-import type { RootState, AppDispatch } from './redux/store';
-import { initSettings, updateMRU } from './redux/settingsSlice';
-import { loadFromPath, saveFile, setTaskDirty } from './redux/dataSlice';
-import { setSelectedTaskId, useCurrentTask } from './redux/task';
-import { TaskList } from './components/task-list';
+import './App.css';
+
+import { Flex, Loader, ThemeProvider, Toaster, ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
+import React, { useEffect, useState } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+
 import { EditorPanel } from './components/editor-panel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { FileSelectionScreen } from './components/file-selection-screen';
-import { UnsavedChangesModal } from './components/unsaved-changes-modal';
-import { EditorProvider, useEditorContext } from './shared/editor-context';
 import { MenuHandler } from './components/MenuHandler';
-import { setToasterInstance, notifySuccess, notifyError } from './utils/notify';
+import { TaskList } from './components/task-list';
+import { UnsavedChangesModal } from './components/unsaved-changes-modal';
+import { loadFromPath, saveFile, setTaskDirty } from './redux/dataSlice';
+import { initSettings, updateMRU } from './redux/settingsSlice';
+import type { AppDispatch, RootState } from './redux/store';
+import { store } from './redux/store';
+import { setSelectedTaskId, useCurrentTask } from './redux/task';
+import { EditorProvider, useEditorContext } from './shared/editor-context';
 import { setupGlobalErrorHandlers } from './utils/globalErrorHandler';
 import { withIPCErrorHandling } from './utils/ipcErrorMapper';
-import './App.css';
+import { notifyError, notifySuccess, setToasterInstance } from './utils/notify';
 
 const toaster = new Toaster();
 setToasterInstance(toaster);

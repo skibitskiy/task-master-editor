@@ -1,17 +1,19 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import '@testing-library/jest-dom';
+
+import type { TasksFile } from '@app/shared';
 import { ThemeProvider } from '@gravity-ui/uikit';
-import { EditorPanel } from '../../editor-panel/ui';
+import { configureStore } from '@reduxjs/toolkit';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { describe, expect, it, vi } from 'vitest';
+
 import dataReducer, { saveFile } from '../../../redux/dataSlice';
 import settingsReducer from '../../../redux/settingsSlice';
 import { taskSliceReducer } from '../../../redux/task';
 import { EditorProvider } from '../../../shared/editor-context';
-import type { TasksFile } from '@app/shared';
 import * as notifyModule from '../../../utils/notify';
-import '@testing-library/jest-dom';
+import { EditorPanel } from '../../editor-panel/ui';
 
 // Mock the markdown editor
 vi.mock('@gravity-ui/markdown-editor', () => ({

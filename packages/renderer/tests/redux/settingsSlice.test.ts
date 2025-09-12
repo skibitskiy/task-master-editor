@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { configureStore } from '@reduxjs/toolkit';
-import settingsReducer, { initSettings, updateMRU } from '../../src/redux/settingsSlice';
 import type { PreloadAPI, SettingsGetResult, SettingsUpdateResult } from '@app/shared';
+import { configureStore } from '@reduxjs/toolkit';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import settingsReducer, { initSettings, updateMRU } from '../../src/redux/settingsSlice';
 
 function makeStore() {
   return configureStore({ reducer: { settings: settingsReducer } });

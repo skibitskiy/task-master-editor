@@ -1,5 +1,5 @@
-import log from 'electron-log';
 import { app } from 'electron';
+import log from 'electron-log';
 import path from 'path';
 
 // Configure log file location

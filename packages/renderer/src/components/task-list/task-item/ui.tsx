@@ -1,8 +1,9 @@
+import { Flex, Label, Text } from '@gravity-ui/uikit';
 import React from 'react';
-import { Flex, Text, Label } from '@gravity-ui/uikit';
+
+import { getStatusLabelProps } from './lib/get-status-label-props';
 import type { TaskItemProps } from './lib/types';
 import styles from './styles.module.css';
-import { getStatusLabelProps } from './lib/get-status-label-props';
 
 export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, isTaskDirty, onSelectTask }) => {
   const statusProps = getStatusLabelProps(task.status);

@@ -1,11 +1,12 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
 import { ThemeProvider } from '@gravity-ui/uikit';
-import { FileSelectionScreen } from '../../file-selection-screen';
+import { configureStore } from '@reduxjs/toolkit';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import settingsReducer from '../../../redux/settingsSlice';
+import { FileSelectionScreen } from '../../file-selection-screen';
 
 // Mock the IPC and notification modules
 vi.mock('../../../utils/ipcErrorMapper', () => ({

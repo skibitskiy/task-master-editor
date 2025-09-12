@@ -1,23 +1,25 @@
 import electron from 'electron';
 const { ipcMain, dialog, app } = electron;
 import { promises as fs } from 'node:fs';
-import log from 'electron-log/main.js';
+
+import type { SettingsData } from '@app/shared';
 import {
   Channels,
-  validateWorkspaceSelectOptions,
-  validateWorkspaceSelectResult,
+  parseTasksJson,
   validateFileReadInput,
   validateFileReadResult,
   validateFileWriteInput,
   validateFileWriteResult,
-  parseTasksJson,
   validateSettingsData,
   validateSettingsGetResult,
   validateSettingsUpdateInput,
   validateSettingsUpdateResult,
+  validateWorkspaceSelectOptions,
+  validateWorkspaceSelectResult,
 } from '@app/shared';
+import log from 'electron-log/main.js';
+
 import { atomicWriteTasksJsonWithBackup } from './fsAtomic.js';
-import type { SettingsData } from '@app/shared';
 
 type InternalSettings = SettingsData;
 

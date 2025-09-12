@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState, useAppDispatch, store } from '../redux/store';
+
 import { loadFromPath, saveFile } from '../redux/dataSlice';
 import { updateMRU } from '../redux/settingsSlice';
-import { notifySuccess, notifyError } from '../utils/notify';
-import { withIPCErrorHandling } from '../utils/ipcErrorMapper';
+import { RootState, store, useAppDispatch } from '../redux/store';
 import { useEditorContext } from '../shared/editor-context';
+import { withIPCErrorHandling } from '../utils/ipcErrorMapper';
+import { notifyError, notifySuccess } from '../utils/notify';
 
 interface MenuHandlerProps {
   onFileSelected: (filePath: string) => void;

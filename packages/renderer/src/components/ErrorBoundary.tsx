@@ -1,5 +1,6 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
 import { Alert, Button, Flex } from '@gravity-ui/uikit';
+import { Component, ErrorInfo, ReactNode } from 'react';
+
 import { notifyError } from '../utils/notify';
 
 interface Props {

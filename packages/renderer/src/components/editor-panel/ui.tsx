@@ -1,6 +1,6 @@
-import React from 'react';
-import { Flex, Text } from '@gravity-ui/uikit';
 import { Code } from '@gravity-ui/icons';
+import { Flex, Text } from '@gravity-ui/uikit';
+import React from 'react';
 
 import { useCurrentTask } from '../../redux/task';
 import { Editor } from '../editor';

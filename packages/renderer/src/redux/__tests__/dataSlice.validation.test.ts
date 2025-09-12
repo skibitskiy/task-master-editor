@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { configureStore } from '@reduxjs/toolkit';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
 import dataReducer, { loadFromPath } from '../dataSlice';
 
 // Mock the shared module
@@ -14,6 +15,7 @@ vi.mock('../helpers', () => ({
 }));
 
 import { parseTasksJson } from '@app/shared';
+
 import { collectTaskErrors } from '../helpers';
 
 const mockParseTasksJson = parseTasksJson as ReturnType<typeof vi.fn>;
