@@ -273,7 +273,7 @@
         "title": "Добавить языки программирования для выбора в блоке Code",
         "description": "",
         "details": "",
-        "status": "pending",
+        "status": "done",
         "priority": "low",
         "testStrategy": "",
         "dependencies": [
