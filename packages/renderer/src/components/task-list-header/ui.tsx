@@ -8,6 +8,7 @@ import { clearSelectedTask, setSelectedTaskId } from '../../redux/task/taskSlice
 import { CreateBranchModal } from '../create-branch-modal';
 import { TaskPath } from '../task-path';
 import type { BranchOption } from './lib/types';
+import styles from './styles.module.css';
 
 export const TaskListHeader: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -55,7 +56,7 @@ export const TaskListHeader: React.FC = () => {
 
   return (
     <>
-      <div style={{ padding: '16px', borderBottom: '1px solid var(--g-color-line-generic)' }}>
+      <div className={styles.container}>
         <Flex direction="column" gap={3}>
           <Flex alignItems="center" justifyContent="space-between">
             <Flex direction="column" gap={1}>

@@ -1,32 +1,12 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { Flex, Text, Label, List } from '@gravity-ui/uikit';
+import { Flex, Text, List } from '@gravity-ui/uikit';
 import type { RootState } from '../../redux/store';
-import type { TaskStatus, Task } from '@app/shared';
+import type { Task } from '@app/shared';
 import type { TaskListProps } from './lib/types';
 import { TaskListHeader } from '../task-list-header';
+import { TaskItem } from './task-item';
 import styles from './styles.module.css';
-
-// Helper function to map task status to Label theme
-const getStatusLabelProps = (
-  status?: TaskStatus,
-): { theme: 'normal' | 'info' | 'success' | 'warning' | 'danger' | 'utility'; text: string } => {
-  switch (status) {
-    case 'done':
-      return { theme: 'success', text: 'Готово' };
-    case 'in-progress':
-      return { theme: 'info', text: 'В работе' };
-    case 'blocked':
-      return { theme: 'danger', text: 'Заблокировано' };
-    case 'deferred':
-      return { theme: 'warning', text: 'Отложено' };
-    case 'cancelled':
-      return { theme: 'utility', text: 'Отменено' };
-    case 'pending':
-    default:
-      return { theme: 'normal', text: 'Ожидает' };
-  }
-};
 
 export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask }) => {
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
@@ -52,35 +32,17 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
   // Memoized render function for List component
   const renderTaskItem = React.useCallback(
     (task: Task, isActive: boolean, _index: number) => {
-      const statusProps = getStatusLabelProps(task.status);
       const isSelected = selectedTaskId === String(task.id);
       const isTaskDirty = dirtyState.byTaskId[String(task.id)] || false;
 
       return (
-        <div
-          className={`${styles.taskItem} ${isSelected ? styles.selected : ''} ${isActive ? 'active' : ''}`}
-          onClick={() => onSelectTask(String(task.id))}
-        >
-          <Flex alignItems="center" justifyContent="space-between" className={styles.taskItemHeader}>
-            <Flex alignItems="center" gap={2}>
-              <Text variant="caption-1" color="secondary">
-                #{task.id}
-              </Text>
-              {isTaskDirty && <span style={{ color: 'var(--g-color-text-warning)', fontSize: 16 }}>●</span>}
-              <Text variant="body-2" className={styles.taskItemTitle}>
-                {task.title}
-              </Text>
-            </Flex>
-            <Label theme={statusProps.theme} size="s">
-              {statusProps.text}
-            </Label>
-          </Flex>
-          {task.description && (
-            <Text variant="caption-2" color="secondary" className={styles.taskItemDescription}>
-              {task.description}
-            </Text>
-          )}
-        </div>
+        <TaskItem
+          task={task}
+          isActive={isActive}
+          isSelected={isSelected}
+          isTaskDirty={isTaskDirty}
+          onSelectTask={onSelectTask}
+        />
       );
     },
     [selectedTaskId, onSelectTask, dirtyState.byTaskId],
@@ -109,10 +71,9 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
   }, []);
 
   return (
-    <Flex direction="column" className={styles.taskList} grow>
+    <Flex direction="column" className={styles.taskList} grow gap={4}>
       <TaskListHeader />
-
-      <Flex direction="column" grow style={{ minHeight: 0, padding: '16px' }}>
+      <Flex direction="column" grow>
         {sortedTasks.length === 0 ? (
           <div className="editor-placeholder">
             <Text color="secondary">Задач нет</Text>
