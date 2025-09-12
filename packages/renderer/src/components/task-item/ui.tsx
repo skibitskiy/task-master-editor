@@ -18,7 +18,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, 
           <Text variant="caption-1" color="secondary">
             #{task.id}
           </Text>
-          {isTaskDirty && <span style={{ color: 'var(--g-color-text-warning)', fontSize: 16 }}>●</span>}
+          {isTaskDirty && <span className={styles.taskItemDirty}>●</span>}
           <Text variant="body-2" className={styles.taskItemTitle}>
             {task.title}
           </Text>
@@ -27,11 +27,9 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, 
           {statusProps.text}
         </Label>
       </Flex>
-      {task.description && (
-        <Text variant="caption-2" color="secondary" className={styles.taskItemDescription}>
-          {task.description}
-        </Text>
-      )}
+      <Text variant="caption-2" color="secondary" className={styles.taskItemDescription}>
+        {task.description || 'Нет описания'}
+      </Text>
     </div>
   );
 };

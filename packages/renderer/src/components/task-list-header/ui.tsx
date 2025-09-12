@@ -92,14 +92,12 @@ export const TaskListHeader: React.FC<TaskListHeaderProps> = ({ onBackToProjects
                 return (
                   <React.Fragment>
                     {renderFilter && renderFilter()}
-                    <div style={{ padding: '8px', borderBottom: '1px solid var(--g-color-line-generic)' }}>
-                      <Button view="flat" size="s" width="max" onClick={handleOpenModal}>
-                        Создать новую ветку
-                        <Button.Icon>
-                          <Plus />
-                        </Button.Icon>
-                      </Button>
-                    </div>
+                    <Text className={styles.createBranch} onClick={handleOpenModal}>
+                      <span>Создать новую ветку</span>
+                      <span className={styles.createBranchIcon}>
+                        <Icon data={Plus} size={12} />
+                      </span>
+                    </Text>
                     {renderList()}
                   </React.Fragment>
                 );

@@ -385,9 +385,9 @@
         "title": "Исправить сохранение недавних проектов",
         "description": "Ранее открытые проекты не сохраняются в недавних проектах и не отображаются в интерфейсе на стартовой страницы",
         "details": "",
-        "dependencies": [],
+        "status": "done",
         "testStrategy": "",
-        "status": "done"
+        "dependencies": []
       },
       {
         "id": 33,
@@ -397,6 +397,14 @@
         "status": "deferred",
         "testStrategy": "",
         "dependencies": []
+      },
+      {
+        "id": 34,
+        "title": "Добавить возможность добавления собственной модели.",
+        "description": "",
+        "details": "Давай добавим в селект модельки ('/Users/moskibitskiy/pets/task-master-editor/packages/renderer/src/components/gpt-settings/ui.tsx') возможность\nуказания другой модели из Open Router.\n\nПредлагаю под baseUrl выводить список из лейблов тех моделей, которые были добавлены пользователем. (import \\{Label\\} from '@gravity-ui/uikit';) size = s, type = close\n\nХранить добавленные модельки предлагаю в сторе settings (packages/renderer/src/redux/settingsSlice.ts). Кажется, эти действия заденут validateSettingsUpdateInput, поэтому поправь тесты (packages/shared/tests/ipcSchemas.test.ts) по необходимости\n\nПеренеси все инлайн стили из gpt-settings/ui.tsx в styles.module.css",
+        "dependencies": [],
+        "testStrategy": ""
       }
     ],
     "metadata": {

@@ -8,3 +8,20 @@
   padding: 16px;
   border-bottom: 1px solid var(--g-color-line-generic);
 }
+.createBranch {
+  padding: 0 8px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.createBranch:hover {
+  background: var(--g-color-base-selection);
+}
+
+.createBranchIcon {
+  padding-left: 4px;
+}
+
+.createBranchIcon svg {
+  vertical-align: middle;
+}

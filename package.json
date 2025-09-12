@@ -45,7 +45,8 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "lint-staged": "^16.1.6"
   },
   "build": {
     "appId": "com.taskmaster.editor",
@@ -81,8 +82,5 @@
       ],
       "category": "Utility"
     }
-  },
-  "dependencies": {
-    "lint-staged": "^16.1.6"
   }
 }

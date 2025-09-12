@@ -36,9 +36,16 @@ export interface FileWriteResult {
 }
 
 // Settings
+export interface CustomModel {
+  id: string;
+  name: string;
+  value: string;
+}
+
 export interface SettingsData {
   recentPaths: string[];
   preferences?: Record<string, unknown>;
+  customModels?: CustomModel[];
 }
 
 export interface SettingsGetInput {}
@@ -136,6 +143,25 @@ export function validateFileWriteResult(raw: unknown): FileWriteResult {
   return { ok: true };
 }
 
+export function validateCustomModel(raw: unknown): CustomModel {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const id = o.id as unknown;
+  const name = o.name as unknown;
+  const value = o.value as unknown;
+
+  if (typeof id !== 'string' || id.length === 0) {
+    throw new Error('CustomModel.id must be non-empty string');
+  }
+  if (typeof name !== 'string' || name.length === 0) {
+    throw new Error('CustomModel.name must be non-empty string');
+  }
+  if (typeof value !== 'string' || value.length === 0) {
+    throw new Error('CustomModel.value must be non-empty string');
+  }
+
+  return { id, name, value };
+}
+
 export function validateSettingsData(raw: unknown): SettingsData {
   const o = (raw ?? {}) as Record<string, unknown>;
   const recentPaths = Array.isArray(o.recentPaths) ? (o.recentPaths as unknown[]) : [];
@@ -143,7 +169,16 @@ export function validateSettingsData(raw: unknown): SettingsData {
     throw new Error('recentPaths must be string[]');
   }
   const preferences = (o.preferences as Record<string, unknown> | undefined) ?? undefined;
-  return { recentPaths: recentPaths as string[], preferences };
+
+  let customModels: CustomModel[] | undefined = undefined;
+  if ('customModels' in o && o.customModels != null) {
+    if (!Array.isArray(o.customModels)) {
+      throw new Error('customModels must be array');
+    }
+    customModels = (o.customModels as unknown[]).map(validateCustomModel);
+  }
+
+  return { recentPaths: recentPaths as string[], preferences, customModels };
 }
 
 export function validateSettingsGetResult(raw: unknown): SettingsGetResult {
@@ -164,6 +199,9 @@ export function validateSettingsUpdateInput(raw: unknown): SettingsUpdateInput {
       throw new Error('preferences must be object');
     }
     partial.preferences = prefs;
+  }
+  if ('customModels' in settingsObj) {
+    partial.customModels = validateSettingsData({ customModels: settingsObj.customModels }).customModels;
   }
   return { settings: partial };
 }

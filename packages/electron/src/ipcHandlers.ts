@@ -39,7 +39,7 @@ async function loadSettings(): Promise<InternalSettings> {
     const raw = await fs.readFile(p, 'utf-8');
     cachedSettings = validateSettingsData(JSON.parse(raw));
   } catch (err) {
-    cachedSettings = { recentPaths: [], preferences: {} };
+    cachedSettings = { recentPaths: [], preferences: {}, customModels: [] };
   }
   return cachedSettings!;
 }
@@ -124,6 +124,7 @@ export function registerIpcHandlers() {
     const merged: InternalSettings = {
       recentPaths: input.settings.recentPaths ?? current.recentPaths,
       preferences: input.settings.preferences ?? current.preferences ?? {},
+      customModels: input.settings.customModels ?? current.customModels ?? [],
     };
     await saveSettings(merged);
     return validateSettingsUpdateResult({ settings: merged });

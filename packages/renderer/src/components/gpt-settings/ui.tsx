@@ -1,8 +1,13 @@
-import { Alert, Button, Card, Flex, Modal, Select, Text, TextInput } from '@gravity-ui/uikit';
+import type { CustomModel } from '@app/shared';
+import { Alert, Button, Card, Flex, Label, Modal, Select, Text, TextInput } from '@gravity-ui/uikit';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { addCustomModel, removeCustomModel } from '../../redux/settingsSlice';
+import { type AppDispatch, type RootState } from '../../redux/store';
 import { type GptConfig, gptService } from '../../services/gpt-service';
 import { notifyError, notifySuccess } from '../../utils/notify';
+import styles from './styles.module.css';
 
 interface GptSettingsModalProps {
   open: boolean;
@@ -10,31 +15,34 @@ interface GptSettingsModalProps {
 }
 
 const MODELS = [
-  { value: 'anthropic/claude-3.5-sonnet', content: 'Claude 3.5 Sonnet' },
-  { value: 'anthropic/claude-3.5-haiku', content: 'Claude 3.5 Haiku' },
   { value: 'openai/gpt-4o', content: 'GPT-4o' },
-  { value: 'openai/gpt-4o-mini', content: 'GPT-4o Mini' },
-  { value: 'openai/gpt-4-turbo', content: 'GPT-4 Turbo' },
-  { value: 'google/gemini-pro-1.5', content: 'Gemini Pro 1.5' },
-  { value: 'meta-llama/llama-3.1-405b-instruct', content: 'Llama 3.1 405B' },
-  { value: 'meta-llama/llama-3.1-70b-instruct', content: 'Llama 3.1 70B' },
+  { value: 'openai/o3', content: 'GPT-o3' },
+  { value: 'openai/gpt-5', content: 'GPT-5' },
+  { value: 'openai/gpt-5-mini', content: 'GPT-5 Mini' },
+  { value: 'openai/gpt-5-nano', content: 'GPT-5 Nano' },
+  { value: 'anthropic/claude-sonnet-4', content: 'Claude Sonnet 4' },
+  { value: 'x-ai/grok-code-fast-1', content: 'Grok Code Fast 1' },
 ];
 
 export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClose }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const customModels = useSelector((state: RootState) => state.settings.data.customModels || []);
+
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState('anthropic/claude-3.5-sonnet');
   const [baseUrl, setBaseUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
-  // Load existing configuration on mount
+  const [customModelValue, setCustomModelValue] = useState('');
+
   useEffect(() => {
     if (open) {
       const config = gptService.getConfig();
       if (config) {
         setApiKey(config.apiKey);
         setModel(config.model);
-        setBaseUrl(config.baseUrl || '');
+        setBaseUrl(config.baseUrl || 'https://openrouter.ai/api/v1');
       }
       setTestResult(null);
     }
@@ -116,11 +124,52 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
     notifySuccess('Настройки очищены', 'Конфигурация была удалена');
   };
 
+  const handleAddCustomModel = async () => {
+    if (!customModelValue.trim()) {
+      notifyError('Ошибка', 'Идентификатор модели не может быть пустым');
+      return;
+    }
+
+    const newModel: CustomModel = {
+      id: Date.now().toString(),
+      name: customModelValue.trim(),
+      value: customModelValue.trim(),
+    };
+
+    try {
+      await dispatch(addCustomModel(newModel)).unwrap();
+      setCustomModelValue('');
+      notifySuccess('Модель добавлена', `Модель "${newModel.name}" успешно добавлена`);
+    } catch (error) {
+      notifyError('Ошибка', 'Не удалось добавить модель');
+      console.error('Failed to add custom model:', error);
+    }
+  };
+
+  const handleRemoveCustomModel = async (modelId: string) => {
+    try {
+      await dispatch(removeCustomModel(modelId)).unwrap();
+      notifySuccess('Модель удалена', 'Пользовательская модель удалена');
+    } catch (error) {
+      notifyError('Ошибка', 'Не удалось удалить модель');
+      console.error('Failed to remove custom model:', error);
+    }
+  };
+
   const isConfigured = gptService.isConfigured();
+
+  // Combine default models with custom models for the select options
+  const allModels = [
+    ...MODELS,
+    ...customModels.map((customModel) => ({
+      value: customModel.value,
+      content: customModel.name,
+    })),
+  ];
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Card style={{ padding: '24px' }} view="outlined" size="l">
+      <Card className={styles.card} view="outlined" size="l">
         <Flex direction="column" gap={4}>
           <Flex direction="column" gap={2}>
             <Text variant="header-2">Настройки OpenRouter</Text>
@@ -134,69 +183,88 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
             <Alert
               theme="success"
               title="OpenRouter настроен"
-              style={{ marginBottom: '16px' }}
+              className={styles.alert}
               message="Ассистент готов к использованию"
             />
           )}
 
           <Flex direction="column" gap={4}>
-            <div>
-              <Text variant="subheader-1" style={{ marginBottom: '8px' }}>
-                API ключ *
-              </Text>
+            <Flex direction="column" gap={2}>
+              <Text variant="subheader-1">API ключ *</Text>
               <TextInput
                 placeholder="sk-or-v1-..."
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 type="password"
                 size="l"
-                style={{ width: '100%' }}
               />
-              <Text variant="caption-1" color="secondary" style={{ marginTop: '4px' }}>
-                Ваш OpenRouter API ключ. Данные хранятся локально и не передаются на сервер.
-              </Text>
-            </div>
+            </Flex>
 
-            <div>
-              <Text variant="subheader-1" style={{ marginBottom: '8px' }}>
-                Модель
-              </Text>
+            <Flex direction="column" gap={2}>
+              <Text variant="subheader-1">Модель</Text>
               <Select
                 placeholder="Выберите модель"
                 value={[model]}
                 onUpdate={(values) => setModel(values[0])}
-                options={MODELS}
+                options={allModels}
                 size="l"
                 width="max"
               />
-            </div>
+            </Flex>
 
-            <div>
-              <Text variant="subheader-1" style={{ marginBottom: '8px' }}>
-                Base URL (опционально)
-              </Text>
+            <Flex direction="column" gap={2}>
+              <Text variant="subheader-1">Base URL (опционально)</Text>
               <TextInput
                 placeholder="https://openrouter.ai/api/v1"
                 value={baseUrl}
                 onChange={(e) => setBaseUrl(e.target.value)}
                 size="l"
-                style={{ width: '100%' }}
               />
-              <Text variant="caption-1" color="secondary" style={{ marginTop: '4px' }}>
-                Оставьте пустым для использования стандартного OpenRouter API
-              </Text>
-            </div>
+            </Flex>
+
+            {/* Custom Models Section */}
+            <Flex direction="column" gap={2} className={styles.customModelsSection}>
+              <Text variant="subheader-1">Пользовательские модели</Text>
+              <Flex direction="column" gap={4}>
+                <TextInput
+                  placeholder="Идентификатор модели"
+                  value={customModelValue}
+                  onChange={(e) => setCustomModelValue(e.target.value)}
+                  size="l"
+                  endContent={
+                    <Button onClick={handleAddCustomModel} view="action" size="m" disabled={!customModelValue.trim()}>
+                      Добавить модель
+                    </Button>
+                  }
+                />
+                {customModels.length > 0 && (
+                  <Flex wrap>
+                    {customModels.map((customModel) => (
+                      <Label
+                        key={customModel.id}
+                        size="s"
+                        type="close"
+                        className={styles.modelLabel}
+                        onCloseClick={() => handleRemoveCustomModel(customModel.id)}
+                      >
+                        {customModel.name}
+                      </Label>
+                    ))}
+                  </Flex>
+                )}
+              </Flex>
+            </Flex>
 
             {testResult && (
               <Alert
                 theme={testResult.success ? 'success' : 'danger'}
                 title={testResult.success ? 'Тест пройден' : 'Ошибка теста'}
-                style={{ marginTop: '8px' }}
+                className={styles.testAlert}
                 message={testResult.message}
               />
             )}
 
-            <Flex gap={3} style={{ marginTop: '16px' }}>
+            <Flex gap={3} className={styles.buttonGroup}>
               <Button onClick={handleTest} loading={isLoading} disabled={!apiKey.trim()} view="outlined" size="l">
                 Тестировать
               </Button>

@@ -27,10 +27,15 @@ export function notify(options: NotifyOptions): void {
 
   const name = `notification-${Date.now()}-${Math.random()}`;
 
+  const truncatedMessage =
+    typeof options.message === 'string' && options.message?.length > 100
+      ? options.message.slice(0, 100) + '...'
+      : options.message;
+
   const toastOptions: ToastProps = {
     name,
     title: options.title,
-    content: options.message,
+    content: truncatedMessage,
     theme: options.theme || 'normal',
     autoHiding: options.autoHiding !== undefined ? options.autoHiding : 5000,
     actions: options.actions?.map((action) => ({

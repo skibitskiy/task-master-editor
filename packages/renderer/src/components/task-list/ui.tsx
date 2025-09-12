@@ -4,10 +4,10 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { RootState } from '../../redux/store';
+import { TaskItem } from '../task-item';
 import { TaskListHeader } from '../task-list-header';
 import type { TaskListProps } from './lib/types';
 import styles from './styles.module.css';
-import { TaskItem } from './task-item';
 
 export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask, onBackToProjects }) => {
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);

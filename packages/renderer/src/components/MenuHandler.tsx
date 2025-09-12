@@ -87,7 +87,7 @@ export const MenuHandler: React.FC<MenuHandlerProps> = ({ onFileSelected }) => {
     return () => {
       // Listeners will be cleaned up by preload removeAllListeners when new ones are registered
     };
-  }, [dispatch, onFileSelected]); // Only depend on dispatch and onFileSelected
+  }, [dispatch, onFileSelected, updateCurrentTask]); // Include updateCurrentTask dependency
 
   return null;
 };
