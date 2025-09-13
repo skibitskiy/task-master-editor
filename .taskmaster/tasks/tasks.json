@@ -432,12 +432,16 @@
         "title": "Исправить верстку списка задач",
         "description": "",
         "details": "Сделать так, чтобы он занимал доступную высоту и не больше. Для этого надо с помощью useMeasure измерять доступную высоту и прокидывать значение высоты в itemsHeight списка задач. Это значение должно пересчитываться при изменении размера окна.",
-        "dependencies": [],
-        "testStrategy": ""
+        "testStrategy": "",
+        "dependencies": []
       },
       {
         "id": 38,
-        "title": "Новая задача"
+        "title": "Добавить возможность изменения статуса задачи",
+        "description": "",
+        "details": "1. Убрать кружочек, обозначающий изменения в задаче, внутри кнопки \"Сохранить\" в шапке редактора\n2. Добавить справа от заголовка задачи селект, у которого control и элементы списка будут лейблом, как в списке задач.\n\n```javascript\n<Select\n  renderControl={({onClick, onKeyDown, ref}) => {\n    return <button ref={ref} onClick={onClick} extraProps={{onKeyDown}}>Custom control</button>\n  }}\n  renderOption={(option) => {\n  return (\n    <div style={{color: option.data.color}}>\n      {option.children}\n    </div>\n  );\n}}\n>\n```",
+        "dependencies": [],
+        "testStrategy": ""
       }
     ],
     "metadata": {

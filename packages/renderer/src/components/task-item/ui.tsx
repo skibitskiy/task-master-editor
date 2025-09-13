@@ -28,7 +28,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, 
         </Label>
       </Flex>
       <Text variant="caption-2" color="secondary" className={styles.taskItemDescription}>
-        {task.description || 'Нет описания'}
+        {task.description || task.details || 'Нет описания'}
       </Text>
     </div>
   );

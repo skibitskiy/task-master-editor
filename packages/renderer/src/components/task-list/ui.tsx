@@ -54,7 +54,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
     // Base height for task item
     const baseHeight = 56;
     // Additional height for description if present
-    const descriptionHeight = task.description ? 24 : 0;
+    const descriptionHeight = task.description || task.details ? 24 : 0;
     return baseHeight + descriptionHeight;
   }, []);
 
