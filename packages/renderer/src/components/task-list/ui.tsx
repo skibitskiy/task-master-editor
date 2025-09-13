@@ -49,15 +49,6 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
     [selectedTaskId, onSelectTask, dirtyState.byTaskId],
   );
 
-  // Calculate item height dynamically based on content
-  const getItemHeight = React.useCallback((task: Task) => {
-    // Base height for task item
-    const baseHeight = 56;
-    // Additional height for description if present
-    const descriptionHeight = task.description || task.details ? 24 : 0;
-    return baseHeight + descriptionHeight;
-  }, []);
-
   // Custom filter function for List component
   const filterTask = React.useCallback((query: string) => {
     return (task: Task): boolean => {
@@ -83,7 +74,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
           <List
             items={sortedTasks}
             renderItem={renderTaskItem}
-            itemHeight={getItemHeight}
+            itemHeight={80}
             itemsHeight={(items) => Math.min(items.length * 80, 600)}
             filterable={true}
             filterPlaceholder="Поиск задач..."
