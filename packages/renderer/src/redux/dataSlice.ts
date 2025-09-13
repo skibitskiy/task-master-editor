@@ -297,4 +297,8 @@ export const {
   addNewTask,
   deleteTask,
 } = dataSlice.actions;
+
+// Selectors
+export const selectDataPath = (state: { data: DataState }) => state.data.filePath;
+
 export default dataSlice.reducer;

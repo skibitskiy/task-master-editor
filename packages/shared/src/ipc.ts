@@ -4,6 +4,12 @@ export const Channels = {
   fileWrite: 'file:write',
   settingsGet: 'settings:get',
   settingsUpdate: 'settings:update',
+  chatGetList: 'chat:get-list',
+  chatCreate: 'chat:create',
+  chatUpdateName: 'chat:update-name',
+  chatDelete: 'chat:delete',
+  chatAddMessage: 'chat:add-message',
+  chatGetMessages: 'chat:get-messages',
 } as const;
 
 // Types
@@ -60,6 +66,76 @@ export interface SettingsUpdateResult {
   settings: SettingsData;
 }
 
+// Chat types
+export interface ChatMessage {
+  id: number;
+  content: string;
+  sender: 'user' | 'ai';
+  timestamp: number;
+}
+
+export interface Chat {
+  id: string;
+  name: string;
+  projectPath: string;
+  messages: ChatMessage[];
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface ChatGetListInput {
+  projectPath: string;
+}
+
+export interface ChatGetListResult {
+  chats: Chat[];
+}
+
+export interface ChatCreateInput {
+  projectPath: string;
+  name?: string;
+  withGreeting?: boolean;
+}
+
+export interface ChatCreateResult {
+  chat: Chat;
+}
+
+export interface ChatUpdateNameInput {
+  chatId: string;
+  name: string;
+}
+
+export interface ChatUpdateNameResult {
+  ok: true;
+}
+
+export interface ChatDeleteInput {
+  chatId: string;
+}
+
+export interface ChatDeleteResult {
+  ok: true;
+}
+
+export interface ChatAddMessageInput {
+  chatId: string;
+  content: string;
+  sender: 'user' | 'ai';
+}
+
+export interface ChatAddMessageResult {
+  message: ChatMessage;
+}
+
+export interface ChatGetMessagesInput {
+  chatId: string;
+}
+
+export interface ChatGetMessagesResult {
+  messages: ChatMessage[];
+}
+
 export interface PreloadAPI {
   workspace: {
     select: (options?: Partial<WorkspaceSelectOptions>) => Promise<WorkspaceSelectResult>;
@@ -71,6 +147,14 @@ export interface PreloadAPI {
   settings: {
     get: (input?: SettingsGetInput) => Promise<SettingsGetResult>;
     update: (input: SettingsUpdateInput) => Promise<SettingsUpdateResult>;
+  };
+  chat: {
+    getList: (input: ChatGetListInput) => Promise<ChatGetListResult>;
+    create: (input: ChatCreateInput) => Promise<ChatCreateResult>;
+    updateName: (input: ChatUpdateNameInput) => Promise<ChatUpdateNameResult>;
+    delete: (input: ChatDeleteInput) => Promise<ChatDeleteResult>;
+    addMessage: (input: ChatAddMessageInput) => Promise<ChatAddMessageResult>;
+    getMessages: (input: ChatGetMessagesInput) => Promise<ChatGetMessagesResult>;
   };
 }
 // Runtime validators with defaults
@@ -208,4 +292,85 @@ export function validateSettingsUpdateInput(raw: unknown): SettingsUpdateInput {
 
 export function validateSettingsUpdateResult(raw: unknown): SettingsUpdateResult {
   return validateSettingsGetResult(raw);
+}
+
+// Chat validators
+export function validateChatGetListInput(raw: unknown): ChatGetListInput {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const projectPath = o.projectPath as unknown;
+  if (typeof projectPath !== 'string' || projectPath.length < 1) {
+    throw new Error('projectPath must be non-empty string');
+  }
+  return { projectPath };
+}
+
+export function validateChatCreateInput(raw: unknown): ChatCreateInput {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const projectPath = o.projectPath as unknown;
+  if (typeof projectPath !== 'string' || projectPath.length < 1) {
+    throw new Error('projectPath must be non-empty string');
+  }
+  const name = o.name as unknown;
+  if (name !== undefined && (typeof name !== 'string' || name.length < 1)) {
+    throw new Error('name must be non-empty string or undefined');
+  }
+  const withGreeting = o.withGreeting as unknown;
+  if (withGreeting !== undefined && typeof withGreeting !== 'boolean') {
+    throw new Error('withGreeting must be boolean or undefined');
+  }
+  return {
+    projectPath,
+    name: name as string | undefined,
+    withGreeting: withGreeting as boolean | undefined,
+  };
+}
+
+export function validateChatUpdateNameInput(raw: unknown): ChatUpdateNameInput {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const chatId = o.chatId as unknown;
+  const name = o.name as unknown;
+  if (typeof chatId !== 'string' || chatId.length < 1) {
+    throw new Error('chatId must be non-empty string');
+  }
+  if (typeof name !== 'string' || name.length < 1) {
+    throw new Error('name must be non-empty string');
+  }
+  return { chatId, name };
+}
+
+export function validateChatDeleteInput(raw: unknown): ChatDeleteInput {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const chatId = o.chatId as unknown;
+  if (typeof chatId !== 'string' || chatId.length < 1) {
+    throw new Error('chatId must be non-empty string');
+  }
+  return { chatId };
+}
+
+export function validateChatAddMessageInput(raw: unknown): ChatAddMessageInput {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const chatId = o.chatId as unknown;
+  const content = o.content as unknown;
+  const sender = o.sender as unknown;
+
+  if (typeof chatId !== 'string' || chatId.length < 1) {
+    throw new Error('chatId must be non-empty string');
+  }
+  if (typeof content !== 'string' || content.length < 1) {
+    throw new Error('content must be non-empty string');
+  }
+  if (sender !== 'user' && sender !== 'ai') {
+    throw new Error('sender must be "user" or "ai"');
+  }
+
+  return { chatId, content, sender };
+}
+
+export function validateChatGetMessagesInput(raw: unknown): ChatGetMessagesInput {
+  const o = (raw ?? {}) as Record<string, unknown>;
+  const chatId = o.chatId as unknown;
+  if (typeof chatId !== 'string' || chatId.length < 1) {
+    throw new Error('chatId must be non-empty string');
+  }
+  return { chatId };
 }

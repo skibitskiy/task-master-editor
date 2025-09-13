@@ -138,16 +138,9 @@
   box-shadow: var(--g-box-shadow-heavy);
 }
 
-/* Mobile close button */
-.mobileCloseButton {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: block;
-}
-
-@media (min-width: 768px) {
-  .mobileCloseButton {
+@media (max-width: 768px) {
+  .toggle.toggle.toggle:global(.g-button).toggleOpen {
     display: none;
   }
 }
+

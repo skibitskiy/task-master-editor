@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 import assert from 'node:assert';
-
-// Load compiled ESM modules from tsc output (NodeNext)
-import * as security from '../dist/security.cjs';
-import * as main from '../dist/main.cjs';
-import { atomicWriteTasksJsonWithBackup } from '../dist/fsAtomic.cjs';
 import { promises as fs } from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
+
+import { atomicWriteTasksJsonWithBackup } from '../dist/fsAtomic.cjs';
+import * as main from '../dist/main.cjs';
+// Load compiled ESM modules from tsc output (NodeNext)
+import * as security from '../dist/security.cjs';
 
 function testSecurityAllowList() {
   assert.strictEqual(security.isUrlAllowed('https://github.com/openai'), true, 'github should be allowed');

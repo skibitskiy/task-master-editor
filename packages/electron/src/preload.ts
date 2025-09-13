@@ -2,9 +2,21 @@ import electron from 'electron';
 const { contextBridge, ipcRenderer } = electron;
 import {
   Channels,
+  type ChatAddMessageInput,
+  type ChatCreateInput,
+  type ChatDeleteInput,
+  type ChatGetListInput,
+  type ChatGetMessagesInput,
+  type ChatUpdateNameInput,
   type FileReadInput,
   type FileWriteInput,
   type PreloadAPI,
+  validateChatAddMessageInput,
+  validateChatCreateInput,
+  validateChatDeleteInput,
+  validateChatGetListInput,
+  validateChatGetMessagesInput,
+  validateChatUpdateNameInput,
   validateFileReadInput,
   validateFileReadResult,
   validateFileWriteInput,
@@ -43,6 +55,38 @@ const api: PreloadAPI = {
     async update(input) {
       const parsed = validateSettingsUpdateInput(input);
       const res = await ipcRenderer.invoke(Channels.settingsUpdate, parsed);
+      return res; // validated in main
+    },
+  },
+  chat: {
+    async getList(input: ChatGetListInput) {
+      const parsed = validateChatGetListInput(input);
+      const res = await ipcRenderer.invoke(Channels.chatGetList, parsed);
+      return res; // validated in main
+    },
+    async create(input: ChatCreateInput) {
+      const parsed = validateChatCreateInput(input);
+      const res = await ipcRenderer.invoke(Channels.chatCreate, parsed);
+      return res; // validated in main
+    },
+    async updateName(input: ChatUpdateNameInput) {
+      const parsed = validateChatUpdateNameInput(input);
+      const res = await ipcRenderer.invoke(Channels.chatUpdateName, parsed);
+      return res; // validated in main
+    },
+    async delete(input: ChatDeleteInput) {
+      const parsed = validateChatDeleteInput(input);
+      const res = await ipcRenderer.invoke(Channels.chatDelete, parsed);
+      return res; // validated in main
+    },
+    async addMessage(input: ChatAddMessageInput) {
+      const parsed = validateChatAddMessageInput(input);
+      const res = await ipcRenderer.invoke(Channels.chatAddMessage, parsed);
+      return res; // validated in main
+    },
+    async getMessages(input: ChatGetMessagesInput) {
+      const parsed = validateChatGetMessagesInput(input);
+      const res = await ipcRenderer.invoke(Channels.chatGetMessages, parsed);
       return res; // validated in main
     },
   },

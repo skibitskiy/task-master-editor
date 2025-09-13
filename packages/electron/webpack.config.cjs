@@ -36,6 +36,7 @@ const mainConfig = {
   },
   externals: {
     electron: 'commonjs2 electron',
+    'better-sqlite3': 'commonjs2 better-sqlite3',
   },
   devtool: 'source-map',
   node: { __dirname: false, __filename: false },
@@ -77,6 +78,7 @@ const preloadConfig = {
   },
   externals: {
     electron: 'commonjs2 electron',
+    'better-sqlite3': 'commonjs2 better-sqlite3',
   },
   devtool: 'source-map',
   node: { __dirname: false, __filename: false },

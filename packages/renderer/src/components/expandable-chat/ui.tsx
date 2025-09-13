@@ -1,6 +1,6 @@
 import { Comment, Xmark } from '@gravity-ui/icons';
-import { Button, Icon, useOutsideClick } from '@gravity-ui/uikit';
-import React, { useRef, useState } from 'react';
+import { Button, Icon } from '@gravity-ui/uikit';
+import React from 'react';
 
 import styles from './styles.module.css';
 
@@ -11,6 +11,9 @@ interface ExpandableChatProps extends React.HTMLAttributes<HTMLDivElement> {
   position?: ChatPosition;
   size?: ChatSize;
   icon?: (props: React.SVGProps<SVGSVGElement>) => React.JSX.Element;
+  isOpen: boolean;
+  toggleChat: () => void;
+  containerRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const ExpandableChat: React.FC<ExpandableChatProps> = ({
@@ -19,38 +22,25 @@ const ExpandableChat: React.FC<ExpandableChatProps> = ({
   size = 'md',
   icon,
   children,
+  isOpen,
+  toggleChat,
+  containerRef,
   ...props
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const chatRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const toggleChat = () => setIsOpen(!isOpen);
-
-  // Закрывать чат при клике вне его области
-  useOutsideClick({
-    ref: containerRef as React.RefObject<HTMLElement>,
-    handler: () => {
-      if (isOpen) {
-        setIsOpen(false);
-      }
-    },
-  });
-
   return (
     <div ref={containerRef} className={`${styles.container} ${styles[position]} ${className || ''}`} {...props}>
       <div
-        ref={chatRef}
         className={`${styles.chat} ${styles[size]} ${styles[`chat-${position}`]} ${
           isOpen ? styles.open : styles.closed
         }`}
       >
         {children}
-        <Button view="flat" size="m" className={styles.mobileCloseButton} onClick={toggleChat}>
-          <Icon data={Xmark} size={16} />
-        </Button>
       </div>
-      <Button view="action" onClick={toggleChat} className={`${styles.toggle} ${className || ''}`}>
+      <Button
+        view="action"
+        onClick={toggleChat}
+        className={`${styles.toggle} ${className || ''} ${isOpen ? styles.toggleOpen : ''}`}
+      >
         <Icon data={isOpen ? Xmark : icon || Comment} size={20} />
       </Button>
     </div>

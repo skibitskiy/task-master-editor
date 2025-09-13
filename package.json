@@ -8,7 +8,7 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently -k -n RENDERER,MAIN -c cyan,magenta \"npm --workspace @app/renderer run dev\" \"npm --workspace @app/electron run dev\"",
+    "dev": "npm --workspace @app/renderer run dev & npm --workspace @app/electron run dev",
     "build:shared": "npm --workspace @app/shared run build",
     "build:renderer": "npm --workspace @app/renderer run build",
     "build:electron": "npm --workspace @app/electron run build",
@@ -36,17 +36,17 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "@playwright/test": "^1.47.0",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/lodash": "^4.17.20",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "concurrently": "^8.2.2",
     "electron-builder": "^24.13.3",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
-    "prettier": "^3.3.3",
-    "lint-staged": "^16.1.6"
+    "lint-staged": "^16.1.6",
+    "prettier": "^3.3.3"
   },
   "build": {
     "appId": "com.taskmaster.editor",

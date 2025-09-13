@@ -1,0 +1,68 @@
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.dropdown {
+  min-width: 280px;
+}
+
+.chatItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.chatItem:hover {
+  background-color: var(--g-color-base-generic-hover);
+}
+
+.chatName {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--g-color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chatActions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.chatItem:hover .chatActions {
+  opacity: 1;
+}
+
+.editInput {
+  flex: 1;
+  min-width: 0;
+}
+
+.emptyState {
+  padding: 16px 12px;
+  text-align: center;
+  color: var(--g-color-text-secondary);
+  font-size: 13px;
+}
+
+.mobileCloseButton {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .mobileCloseButton {
+    display: none;
+  }
+}

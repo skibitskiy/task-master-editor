@@ -24,6 +24,16 @@ describe('settingsSlice: init and MRU', () => {
           settings: { recentPaths: [], preferences: {} },
         }),
       },
+      chat: {
+        getList: async () => ({ chats: [] }),
+        create: async () => ({
+          chat: { id: 'test', name: 'Test', projectPath: '', messages: [], createdAt: 0, updatedAt: 0 },
+        }),
+        updateName: async () => ({ ok: true }),
+        delete: async () => ({ ok: true }),
+        addMessage: async () => ({ message: { id: 1, content: '', sender: 'user' as const, timestamp: 0 } }),
+        getMessages: async () => ({ messages: [] }),
+      },
     };
     (globalThis as unknown as { window: { api: PreloadAPI } }).window = { api };
   });

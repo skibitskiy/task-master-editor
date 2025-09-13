@@ -6,6 +6,12 @@ import type { SettingsData } from '@app/shared';
 import {
   Channels,
   parseTasksJson,
+  validateChatAddMessageInput,
+  validateChatCreateInput,
+  validateChatDeleteInput,
+  validateChatGetListInput,
+  validateChatGetMessagesInput,
+  validateChatUpdateNameInput,
   validateFileReadInput,
   validateFileReadResult,
   validateFileWriteInput,
@@ -19,6 +25,7 @@ import {
 } from '@app/shared';
 import log from 'electron-log/main.js';
 
+import { chatDatabase } from './chatDatabase.js';
 import { atomicWriteTasksJsonWithBackup } from './fsAtomic.js';
 
 type InternalSettings = SettingsData;
@@ -128,5 +135,78 @@ export function registerIpcHandlers() {
     };
     await saveSettings(merged);
     return validateSettingsUpdateResult({ settings: merged });
+  });
+
+  // Chat handlers
+  ipcMain.handle(Channels.chatGetList, async (_event: unknown, rawInput: unknown) => {
+    try {
+      const input = validateChatGetListInput(rawInput);
+      const chats = await chatDatabase.getChatsForProject(input.projectPath);
+      return { chats };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      log.error('chat:get-list error', err);
+      throw new Error(`chat:get-list validation/error: ${msg}`);
+    }
+  });
+
+  ipcMain.handle(Channels.chatCreate, async (_event: unknown, rawInput: unknown) => {
+    try {
+      const input = validateChatCreateInput(rawInput);
+      const chat = await chatDatabase.createChat(input.projectPath, input.name, input.withGreeting ?? true);
+      return { chat };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      log.error('chat:create error', err);
+      throw new Error(`chat:create validation/error: ${msg}`);
+    }
+  });
+
+  ipcMain.handle(Channels.chatUpdateName, async (_event: unknown, rawInput: unknown) => {
+    try {
+      const input = validateChatUpdateNameInput(rawInput);
+      await chatDatabase.updateChatName(input.chatId, input.name);
+      return { ok: true };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      log.error('chat:update-name error', err);
+      throw new Error(`chat:update-name validation/error: ${msg}`);
+    }
+  });
+
+  ipcMain.handle(Channels.chatDelete, async (_event: unknown, rawInput: unknown) => {
+    try {
+      const input = validateChatDeleteInput(rawInput);
+      await chatDatabase.deleteChat(input.chatId);
+      return { ok: true };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      log.error('chat:delete error', err);
+      throw new Error(`chat:delete validation/error: ${msg}`);
+    }
+  });
+
+  ipcMain.handle(Channels.chatAddMessage, async (_event: unknown, rawInput: unknown) => {
+    try {
+      const input = validateChatAddMessageInput(rawInput);
+      const message = await chatDatabase.addMessage(input.chatId, input.content, input.sender);
+      return { message };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      log.error('chat:add-message error', err);
+      throw new Error(`chat:add-message validation/error: ${msg}`);
+    }
+  });
+
+  ipcMain.handle(Channels.chatGetMessages, async (_event: unknown, rawInput: unknown) => {
+    try {
+      const input = validateChatGetMessagesInput(rawInput);
+      const messages = await chatDatabase.getChatMessages(input.chatId);
+      return { messages };
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      log.error('chat:get-messages error', err);
+      throw new Error(`chat:get-messages validation/error: ${msg}`);
+    }
   });
 }
