@@ -1,0 +1,27 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.messageList {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.messageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.scrollButton {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  box-shadow: var(--g-box-shadow-fly);
+  z-index: 1;
+}

@@ -1,0 +1,100 @@
+.message {
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.message p {
+  margin-bottom: 12px;
+}
+
+.message p:first-child {
+  margin-top: 0;
+}
+
+.message p:last-child {
+  margin-bottom: 0;
+}
+
+.message h1,
+.message h2,
+.message h3,
+.message h4,
+.message h5,
+.message h6 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.message ul,
+.message ol {
+  margin-bottom: 12px;
+  padding-left: 20px;
+}
+
+.message li {
+  margin-bottom: 4px;
+}
+
+.message code {
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', 'Consolas', monospace;
+  background-color: var(--g-color-base-generic);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.875em;
+}
+
+.message pre {
+  background-color: var(--g-color-base-generic);
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-bottom: 12px;
+}
+
+.message pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.8125em;
+}
+
+.message blockquote {
+  border-left: 4px solid var(--g-color-line-generic);
+  padding-left: 16px;
+  margin: 16px 0;
+  color: var(--g-color-text-secondary);
+}
+
+.message table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.message th,
+.message td {
+  border: 1px solid var(--g-color-line-generic);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.message th {
+  background-color: var(--g-color-base-generic);
+  font-weight: 600;
+}
+
+.message a {
+  color: var(--g-color-text-link);
+  text-decoration: none;
+}
+
+.message a:hover {
+  text-decoration: underline;
+}
+
+.message strong {
+  font-weight: 600;
+}
+
+.message em {
+  font-style: italic;
+}

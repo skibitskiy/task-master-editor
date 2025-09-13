@@ -1,0 +1,22 @@
+.header {
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.form {
+  position: relative;
+  border-radius: var(--g-border-radius-m);
+  background: var(--g-color-base-background);
+  padding: 4px;
+}
+
+.inputWrapper {
+  margin-bottom: 8px;
+}

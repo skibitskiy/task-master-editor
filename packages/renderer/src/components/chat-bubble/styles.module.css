@@ -1,0 +1,51 @@
+.bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sent {
+  flex-direction: row-reverse;
+}
+
+.received {
+  flex-direction: row;
+}
+
+.message {
+  border-radius: var(--g-border-radius-m);
+  padding: 12px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.sentMessage {
+  background: var(--g-color-base-brand);
+  color: var(--g-color-text-brand-contrast);
+}
+
+.receivedMessage {
+  background: var(--g-color-base-misc-light);
+  color: var(--g-color-text-primary);
+}
+
+.loadingContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.actionWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}

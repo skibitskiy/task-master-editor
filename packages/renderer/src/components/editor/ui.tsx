@@ -102,7 +102,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
       updateCurrentTask();
       dispatch(saveFile());
 
-      notifySuccess('Изменения применены', 'Изменения сохранены в памяти. Используйте Cmd+S для сохранения в файл');
+      notifySuccess('Изменения применены');
     } catch (error) {
       console.error('Update task error:', error);
       notifyError('Ошибка обновления', 'Произошла неожиданная ошибка при обновлении задачи');

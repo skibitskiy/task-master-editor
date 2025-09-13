@@ -1,0 +1,153 @@
+/* Container */
+.container {
+  position: fixed;
+  z-index: 50;
+}
+
+.bottom-right {
+  bottom: 24px;
+  right: 24px;
+}
+
+.bottom-left {
+  bottom: 24px;
+  left: 24px;
+}
+
+/* Chat window */
+.chat {
+  display: flex;
+  flex-direction: column;
+  background: var(--g-color-base-background);
+  border: 1px solid var(--g-color-line-generic);
+  border-radius: var(--g-border-radius-m);
+  box-shadow: var(--g-box-shadow-fly);
+  overflow: hidden;
+  transition: all 250ms ease-out;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  .chat {
+    position: absolute;
+    width: 90vw;
+    height: 80vh;
+    inset: auto;
+  }
+
+  .chat-bottom-right {
+    bottom: calc(100% + 10px);
+    right: 0;
+  }
+
+  .chat-bottom-left {
+    bottom: calc(100% + 10px);
+    left: 0;
+  }
+}
+
+/* Chat sizes */
+@media (min-width: 768px) {
+  .sm {
+    max-width: 384px;
+    max-height: 500px;
+  }
+
+  .md {
+    max-width: 448px;
+    max-height: 600px;
+  }
+
+  .lg {
+    max-width: 512px;
+    max-height: 700px;
+  }
+
+  .xl {
+    max-width: 576px;
+    max-height: 800px;
+  }
+
+  .full {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Chat states */
+.open {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1) translateY(0);
+}
+
+.closed {
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1);
+}
+
+@media (min-width: 768px) {
+  .closed {
+    transform: scale(1) translateY(20px);
+  }
+}
+
+/* Chat sections */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--g-color-line-generic);
+  flex-direction: column;
+  text-align: center;
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.footer {
+  border-top: 1px solid var(--g-color-line-generic);
+  padding: 16px;
+}
+
+/* Toggle button */
+.toggle.toggle.toggle:global(.g-button) {
+  width: 56px;
+  height: 56px;
+  border-radius: 100%;
+  box-shadow: var(--g-box-shadow-fly);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 300ms ease;
+  opacity: 0.5;
+  overflow: hidden;
+}
+
+.toggle.toggle.toggle:global(.g-button):hover {
+  opacity: 1;
+  box-shadow: var(--g-box-shadow-heavy);
+}
+
+/* Mobile close button */
+.mobileCloseButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .mobileCloseButton {
+    display: none;
+  }
+}

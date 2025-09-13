@@ -15,6 +15,12 @@ export interface GptRequest {
   markup: string;
   customPrompt?: string;
   promptData: unknown;
+  messages?: ChatMessage[];
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
 }
 
 class GptService {
@@ -43,14 +49,18 @@ class GptService {
     return this.config;
   }
 
-  async makeRequest({ markup, customPrompt, promptData }: GptRequest): Promise<GptResponse> {
+  async makeRequest({ markup, customPrompt, promptData, messages }: GptRequest): Promise<GptResponse> {
     if (!this.config?.apiKey) {
       throw new Error('API ключ не настроен');
     }
 
     try {
-      const prompt = this.buildPrompt(markup, customPrompt, promptData);
-      return await this.makeOpenRouterRequest(prompt);
+      if (messages && messages.length > 0) {
+        return await this.makeOpenRouterChatRequest(messages, markup);
+      } else {
+        const prompt = this.buildPrompt(markup, customPrompt, promptData);
+        return await this.makeOpenRouterRequest(prompt);
+      }
     } catch (error) {
       console.error('OpenRouter request failed:', error);
       throw new Error(error instanceof Error ? error.message : 'Ошибка при обращении к OpenRouter API');
@@ -89,6 +99,39 @@ class GptService {
     const result = streamText({
       model: openrouter.chat(this.config!.model),
       prompt,
+      temperature: 0.7,
+    });
+
+    let output = '';
+    for await (const chunk of result.textStream) {
+      output += chunk;
+    }
+
+    if (!output.trim()) {
+      throw new Error('GPT вернул пустой ответ');
+    }
+
+    return { rawText: output.trim() };
+  }
+
+  private async makeOpenRouterChatRequest(messages: ChatMessage[], newMessage: string): Promise<GptResponse> {
+    const openrouter = createOpenRouter({ apiKey: this.config!.apiKey });
+
+    const chatMessages = [
+      {
+        role: 'system' as const,
+        content: 'Ты полезный ассистент, который помогает пользователям с их задачами. Отвечай на русском языке.',
+      },
+      ...messages.map((msg) => ({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content,
+      })),
+      { role: 'user' as const, content: newMessage },
+    ];
+
+    const result = streamText({
+      model: openrouter.chat(this.config!.model),
+      messages: chatMessages,
       temperature: 0.7,
     });
 

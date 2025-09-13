@@ -6,7 +6,12 @@
     "lib": ["ES2021", "DOM"],
     "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"],
     "rootDir": ".",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
-  "include": ["src/**/*", "tests/**/*", "index.html"]
+  "include": ["src/**/*", "tests/**/*", "index.html"],
 }
