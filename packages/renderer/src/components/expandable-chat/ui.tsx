@@ -14,6 +14,7 @@ interface ExpandableChatProps extends React.HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
   toggleChat: () => void;
   containerRef: React.RefObject<HTMLDivElement | null>;
+  isFullscreen?: boolean;
 }
 
 const ExpandableChat: React.FC<ExpandableChatProps> = ({
@@ -25,6 +26,7 @@ const ExpandableChat: React.FC<ExpandableChatProps> = ({
   isOpen,
   toggleChat,
   containerRef,
+  isFullscreen = false,
   ...props
 }) => {
   return (
@@ -36,13 +38,15 @@ const ExpandableChat: React.FC<ExpandableChatProps> = ({
       >
         {children}
       </div>
-      <Button
-        view="action"
-        onClick={toggleChat}
-        className={`${styles.toggle} ${className || ''} ${isOpen ? styles.toggleOpen : ''}`}
-      >
-        <Icon data={isOpen ? Xmark : icon || Comment} size={20} />
-      </Button>
+      {!isFullscreen && (
+        <Button
+          view="action"
+          onClick={toggleChat}
+          className={`${styles.toggle} ${className || ''} ${isOpen ? styles.toggleOpen : ''}`}
+        >
+          <Icon data={isOpen ? Xmark : icon || Comment} size={20} />
+        </Button>
+      )}
     </div>
   );
 };

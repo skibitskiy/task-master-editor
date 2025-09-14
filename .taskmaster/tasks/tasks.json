@@ -440,9 +440,9 @@
         "title": "Добавить возможность изменения статуса задачи",
         "description": "",
         "details": "1. Убрать кружочек, обозначающий изменения в задаче, внутри кнопки \"Сохранить\" в шапке редактора\n2. Добавить справа от заголовка задачи селект, у которого control и элементы списка будут лейблом, как в списке задач.\n\n```javascript\n<Select\n  renderControl={({onClick, onKeyDown, ref}) => {\n    return <button ref={ref} onClick={onClick} extraProps={{onKeyDown}}>Custom control</button>\n  }}\n  renderOption={(option) => {\n  return (\n    <div style={{color: option.data.color}}>\n      {option.children}\n    </div>\n  );\n}}\n>\n```",
+        "status": "done",
         "testStrategy": "",
-        "dependencies": [],
-        "status": "done"
+        "dependencies": []
       },
       {
         "id": 39,
@@ -459,23 +459,32 @@
         "title": "Научиться добавлять контекст в чат с ИИ по задаче или по prd",
         "description": "",
         "details": "",
-        "dependencies": [],
-        "testStrategy": ""
+        "testStrategy": "",
+        "dependencies": []
       },
       {
         "id": 41,
         "title": "Исправить баг из-за которого данные задачи на другой бранче не обновляются",
         "description": "",
         "details": "При переключении между бранчами могут дублироваться значения в редакторе из старой задачи. Это происходит потому, что редактор не обновляет значения и не перерендеривается, так как taskId остается прежним. ",
-        "dependencies": [],
-        "testStrategy": "",
         "status": "done",
-        "priority": "high"
+        "priority": "high",
+        "testStrategy": "",
+        "dependencies": []
+      },
+      {
+        "id": 42,
+        "title": "Добавить кнопку расширения чата с ИИ на весь экран",
+        "description": "",
+        "details": "Добавить кнопку в компонент ChatHistoryControls (packages/renderer/src/components/chat-history-controls/ui.tsx), перед XMark. В качестве иконки используй ChevronsCollapseUpRight из гравити. Сейчас ширину и высоту ограничивают с помощью @media (min-width: 768px) тут (packages/renderer/src/components/expandable-chat/styles.module.css)",
+        "testStrategy": "",
+        "dependencies": [],
+        "status": "done"
       }
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-14T16:13:19.238Z",
+      "updated": "2025-09-14T20:35:17.294Z",
       "description": "Tasks for master context"
     }
   },

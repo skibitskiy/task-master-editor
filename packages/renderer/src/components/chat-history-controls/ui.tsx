@@ -1,4 +1,4 @@
-import { ClockArrowRotateLeft, Pencil, Plus, TrashBin, Xmark } from '@gravity-ui/icons';
+import { ChevronsCollapseUpRight, ClockArrowRotateLeft, Pencil, Plus, TrashBin, Xmark } from '@gravity-ui/icons';
 import { Button, DropdownMenu, Icon, TextInput } from '@gravity-ui/uikit';
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -9,15 +9,17 @@ import { useAppDispatch } from '../../redux/store';
 import styles from './styles.module.css';
 
 interface ChatHistoryControlsProps {
-  onNewChat?: () => void;
+  onNewChat: () => void;
   chatHistorySelectRef?: React.RefObject<HTMLDivElement | null>;
   toggleChat: () => void;
+  toggleFullscreen: () => void;
 }
 
 export const ChatHistoryControls: React.FC<ChatHistoryControlsProps> = ({
   onNewChat,
   chatHistorySelectRef,
   toggleChat,
+  toggleFullscreen,
 }) => {
   const dispatch = useAppDispatch();
   const chats = useSelector(selectChats);
@@ -31,7 +33,7 @@ export const ChatHistoryControls: React.FC<ChatHistoryControlsProps> = ({
     if (projectPath) {
       const result = await dispatch(createChat({ projectPath }));
       if (result.meta.requestStatus === 'fulfilled') {
-        onNewChat?.();
+        onNewChat();
       }
     }
   };
@@ -185,6 +187,16 @@ export const ChatHistoryControls: React.FC<ChatHistoryControlsProps> = ({
           </Button>
         )}
       />
+
+      <Button
+        view="flat"
+        size="m"
+        className={styles.fullscreenButton}
+        onClick={toggleFullscreen}
+        title="Развернуть на весь экран"
+      >
+        <Icon data={ChevronsCollapseUpRight} size={16} />
+      </Button>
       <Button view="flat" size="m" className={styles.mobileCloseButton} onClick={toggleChat}>
         <Icon data={Xmark} size={16} />
       </Button>

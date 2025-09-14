@@ -129,9 +129,17 @@ const AiChat: React.FC = () => {
 
   // expandable chat props
   const [isOpen, setIsOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setIsFullscreen(false);
+    }
+  }, [isOpen]);
+
   const toggleChat = () => setIsOpen(!isOpen);
+  const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
 
   useOutsideClick({
     refs: [containerRef, chatHistorySelectRef],
@@ -154,9 +162,10 @@ const AiChat: React.FC = () => {
       isOpen={isOpen}
       toggleChat={toggleChat}
       containerRef={containerRef}
-      size="lg"
+      size={isFullscreen ? 'full' : 'lg'}
       position="bottom-right"
       icon={FaceRobot}
+      isFullscreen={isFullscreen}
     >
       <ExpandableChatHeader className={styles.header}>
         <Flex width={'100%'} alignItems="center" justifyContent="space-between" gap={3}>
@@ -165,6 +174,7 @@ const AiChat: React.FC = () => {
             chatHistorySelectRef={chatHistorySelectRef}
             onNewChat={handleNewChat}
             toggleChat={toggleChat}
+            toggleFullscreen={toggleFullscreen}
           />
         </Flex>
       </ExpandableChatHeader>
