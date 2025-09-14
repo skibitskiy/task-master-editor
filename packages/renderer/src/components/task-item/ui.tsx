@@ -1,7 +1,8 @@
 import { Flex, Label, Text } from '@gravity-ui/uikit';
 import React from 'react';
 
-import { getStatusLabelProps } from './lib/get-status-label-props';
+import { getStatusLabelProps } from '@/shared/lib';
+
 import type { TaskItemProps } from './lib/types';
 import styles from './styles.module.css';
 

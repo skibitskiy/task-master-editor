@@ -1,4 +1,4 @@
-import type { TasksFile } from '@app/shared';
+import { type TasksFile, TaskStatus } from '@app/shared';
 import { ThemeProvider } from '@gravity-ui/uikit';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -18,19 +18,19 @@ const mockTasksFile: TasksFile = {
         id: 3,
         title: 'Third Task',
         description: 'This should be third when sorted',
-        status: 'done',
+        status: TaskStatus.DONE,
       },
       {
         id: 1,
         title: 'First Task',
         description: 'This should be first when sorted',
-        status: 'pending',
+        status: TaskStatus.PENDING,
       },
       {
         id: 2,
         title: 'Second Task',
         description: 'This should be second when sorted',
-        status: 'in-progress',
+        status: TaskStatus.IN_PROGRESS,
       },
     ],
     metadata: {
@@ -204,12 +204,12 @@ describe('TaskList', () => {
       const tasksWithAllStatuses: TasksFile = {
         master: {
           tasks: [
-            { id: 1, title: 'Pending Task', status: 'pending' },
-            { id: 2, title: 'In Progress Task', status: 'in-progress' },
-            { id: 3, title: 'Done Task', status: 'done' },
-            { id: 4, title: 'Blocked Task', status: 'blocked' },
-            { id: 5, title: 'Deferred Task', status: 'deferred' },
-            { id: 6, title: 'Cancelled Task', status: 'cancelled' },
+            { id: 1, title: 'Pending Task', status: TaskStatus.PENDING },
+            { id: 2, title: 'In Progress Task', status: TaskStatus.IN_PROGRESS },
+            { id: 3, title: 'Done Task', status: TaskStatus.DONE },
+            { id: 4, title: 'Blocked Task', status: TaskStatus.BLOCKED },
+            { id: 5, title: 'Deferred Task', status: TaskStatus.DEFERRED },
+            { id: 6, title: 'Cancelled Task', status: TaskStatus.CANCELLED },
           ],
         },
       };
@@ -317,7 +317,7 @@ describe('TaskList', () => {
     it('should handle tasks without descriptions', () => {
       const tasksWithoutDescriptions: TasksFile = {
         master: {
-          tasks: [{ id: 1, title: 'Task without description', status: 'pending' }],
+          tasks: [{ id: 1, title: 'Task without description', status: TaskStatus.PENDING }],
         },
       };
 

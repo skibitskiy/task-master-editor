@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import type { TasksFile } from '@app/shared';
+import { type TasksFile, TaskStatus } from '@app/shared';
 import { ThemeProvider } from '@gravity-ui/uikit';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -62,7 +62,7 @@ const mockTasksFile: TasksFile = {
         title: 'Test Task',
         description: 'Task description',
         details: 'Task details',
-        status: 'pending',
+        status: TaskStatus.PENDING,
         dependencies: ['2'],
         testStrategy: 'Unit tests for this task',
       },
@@ -70,7 +70,7 @@ const mockTasksFile: TasksFile = {
         id: 2,
         title: 'Task Without Details',
         description: 'Only description',
-        status: 'pending',
+        status: TaskStatus.PENDING,
       },
     ],
     metadata: {

@@ -11,6 +11,16 @@
 .title {
     cursor: pointer;
 }
-.titleContainer {
+
+.titleAndStatusContainer {
     flex-basis: 100%;
+}
+
+.titleContainer {
+    flex-grow: 1;
+}
+
+.statusSelect {
+    position: relative;
+    top: 6px;
 }

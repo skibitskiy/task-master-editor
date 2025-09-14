@@ -165,9 +165,11 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
       setValidationErrors((prev) => ({ ...prev, title: error }));
     } else {
       setValidationErrors((prev) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { title, ...rest } = prev;
-        return rest;
+        const result = { ...prev };
+
+        delete result.title;
+
+        return result;
       });
     }
   }, [localValues?.title, validateField, setValidationErrors]);

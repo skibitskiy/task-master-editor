@@ -1,0 +1,7 @@
+.statusSelectControl {
+    cursor: pointer;
+}
+
+.statusSelectPopup :global(.g-select-list__option_colored) {
+    background-color: inherit
+}

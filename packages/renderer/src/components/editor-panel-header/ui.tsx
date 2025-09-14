@@ -2,6 +2,7 @@ import { CircleFill, Code, Eye, FloppyDisk, Gear, TrashBin } from '@gravity-ui/i
 import { Button, Flex, Icon, Text, TextInput } from '@gravity-ui/uikit';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { StatusSelect } from '../status-select';
 import styles from './styles.module.css';
 
 interface EditorPanelHeaderProps {
@@ -82,29 +83,32 @@ export const EditorPanelHeader: React.FC<EditorPanelHeaderProps> = ({
 
   return (
     <Flex alignItems="center" justifyContent="space-between" wrap gapRow={4}>
-      <div className={styles.titleContainer}>
-        {isEditing ? (
-          <TextInput
-            controlRef={inputRef}
-            size="m"
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            validationState={titleError ? 'invalid' : undefined}
-            errorMessage={titleError}
-          />
-        ) : (
-          <Text variant="header-2" className={styles.title} onClick={handleTitleClick}>
-            #{taskId} {taskTitle}{' '}
-            {isTaskDirty && (
-              <span className={styles.dirtyIndicator}>
-                <Icon data={CircleFill} />
-              </span>
-            )}
-          </Text>
-        )}
-      </div>
+      <Flex className={styles.titleAndStatusContainer} alignItems="start" gap={3}>
+        <div className={styles.titleContainer}>
+          {isEditing ? (
+            <TextInput
+              controlRef={inputRef}
+              size="m"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              onBlur={handleBlur}
+              onKeyDown={handleKeyDown}
+              validationState={titleError ? 'invalid' : undefined}
+              errorMessage={titleError}
+            />
+          ) : (
+            <Text variant="header-2" className={styles.title} onClick={handleTitleClick}>
+              #{taskId} {taskTitle}{' '}
+              {isTaskDirty && (
+                <span className={styles.dirtyIndicator}>
+                  <Icon data={CircleFill} />
+                </span>
+              )}
+            </Text>
+          )}
+        </div>
+        {!isEditing && <StatusSelect className={styles.statusSelect} />}
+      </Flex>
       <Flex gap={2}>
         <Button view="outlined" size="m" onClick={onGptSettings} title="Настройки ИИ">
           <Button.Icon>
@@ -123,7 +127,6 @@ export const EditorPanelHeader: React.FC<EditorPanelHeaderProps> = ({
             <FloppyDisk />
           </Button.Icon>
           Сохранить
-          {isTaskDirty && <span style={{ marginLeft: 8, color: 'var(--g-color-text-warning)' }}>●</span>}
         </Button>
         <Button view="outlined-danger" size="m" onClick={onDelete}>
           <Button.Icon>

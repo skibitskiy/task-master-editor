@@ -1,6 +1,13 @@
 import { z } from 'zod';
 
-export type TaskStatus = 'pending' | 'in-progress' | 'done' | 'deferred' | 'cancelled' | 'blocked';
+export enum TaskStatus {
+  PENDING = 'pending',
+  IN_PROGRESS = 'in-progress',
+  DONE = 'done',
+  DEFERRED = 'deferred',
+  CANCELLED = 'cancelled',
+  BLOCKED = 'blocked',
+}
 
 export interface Task {
   id: number | string;
