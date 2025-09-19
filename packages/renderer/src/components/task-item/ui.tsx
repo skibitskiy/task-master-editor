@@ -1,20 +1,28 @@
+import { isNil, TaskStatus } from '@app/shared';
 import { Flex, Label, Text } from '@gravity-ui/uikit';
 import React from 'react';
 
-import { getStatusLabelProps } from '@/shared/lib';
+import { getPriorityLabelProps, getStatusLabelProps } from '@/shared/lib';
 
 import type { TaskItemProps } from './lib/types';
 import styles from './styles.module.css';
 
 export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, isTaskDirty, onSelectTask }) => {
   const statusProps = getStatusLabelProps(task.status);
+  const priorityProps = getPriorityLabelProps(task.priority);
+
+  const isInProgress = task.status === TaskStatus.IN_PROGRESS;
+  const isPending = task.status === TaskStatus.PENDING;
+  const isNotSet = isNil(task.status);
+
+  const shouldShowPriority = isPending || isInProgress || isNotSet;
 
   return (
     <div
       className={`${styles.taskItem} ${isSelected ? styles.selected : ''} ${isActive ? 'active' : ''}`}
       onClick={() => onSelectTask(String(task.id))}
     >
-      <Flex alignItems="center" justifyContent="space-between" className={styles.taskItemHeader} gap={2}>
+      <Flex direction="column" gap={1}>
         <Flex alignItems="center" gap={2} className={styles.taskItemTitleContainer}>
           <Text variant="caption-1" color="secondary">
             #{task.id}
@@ -24,9 +32,16 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, 
             {task.title}
           </Text>
         </Flex>
+      </Flex>
+      <Flex alignItems="center" gap={2} className={styles.badgeRow}>
         <Label theme={statusProps.theme} size="xs">
           {statusProps.text}
         </Label>
+        {shouldShowPriority && (
+          <Label theme={priorityProps.theme} size="xs">
+            {priorityProps.text}
+          </Label>
+        )}
       </Flex>
       <Text variant="caption-2" color="secondary" className={styles.taskItemDescription}>
         {task.description || task.details || 'Нет описания'}

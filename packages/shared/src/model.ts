@@ -9,6 +9,12 @@ export enum TaskStatus {
   BLOCKED = 'blocked',
 }
 
+export enum TaskPriority {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+}
+
 export interface Task {
   id: number | string;
   title: string;
@@ -16,7 +22,7 @@ export interface Task {
   details?: string;
   status?: TaskStatus;
   testStrategy?: string;
-  priority?: 'low' | 'medium' | 'high';
+  priority?: TaskPriority;
   dependencies?: Array<number | string>;
 }
 

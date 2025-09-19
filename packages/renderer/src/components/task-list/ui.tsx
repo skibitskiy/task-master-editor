@@ -74,7 +74,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
           <List
             items={sortedTasks}
             renderItem={renderTaskItem}
-            itemHeight={80}
+            itemHeight={100}
             itemsHeight={(items) => Math.min(items.length * 80, 600)}
             filterable={true}
             filterPlaceholder="Поиск задач..."

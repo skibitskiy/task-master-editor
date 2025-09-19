@@ -45,3 +45,9 @@
   color: var(--g-color-text-warning);
   font-size: 16px;
 }
+
+.badgeRow {
+  margin-left: calc(var(--g-spacing-5) + var(--g-spacing-2));
+  margin-top: var(--g-spacing-2);
+  margin-bottom: var(--g-spacing-1);
+}

@@ -2,6 +2,7 @@ import { CircleFill, Code, Eye, FloppyDisk, Gear, TrashBin } from '@gravity-ui/i
 import { Button, Flex, Icon, Text, TextInput } from '@gravity-ui/uikit';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { PrioritySelect } from '../priority-select';
 import { StatusSelect } from '../status-select';
 import styles from './styles.module.css';
 
@@ -107,7 +108,12 @@ export const EditorPanelHeader: React.FC<EditorPanelHeaderProps> = ({
             </Text>
           )}
         </div>
-        {!isEditing && <StatusSelect className={styles.statusSelect} />}
+        {!isEditing && (
+          <Flex gap={2}>
+            <StatusSelect className={styles.statusSelect} />
+            <PrioritySelect className={styles.prioritySelect} />
+          </Flex>
+        )}
       </Flex>
       <Flex gap={2}>
         <Button view="outlined" size="m" onClick={onGptSettings} title="Настройки ИИ">

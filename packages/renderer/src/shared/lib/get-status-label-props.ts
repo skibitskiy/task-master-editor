@@ -1,8 +1,7 @@
 import { TaskStatus } from '@app/shared';
+import { LabelProps } from '@gravity-ui/uikit';
 
-export const getStatusLabelProps = (
-  status?: TaskStatus,
-): { theme: 'normal' | 'info' | 'success' | 'warning' | 'danger' | 'utility'; text: string } => {
+export const getStatusLabelProps = (status?: TaskStatus): { theme: LabelProps['theme']; text: string } => {
   switch (status) {
     case 'done':
       return { theme: 'success', text: 'Готово' };
