@@ -7,7 +7,8 @@
     "dev": "cross-env NODE_ENV=development vite --mode development",
     "build": "cross-env NODE_ENV=production vite build --mode production",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vite build && vitest run"
+    "test": "vite build && vitest run",
+    "kill": "lsof -ti:5173 | xargs kill -9"
   },
   "devDependencies": {
     "@app/shared": "*",

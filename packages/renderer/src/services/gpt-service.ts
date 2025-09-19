@@ -18,8 +18,13 @@ export interface GptRequest {
   messages?: ChatMessage[];
 }
 
+export enum ChatRole {
+  USER = 'user',
+  ASSISTANT = 'assistant',
+}
+
 export interface ChatMessage {
-  role: 'user' | 'assistant';
+  role: ChatRole;
   content: string;
 }
 

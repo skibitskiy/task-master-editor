@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 
 import Database from 'better-sqlite3';
@@ -31,7 +32,6 @@ export interface StoredChat {
 export class ChatDatabase {
   private db: Database.Database | null = null;
   private dbPath: string | null = null;
-  private idCounter = 1;
 
   private async getDatabasePath(): Promise<string> {
     if (this.dbPath) {
@@ -122,7 +122,7 @@ export class ChatDatabase {
   public async createChat(projectPath: string, name?: string, withGreeting: boolean = true): Promise<Chat> {
     await this.initializeDatabase();
 
-    const chatId = `${this.idCounter++}`;
+    const chatId = randomUUID();
     const chatName =
       name !== undefined && name !== null
         ? name

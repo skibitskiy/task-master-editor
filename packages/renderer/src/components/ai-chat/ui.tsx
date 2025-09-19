@@ -5,10 +5,17 @@ import { useSelector } from 'react-redux';
 
 import { useOutsideClick } from '@/shared/hooks';
 
-import { addMessageToChat, createChat, loadChats, selectChatLoaded, selectCurrentChat } from '../../redux/chatSlice';
+import {
+  addMessageToChat,
+  clearChats,
+  createChat,
+  loadChats,
+  selectChatLoaded,
+  selectCurrentChat,
+} from '../../redux/chatSlice';
 import { selectDataPath } from '../../redux/dataSlice';
 import { useAppDispatch } from '../../redux/store';
-import { ChatMessage, gptService } from '../../services/gpt-service';
+import { ChatMessage, ChatRole, gptService } from '../../services/gpt-service';
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../chat-bubble';
 import { ChatHistoryControls } from '../chat-history-controls';
 import { ChatInput } from '../chat-input';
@@ -25,6 +32,11 @@ const AiChat: React.FC = () => {
 
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Clear chats when project path changes
+  useEffect(() => {
+    dispatch(clearChats());
+  }, [projectPath, dispatch]);
 
   // Load chats when project path changes
   useEffect(() => {
@@ -48,28 +60,22 @@ const AiChat: React.FC = () => {
     setInput('');
     setIsLoading(true);
 
-    // Add user message to current chat
-    await dispatch(
-      addMessageToChat({
-        chatId: currentChat.id,
-        content: messageText,
-        sender: 'user',
-      }),
-    );
-
     try {
       if (gptService.isConfigured()) {
-        // Преобразуем историю сообщений в формат для GPT
+        // Формируем историю для GPT (БЕЗ нового сообщения - оно добавится в gpt-service)
         const chatHistory: ChatMessage[] = currentChat.messages.map((msg) => ({
-          role: msg.sender === 'user' ? 'user' : 'assistant',
+          role: msg.sender === ChatRole.USER ? ChatRole.USER : ChatRole.ASSISTANT,
           content: msg.content,
         }));
 
-        // Add current user message to history
-        chatHistory.push({
-          role: 'user',
-          content: messageText,
-        });
+        // Добавляем сообщение пользователя в чат
+        await dispatch(
+          addMessageToChat({
+            chatId: currentChat.id,
+            content: messageText,
+            sender: 'user',
+          }),
+        );
 
         const response = await gptService.makeRequest({
           markup: messageText,
