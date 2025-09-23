@@ -18,5 +18,7 @@
 }
 
 .inputWrapper {
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+  border: 1px solid var(--g-color-line-generic);
+  border-radius: var(--g-border-radius-m);
 }

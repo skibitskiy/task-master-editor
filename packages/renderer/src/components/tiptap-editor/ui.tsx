@@ -1,5 +1,6 @@
 import { isTaskField, TaskFieldWords } from '@app/shared';
 import Mention from '@tiptap/extension-mention';
+import { Placeholder } from '@tiptap/extensions';
 import { EditorContent, ReactRenderer, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { SuggestionProps } from '@tiptap/suggestion';
@@ -50,6 +51,10 @@ const TiptapEditor = forwardRef<TiptapEditorRef, TiptapEditorProps>(
     const editor = useEditor({
       extensions: [
         StarterKit,
+        Placeholder.configure({
+          placeholder,
+          showOnlyWhenEditable: false,
+        }),
         Mention.configure({
           HTMLAttributes: {
             class: styles.mention,
@@ -145,7 +150,6 @@ const TiptapEditor = forwardRef<TiptapEditorRef, TiptapEditorProps>(
       editorProps: {
         attributes: {
           class: `${styles.editor} ${className || ''}`,
-          placeholder,
         },
         handleKeyDown: (view, event) => {
           console.log(

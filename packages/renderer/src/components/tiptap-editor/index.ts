@@ -1,1 +1,1 @@
-export { TiptapEditor } from './ui';
+export { TiptapEditor, type TiptapEditorRef } from './ui';

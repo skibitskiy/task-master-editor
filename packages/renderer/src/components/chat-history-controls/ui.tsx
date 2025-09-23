@@ -1,4 +1,4 @@
-import { ChevronsCollapseUpRight, ClockArrowRotateLeft, Pencil, Plus, TrashBin, Xmark } from '@gravity-ui/icons';
+import { ChevronsCollapseUpRight, ClockArrowRotateLeft, Gear, Pencil, Plus, TrashBin, Xmark } from '@gravity-ui/icons';
 import { Button, DropdownMenu, Icon, TextInput } from '@gravity-ui/uikit';
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ interface ChatHistoryControlsProps {
   chatHistorySelectRef?: React.RefObject<HTMLDivElement | null>;
   toggleChat: () => void;
   toggleFullscreen: () => void;
+  onSettingsClick?: () => void;
 }
 
 export const ChatHistoryControls: React.FC<ChatHistoryControlsProps> = ({
@@ -20,6 +21,7 @@ export const ChatHistoryControls: React.FC<ChatHistoryControlsProps> = ({
   chatHistorySelectRef,
   toggleChat,
   toggleFullscreen,
+  onSettingsClick,
 }) => {
   const dispatch = useAppDispatch();
   const chats = useSelector(selectChats);
@@ -187,6 +189,12 @@ export const ChatHistoryControls: React.FC<ChatHistoryControlsProps> = ({
           </Button>
         )}
       />
+
+      {onSettingsClick && (
+        <Button view="flat" size="m" onClick={onSettingsClick} title="Настройки ИИ">
+          <Icon data={Gear} size={16} />
+        </Button>
+      )}
 
       <Button
         view="flat"

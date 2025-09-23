@@ -1,4 +1,4 @@
-import { CircleFill, Code, Eye, FloppyDisk, Gear, TrashBin } from '@gravity-ui/icons';
+import { CircleFill, Code, Eye, FloppyDisk, TrashBin } from '@gravity-ui/icons';
 import { Button, Flex, Icon, Text, TextInput } from '@gravity-ui/uikit';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -14,7 +14,6 @@ interface EditorPanelHeaderProps {
   onToggleMode: () => void;
   onSave: () => void;
   onDelete: () => void;
-  onGptSettings: () => void;
   onTitleChange: (newTitle: string) => void;
   onTitleBlur: () => void;
   titleError?: string;
@@ -30,7 +29,6 @@ export const EditorPanelHeader: React.FC<EditorPanelHeaderProps> = ({
   onToggleMode,
   onSave,
   onDelete,
-  onGptSettings,
   onTitleChange,
   onTitleBlur,
   titleError,
@@ -116,12 +114,6 @@ export const EditorPanelHeader: React.FC<EditorPanelHeaderProps> = ({
         )}
       </Flex>
       <Flex gap={2}>
-        <Button view="outlined" size="m" onClick={onGptSettings} title="Настройки ИИ">
-          <Button.Icon>
-            <Gear />
-          </Button.Icon>
-          ИИ
-        </Button>
         {showModeToggle && (
           <Button view="outlined" size="m" onClick={onToggleMode}>
             <Button.Icon>{editorMode === 'editor' ? <Eye /> : <Code />}</Button.Icon>

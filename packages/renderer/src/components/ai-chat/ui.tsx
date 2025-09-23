@@ -23,8 +23,10 @@ import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../chat-bubble'
 import { ChatHistoryControls } from '../chat-history-controls';
 import { ChatMessageList } from '../chat-message-list';
 import { ExpandableChat, ExpandableChatBody, ExpandableChatFooter, ExpandableChatHeader } from '../expandable-chat';
+import { GptSettingsModal } from '../gpt-settings';
 import { MarkdownMessage } from '../markdown-message';
-import { TiptapEditor } from '../tiptap-editor';
+import { ModelSelector } from '../model-selector';
+import { TiptapEditor, TiptapEditorRef } from '../tiptap-editor';
 import styles from './styles.module.css';
 
 const AiChat: React.FC = () => {
@@ -35,6 +37,8 @@ const AiChat: React.FC = () => {
 
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [gptSettingsOpen, setGptSettingsOpen] = useState(false);
+  const tiptapEditorRef = useRef<TiptapEditorRef>(null);
   const store = useStore<RootState>();
 
   // Clear chats when project path changes
@@ -178,13 +182,20 @@ const AiChat: React.FC = () => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isOpen) {
+      tiptapEditorRef.current?.focus();
+    }
+  }, [isOpen]);
+
   const toggleChat = () => setIsOpen(!isOpen);
   const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
 
   const suggestPopupRef = useRef<HTMLDivElement>(null);
+  const modelSelectorPopupRef = useRef<HTMLDivElement>(null);
 
   useOutsideClick({
-    refs: [containerRef, chatHistorySelectRef, suggestPopupRef],
+    refs: [containerRef, chatHistorySelectRef, suggestPopupRef, modelSelectorPopupRef],
     handler: () => {
       if (isOpen) {
         setIsOpen(false);
@@ -217,6 +228,7 @@ const AiChat: React.FC = () => {
             onNewChat={handleNewChat}
             toggleChat={toggleChat}
             toggleFullscreen={toggleFullscreen}
+            onSettingsClick={() => setGptSettingsOpen(true)}
           />
         </Flex>
       </ExpandableChatHeader>
@@ -251,15 +263,21 @@ const AiChat: React.FC = () => {
               placeholder="Введите сообщение..."
               suggestPopupRef={suggestPopupRef}
               disabled={isLoading}
+              ref={tiptapEditorRef}
             />
           </div>
-          <Flex alignItems="center" justifyContent="flex-end">
-            <Button type="submit" size="xl" disabled={!input.trim() || isLoading}>
+          <Flex gap={4} alignItems="center" justifyContent={'space-between'}>
+            <Flex basis={'250px'}>
+              <ModelSelector size="l" popupRef={modelSelectorPopupRef} />
+            </Flex>
+            <Button type="submit" size="l" disabled={!input.trim() || isLoading}>
               <Icon data={PaperPlane} size={24} />
             </Button>
           </Flex>
         </form>
       </ExpandableChatFooter>
+
+      <GptSettingsModal open={gptSettingsOpen} onClose={() => setGptSettingsOpen(false)} />
     </ExpandableChat>
   );
 };

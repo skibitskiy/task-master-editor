@@ -13,7 +13,6 @@ import { notifyError, notifySuccess } from '../../utils/notify';
 import { DeleteTaskModal } from '../delete-task-modal';
 import { EditorPanelHeader } from '../editor-panel-header';
 import { EditorPanelTabs } from '../editor-panel-tabs';
-import { GptSettingsModal } from '../gpt-settings';
 import { tabTypeGuard } from './lib/tab-type-guard';
 import { useMarkdownFieldEditor } from './lib/use-markdown-field-editor';
 
@@ -24,7 +23,6 @@ type EditorProps = {
 export const Editor: React.FC<EditorProps> = ({ task }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [gptSettingsOpen, setGptSettingsOpen] = useState(false);
 
   const editorMode = useSelector((state: RootState) => state.editor.mode);
 
@@ -190,7 +188,6 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
           onToggleMode={() => dispatch(toggleEditorMode())}
           onSave={handleSave}
           onDelete={handleDelete}
-          onGptSettings={() => setGptSettingsOpen(true)}
           onTitleChange={handleTitleChange}
           onTitleBlur={handleTitleBlur}
           titleError={validationErrors.title}
@@ -277,7 +274,6 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
         taskId={String(task?.id)}
         taskTitle={task?.title || ''}
       />
-      <GptSettingsModal open={gptSettingsOpen} onClose={() => setGptSettingsOpen(false)} />
     </div>
   );
 };

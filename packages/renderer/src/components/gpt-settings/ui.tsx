@@ -1,5 +1,5 @@
 import type { CustomModel } from '@app/shared';
-import { Alert, Button, Card, Flex, Label, Modal, Select, Text, TextInput } from '@gravity-ui/uikit';
+import { Alert, Button, Card, Flex, Label, Modal, Text, TextInput } from '@gravity-ui/uikit';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -7,22 +7,13 @@ import { addCustomModel, removeCustomModel } from '../../redux/settingsSlice';
 import { type AppDispatch, type RootState } from '../../redux/store';
 import { type GptConfig, gptService } from '../../services/gpt-service';
 import { notifyError, notifySuccess } from '../../utils/notify';
+import { ModelSelector } from '../model-selector';
 import styles from './styles.module.css';
 
 interface GptSettingsModalProps {
   open: boolean;
   onClose: () => void;
 }
-
-const MODELS = [
-  { value: 'openai/gpt-4o', content: 'GPT-4o' },
-  { value: 'openai/o3', content: 'GPT-o3' },
-  { value: 'openai/gpt-5', content: 'GPT-5' },
-  { value: 'openai/gpt-5-mini', content: 'GPT-5 Mini' },
-  { value: 'openai/gpt-5-nano', content: 'GPT-5 Nano' },
-  { value: 'anthropic/claude-sonnet-4', content: 'Claude Sonnet 4' },
-  { value: 'x-ai/grok-code-fast-1', content: 'Grok Code Fast 1' },
-];
 
 export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -148,15 +139,6 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
 
   const isConfigured = gptService.isConfigured();
 
-  // Combine default models with custom models for the select options
-  const allModels = [
-    ...MODELS,
-    ...customModels.map((customModel) => ({
-      value: customModel.value,
-      content: customModel.name,
-    })),
-  ];
-
   return (
     <Modal open={open} onClose={onClose}>
       <Card className={styles.card} view="outlined" size="l">
@@ -192,14 +174,7 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
 
             <Flex direction="column" gap={2}>
               <Text variant="subheader-1">Модель</Text>
-              <Select
-                placeholder="Выберите модель"
-                value={[model]}
-                onUpdate={(values) => setModel(values[0])}
-                options={allModels}
-                size="l"
-                width="max"
-              />
+              <ModelSelector value={model} onUpdate={(value) => setModel(value)} size="l" width="max" />
             </Flex>
 
             <Flex direction="column" gap={2}>
