@@ -1,4 +1,4 @@
-import type { Task } from '@app/shared';
+import { type Task, TaskField } from '@app/shared';
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -90,21 +90,24 @@ export const useTaskForm = ({ task, taskId }: UseTaskFormParams) => {
   }, [setLocalValuesFromTask, task]);
 
   // Calculate dirty state for each field individually
-  const titleDirty = React.useMemo(() => isFieldDirty('title', localValues.title), [isFieldDirty, localValues.title]);
+  const titleDirty = React.useMemo(
+    () => isFieldDirty(TaskField.TITLE, localValues.title),
+    [isFieldDirty, localValues.title],
+  );
   const descriptionDirty = React.useMemo(
-    () => isFieldDirty('description', localValues.description),
+    () => isFieldDirty(TaskField.DESCRIPTION, localValues.description),
     [isFieldDirty, localValues.description],
   );
   const detailsDirty = React.useMemo(
-    () => isFieldDirty('details', localValues.details),
+    () => isFieldDirty(TaskField.DETAILS, localValues.details),
     [isFieldDirty, localValues.details],
   );
   const dependenciesDirty = React.useMemo(
-    () => isFieldDirty('dependencies', localValues.dependencies),
+    () => isFieldDirty(TaskField.DEPENDENCIES, localValues.dependencies),
     [isFieldDirty, localValues.dependencies],
   );
   const testStrategyDirty = React.useMemo(
-    () => isFieldDirty('testStrategy', localValues.testStrategy),
+    () => isFieldDirty(TaskField.TEST_STRATEGY, localValues.testStrategy),
     [isFieldDirty, localValues.testStrategy],
   );
 

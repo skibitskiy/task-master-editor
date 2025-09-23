@@ -15,15 +15,26 @@ export enum TaskPriority {
   HIGH = 'high',
 }
 
+export enum TaskField {
+  ID = 'id',
+  TITLE = 'title',
+  DESCRIPTION = 'description',
+  DETAILS = 'details',
+  STATUS = 'status',
+  TEST_STRATEGY = 'testStrategy',
+  DEPENDENCIES = 'dependencies',
+  PRIORITY = 'priority',
+}
+
 export interface Task {
-  id: number | string;
-  title: string;
-  description?: string;
-  details?: string;
-  status?: TaskStatus;
-  testStrategy?: string;
-  priority?: TaskPriority;
-  dependencies?: Array<number | string>;
+  [TaskField.ID]: number | string;
+  [TaskField.TITLE]: string;
+  [TaskField.DESCRIPTION]?: string;
+  [TaskField.DETAILS]?: string;
+  [TaskField.STATUS]?: TaskStatus;
+  [TaskField.TEST_STRATEGY]?: string;
+  [TaskField.PRIORITY]?: TaskPriority;
+  [TaskField.DEPENDENCIES]?: Array<number | string>;
 }
 
 type Branch = string;

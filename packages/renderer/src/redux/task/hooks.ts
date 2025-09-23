@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { RootState } from '../store';
+import { findTask } from './lib/find-task';
 
 export const useCurrentTask = (): { task: Task | null; taskId: string | null } => {
   const selectedTaskId = useSelector((state: RootState) => state.task?.selectedTaskId || null);
@@ -10,10 +11,7 @@ export const useCurrentTask = (): { task: Task | null; taskId: string | null } =
   const currentBranch = useSelector((state: RootState) => state.data.currentBranch);
 
   const task = useMemo(
-    () =>
-      selectedTaskId && tasksFile && tasksFile[currentBranch]
-        ? tasksFile[currentBranch].tasks.find((t) => String(t.id) === selectedTaskId) || null
-        : null,
+    () => findTask({ taskId: selectedTaskId, tasksFile, currentBranch }),
     [selectedTaskId, tasksFile, currentBranch],
   );
 

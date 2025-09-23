@@ -1,4 +1,4 @@
-import { Task } from '@app/shared';
+import { Task, TaskField } from '@app/shared';
 import { MarkdownEditorView } from '@gravity-ui/markdown-editor';
 import { TextInput } from '@gravity-ui/uikit';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -54,17 +54,17 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
 
   // Initialize individual markdown editors for each markdown field
   const descriptionEditorData = useMarkdownFieldEditor({
-    field: 'description',
+    field: TaskField.DESCRIPTION,
     initialValue: task?.description || '',
     onChange: handleFieldChange,
   });
   const detailsEditorData = useMarkdownFieldEditor({
-    field: 'details',
+    field: TaskField.DETAILS,
     initialValue: task?.details || '',
     onChange: handleFieldChange,
   });
   const testStrategyEditorData = useMarkdownFieldEditor({
-    field: 'testStrategy',
+    field: TaskField.TEST_STRATEGY,
     initialValue: task?.testStrategy || '',
     onChange: handleFieldChange,
   });
@@ -133,16 +133,21 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
 
   // EditorPanelTabs props
   const availableTabs = [
-    { id: 'title', title: 'Заголовок', isDirty: fieldDirtyState.title, hasError: !!validationErrors.title },
-    { id: 'description', title: 'Описание', isDirty: fieldDirtyState.description, hasError: false },
-    { id: 'details', title: 'Детали', isDirty: fieldDirtyState.details, hasError: false },
+    { id: TaskField.TITLE, title: 'Заголовок', isDirty: fieldDirtyState.title, hasError: !!validationErrors.title },
+    { id: TaskField.DESCRIPTION, title: 'Описание', isDirty: fieldDirtyState.description, hasError: false },
+    { id: TaskField.DETAILS, title: 'Детали', isDirty: fieldDirtyState.details, hasError: false },
     {
-      id: 'dependencies',
+      id: TaskField.DEPENDENCIES,
       title: 'Зависимости',
       isDirty: fieldDirtyState.dependencies,
       hasError: !!validationErrors.dependencies,
     },
-    { id: 'testStrategy', title: 'Стратегия тестирования', isDirty: fieldDirtyState.testStrategy, hasError: false },
+    {
+      id: TaskField.TEST_STRATEGY,
+      title: 'Стратегия тестирования',
+      isDirty: fieldDirtyState.testStrategy,
+      hasError: false,
+    },
   ];
 
   const handleTabsChange = (tab: string) => {

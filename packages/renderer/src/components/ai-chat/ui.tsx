@@ -1,9 +1,12 @@
+import { isNil, isTaskField, TaskField } from '@app/shared';
 import { FaceRobot, PaperPlane } from '@gravity-ui/icons';
 import { Button, Flex, Icon, Text } from '@gravity-ui/uikit';
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
+import { findTask } from '@/redux/task/lib';
 import { useOutsideClick } from '@/shared/hooks';
+import { parseRichTextToPlain } from '@/shared/lib';
 
 import {
   addMessageToChat,
@@ -14,14 +17,14 @@ import {
   selectCurrentChat,
 } from '../../redux/chatSlice';
 import { selectDataPath } from '../../redux/dataSlice';
-import { useAppDispatch } from '../../redux/store';
+import { RootState, useAppDispatch } from '../../redux/store';
 import { ChatMessage, ChatRole, gptService } from '../../services/gpt-service';
 import { ChatBubble, ChatBubbleAvatar, ChatBubbleMessage } from '../chat-bubble';
 import { ChatHistoryControls } from '../chat-history-controls';
-import { ChatInput } from '../chat-input';
 import { ChatMessageList } from '../chat-message-list';
 import { ExpandableChat, ExpandableChatBody, ExpandableChatFooter, ExpandableChatHeader } from '../expandable-chat';
 import { MarkdownMessage } from '../markdown-message';
+import { TiptapEditor } from '../tiptap-editor';
 import styles from './styles.module.css';
 
 const AiChat: React.FC = () => {
@@ -32,6 +35,7 @@ const AiChat: React.FC = () => {
 
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const store = useStore<RootState>();
 
   // Clear chats when project path changes
   useEffect(() => {
@@ -57,6 +61,8 @@ const AiChat: React.FC = () => {
       return;
     }
 
+    const text = parseRichTextToPlain(messageText, resolveMention);
+
     setInput('');
     setIsLoading(true);
 
@@ -72,13 +78,13 @@ const AiChat: React.FC = () => {
         await dispatch(
           addMessageToChat({
             chatId: currentChat.id,
-            content: messageText,
+            content: text,
             sender: 'user',
           }),
         );
 
         const response = await gptService.makeRequest({
-          markup: messageText,
+          markup: text,
           customPrompt: '',
           promptData: 'chat',
           messages: chatHistory,
@@ -122,8 +128,36 @@ const AiChat: React.FC = () => {
     await sendMessage(input);
   };
 
+  const resolveMention = (id: string) => {
+    if (!isTaskField(id)) {
+      return id;
+    }
+
+    const task = findTask({
+      taskId: store.getState().task.selectedTaskId,
+      tasksFile: store.getState().data.tasksFile,
+      currentBranch: store.getState().data.currentBranch,
+    });
+
+    console.log('resolveMention', id);
+
+    const map = {
+      [TaskField.TITLE]: task?.title,
+      [TaskField.DESCRIPTION]: task?.description,
+      [TaskField.DETAILS]: task?.details,
+      [TaskField.DEPENDENCIES]: task?.dependencies,
+      [TaskField.TEST_STRATEGY]: task?.testStrategy,
+      [TaskField.PRIORITY]: task?.priority,
+      [TaskField.ID]: task?.id,
+      [TaskField.STATUS]: task?.status,
+    };
+
+    return isNil(map[id]) ? '' : String(map[id]);
+  };
+
   const handleEnterPress = async (value: string) => {
-    await sendMessage(value);
+    const text = parseRichTextToPlain(value, resolveMention);
+    await sendMessage(text);
   };
 
   const handleNewChat = () => {
@@ -147,8 +181,10 @@ const AiChat: React.FC = () => {
   const toggleChat = () => setIsOpen(!isOpen);
   const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
 
+  const suggestPopupRef = useRef<HTMLDivElement>(null);
+
   useOutsideClick({
-    refs: [containerRef, chatHistorySelectRef],
+    refs: [containerRef, chatHistorySelectRef, suggestPopupRef],
     handler: () => {
       if (isOpen) {
         setIsOpen(false);
@@ -208,11 +244,13 @@ const AiChat: React.FC = () => {
       <ExpandableChatFooter>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.inputWrapper}>
-            <ChatInput
+            <TiptapEditor
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={setInput}
               onEnterPress={handleEnterPress}
               placeholder="Введите сообщение..."
+              suggestPopupRef={suggestPopupRef}
+              disabled={isLoading}
             />
           </div>
           <Flex alignItems="center" justifyContent="flex-end">

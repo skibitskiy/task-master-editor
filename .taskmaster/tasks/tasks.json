@@ -448,10 +448,10 @@
       },
       {
         "id": 40,
-        "title": "Научиться добавлять контекст в чат с ИИ по задаче или по prd",
+        "title": "Научиться добавлять контекст в чат с ИИ по задаче",
         "description": "",
-        "details": "",
-        "status": "pending",
+        "details": "В чат с ai вместо textarea надо использовать продвинутый редактор tiptap: <https://tiptap.dev/docs/editor/getting-started/install/react> и добавить расширение с упоминаниями: <https://tiptap.dev/docs/editor/extensions/nodes/mention?utm_source=chatgpt.com>\n\nХочется, чтобы при вводе @context в сообщение с ии передавался контекст задачи, а именно json со всеми полями как в tasks.json",
+        "status": "done",
         "priority": "high",
         "testStrategy": "",
         "dependencies": []
@@ -505,7 +505,7 @@
       {
         "id": 46,
         "title": "Добавить возможность перетаскивать задачу из одной ветки в другую",
-        "description": "",
+        "description": "Надо изучить документацию Таскмастера и найти там нужную команду.",
         "details": "",
         "priority": "medium",
         "testStrategy": "",
@@ -516,10 +516,10 @@
         "title": "Добавить трекинг файла с задачами",
         "description": "Добавить трекинг файла с задачами – при изменении списка задач подтягивать его в редактор. Если файл редактируемой задачи изменился, необходимо подсветить это в интерфейсе.",
         "details": "",
+        "status": "pending",
         "priority": "medium",
         "testStrategy": "",
-        "dependencies": [],
-        "status": "pending"
+        "dependencies": []
       },
       {
         "id": 48,
@@ -534,7 +534,7 @@
     ],
     "metadata": {
       "created": "2025-09-08T07:02:22.454Z",
-      "updated": "2025-09-19T15:57:23.996Z",
+      "updated": "2025-09-22T18:10:19.267Z",
       "description": "Tasks for master context"
     }
   },
@@ -555,17 +555,7 @@
         "details": "Сделать так, чтобы он занимал доступную высоту и не больше. Для этого надо с помощью useMeasure измерять доступную высоту и прокидывать значение высоты в itemsHeight списка задач. Это значение должно пересчитываться при изменении размера окна.",
         "priority": "high",
         "testStrategy": "",
-        "dependencies": [],
-        "tag": "backlog",
-        "metadata": {
-          "moveHistory": [
-            {
-              "fromTag": "master",
-              "toTag": "backlog",
-              "timestamp": "2025-09-19T16:23:22.963Z"
-            }
-          ]
-        }
+        "dependencies": []
       }
     ],
     "metadata": {

@@ -1,0 +1,122 @@
+/* TiptapEditor основные стили */
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.editor {
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 20px;
+  font-family: var(--g-text-body-font-family);
+  color: var(--g-color-text-primary);
+  min-height: 52px;
+  max-height: 200px;
+  overflow-y: auto;
+  word-wrap: break-word;
+  resize: none;
+}
+
+.editor:empty::before {
+  content: attr(placeholder);
+  color: var(--g-color-text-hint);
+  pointer-events: none;
+}
+
+.editor p {
+  margin: 0;
+}
+
+.editor p + p {
+  margin-top: 8px;
+}
+
+/* Mention стили */
+.mention {
+  background-color: var(--g-color-base-brand-50);
+  color: var(--g-color-text-brand-heavy);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  border: 1px solid var(--g-color-line-brand);
+}
+
+.mention:hover {
+  background-color: var(--g-color-base-brand-100);
+}
+
+/* Dropdown для suggestions */
+.dropdown {
+  background: var(--g-color-base-background);
+  border: 1px solid var(--g-color-line-generic);
+  border-radius: 8px;
+  box-shadow: var(--g-color-sfx-shadow-light);
+  padding: 4px 0;
+  min-width: 120px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 9999;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: var(--g-color-text-primary);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.item:hover,
+.item.selected {
+  background-color: var(--g-color-base-selection-hover);
+}
+
+.item:active {
+  background-color: var(--g-color-base-selection);
+}
+
+/* Code blocks для контекста */
+.editor pre {
+  background: var(--g-color-base-misc);
+  border-radius: 6px;
+  padding: 12px;
+  margin: 8px 0;
+  overflow-x: auto;
+  font-family: var(--g-text-code-font-family);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.editor code {
+  background: var(--g-color-base-misc);
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: var(--g-text-code-font-family);
+  font-size: 13px;
+}
+
+.editor pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Focus стили */
+.editor:focus {
+  outline: 2px solid var(--g-color-line-focus);
+  outline-offset: -2px;
+}
+
+/* Disabled состояние */
+.editor[contenteditable="false"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

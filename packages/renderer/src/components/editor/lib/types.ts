@@ -1,3 +1,7 @@
-import type { Task } from '@app/shared';
-
-export type TaskFieldTab = Extract<keyof Task, 'title' | 'description' | 'details' | 'dependencies' | 'testStrategy'>;
+import { TaskField } from '@app/shared';
+export type TaskFieldTab =
+  | TaskField.TITLE
+  | TaskField.DESCRIPTION
+  | TaskField.DETAILS
+  | TaskField.DEPENDENCIES
+  | TaskField.TEST_STRATEGY;
