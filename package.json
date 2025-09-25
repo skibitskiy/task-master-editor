@@ -57,11 +57,16 @@
       "package.json",
       "packages/electron/dist/**",
       "packages/renderer/dist/**",
-      "packages/shared/dist/**"
+      "packages/shared/dist/**",
+      "node_modules/better-sqlite3/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/better-sqlite3/**/*"
     ],
     "directories": {
       "output": "release"
     },
+    "npmRebuild": true,
     "mac": {
       "target": [
         "dmg",
@@ -82,5 +87,8 @@
       ],
       "category": "Utility"
     }
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.4.1"
   }
 }

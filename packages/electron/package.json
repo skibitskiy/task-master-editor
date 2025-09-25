@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@app/shared": "*",
-    "better-sqlite3": "^12.2.0",
     "electron-log": "^5.1.4"
   },
   "devDependencies": {
