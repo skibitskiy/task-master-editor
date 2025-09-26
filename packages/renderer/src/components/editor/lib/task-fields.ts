@@ -1,20 +1,19 @@
 import type { Task } from '@app/shared';
+import { isString, TaskField } from '@app/shared';
 
-import type { TaskFieldTab } from './types';
-
-export const getCurrentFieldContent = (task: Task, field: TaskFieldTab): string => {
+export const getCurrentFieldContent = (task: Task, field: string): string => {
   switch (field) {
-    case 'title':
-      return task.title || '';
-    case 'description':
-      return task.description || '';
-    case 'details':
-      return task.details || '';
-    case 'dependencies':
-      return task.dependencies ? task.dependencies.join(', ') : '';
-    case 'testStrategy':
-      return task.testStrategy || '';
+    case TaskField.TITLE:
+      return task[field] || '';
+    case TaskField.DESCRIPTION:
+      return task[field] || '';
+    case TaskField.DETAILS:
+      return task[field] || '';
+    case TaskField.DEPENDENCIES:
+      return task[field] ? task[field].join(', ') : '';
+    case TaskField.TEST_STRATEGY:
+      return task[field] || '';
     default:
-      return '';
+      return isString(task[field]) ? task[field] : '';
   }
 };

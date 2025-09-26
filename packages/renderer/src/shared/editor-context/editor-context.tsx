@@ -1,11 +1,11 @@
-import type { Task } from '@app/shared';
+import { type CustomField, isString, type Task, TaskField } from '@app/shared';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { setTaskDirty, updateTask } from '../../redux/dataSlice';
 import type { AppDispatch } from '../../redux/store';
 import { useCurrentTask } from '../../redux/task';
-import { useDebounce, useEventCallback } from '../hooks';
+import { useCustomFields, useDebounce, useEventCallback } from '../hooks';
 import type { EditorContextType, TaskFieldTab } from './types';
 
 const EditorContext = createContext<EditorContextType | null>(null);
@@ -16,33 +16,59 @@ interface EditorProviderProps {
 
 const getCurrentFieldContent = (task: Task, field: TaskFieldTab): string => {
   switch (field) {
-    case 'title':
+    case TaskField.TITLE:
       return task.title || '';
-    case 'description':
+    case TaskField.DESCRIPTION:
       return task.description || '';
-    case 'details':
+    case TaskField.DETAILS:
       return task.details || '';
-    case 'dependencies':
+    case TaskField.DEPENDENCIES:
       return task.dependencies ? task.dependencies.join(', ') : '';
-    case 'testStrategy':
+    case TaskField.TEST_STRATEGY:
       return task.testStrategy || '';
     default:
       return '';
   }
 };
 
+const REQUIRED_TASK_FIELDS = [
+  TaskField.TITLE,
+  TaskField.DESCRIPTION,
+  TaskField.DETAILS,
+  TaskField.DEPENDENCIES,
+  TaskField.TEST_STRATEGY,
+];
+
+const getTaskValues = (
+  task: Record<string, unknown> | null | undefined,
+  customFields: CustomField[],
+): Record<string, string> => {
+  const fields = [...REQUIRED_TASK_FIELDS, ...customFields.map((field) => field.key)];
+
+  return fields.reduce(
+    (acc, field) => {
+      const value = task?.[field];
+
+      if (Array.isArray(value)) {
+        acc[field] = value.join(', ');
+      } else {
+        acc[field] = isString(value) ? value : '';
+      }
+
+      return acc;
+    },
+    {} as Record<string, string>,
+  );
+};
+
 export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
 
+  const customFields = useCustomFields();
+
   const { task, taskId } = useCurrentTask();
 
-  const [localValues, setLocalValues] = useState<Record<TaskFieldTab, string>>({
-    title: '',
-    description: '',
-    details: '',
-    dependencies: '',
-    testStrategy: '',
-  });
+  const [localValues, setLocalValues] = useState<Record<string, string>>(() => getTaskValues(task, customFields));
 
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
@@ -94,51 +120,29 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
   );
 
   useEffect(() => {
-    if (task) {
-      setLocalValues({
-        title: task.title || '',
-        description: task.description || '',
-        details: task.details || '',
-        dependencies: task.dependencies ? task.dependencies.join(', ') : '',
-        testStrategy: task.testStrategy || '',
-      });
-    } else {
-      setLocalValues({
-        title: '',
-        description: '',
-        details: '',
-        dependencies: '',
-        testStrategy: '',
-      });
-    }
+    setLocalValues(getTaskValues(task, customFields));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customFields]);
+
+  useEffect(() => {
+    setLocalValues(getTaskValues(task, customFields));
 
     // Clear validation errors when switching tasks
     setValidationErrors({});
-  }, [task]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task?.[TaskField.ID]]);
 
   const clearLocalValues = useCallback(() => {
-    setLocalValues({
-      title: '',
-      description: '',
-      details: '',
-      dependencies: '',
-      testStrategy: '',
-    });
+    setLocalValues(getTaskValues(null, customFields));
     setValidationErrors({});
-  }, []);
+  }, [customFields]);
 
   const resetToTaskValues = useCallback(() => {
     if (task) {
-      setLocalValues({
-        title: task.title || '',
-        description: task.description || '',
-        details: task.details || '',
-        dependencies: task.dependencies ? task.dependencies.join(', ') : '',
-        testStrategy: task.testStrategy || '',
-      });
+      setLocalValues(getTaskValues(task, customFields));
     }
     setValidationErrors({});
-  }, [task]);
+  }, [task, customFields]);
 
   // Calculate dirty state for each field
   const fieldDirtyState = useMemo(
@@ -168,18 +172,17 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
     if (!taskId || !task) {
       throw new Error('Задача не найдена');
     }
+    const values = getTaskValues(localValues, customFields);
+
     dispatch(
       updateTask({
         id: parseInt(taskId),
         patch: {
-          title: localValues.title,
-          description: localValues.description,
-          details: localValues.details,
-          dependencies: localValues.dependencies
+          ...values,
+          dependencies: values.dependencies
             .split(',')
             .map((d) => parseInt(d.trim()))
             .filter((d) => !isNaN(d)),
-          testStrategy: localValues.testStrategy,
         },
       }),
     );

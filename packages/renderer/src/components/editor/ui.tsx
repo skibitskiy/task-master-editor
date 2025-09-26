@@ -1,7 +1,6 @@
-import { Task, TaskField } from '@app/shared';
-import { MarkdownEditorView } from '@gravity-ui/markdown-editor';
+import { isString, Task, TaskField } from '@app/shared';
 import { TextInput } from '@gravity-ui/uikit';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { deleteTask, saveFile } from '../../redux/dataSlice';
@@ -9,12 +8,13 @@ import { toggleEditorMode } from '../../redux/editorSlice';
 import type { AppDispatch, RootState } from '../../redux/store';
 import { clearSelectedTask, setActiveFieldTab } from '../../redux/task';
 import { useEditorContext } from '../../shared/editor-context';
+import { useCustomFields } from '../../shared/hooks';
 import { notifyError, notifySuccess } from '../../utils/notify';
 import { DeleteTaskModal } from '../delete-task-modal';
 import { EditorPanelHeader } from '../editor-panel-header';
 import { EditorPanelTabs } from '../editor-panel-tabs';
-import { tabTypeGuard } from './lib/tab-type-guard';
-import { useMarkdownFieldEditor } from './lib/use-markdown-field-editor';
+import { MarkdownEditorWrapper } from '../markdown-editor-wrapper';
+import { useGetTabTypeGuard } from './lib/use-get-tab-type-guard';
 
 type EditorProps = {
   task: Task;
@@ -23,6 +23,7 @@ type EditorProps = {
 export const Editor: React.FC<EditorProps> = ({ task }) => {
   const dispatch = useDispatch<AppDispatch>();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const customFields = useCustomFields();
 
   const editorMode = useSelector((state: RootState) => state.editor.mode);
 
@@ -49,40 +50,6 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
   const currentContent = React.useMemo(() => {
     return localValues[activeFieldTab];
   }, [localValues, activeFieldTab]);
-
-  // Initialize individual markdown editors for each markdown field
-  const descriptionEditorData = useMarkdownFieldEditor({
-    field: TaskField.DESCRIPTION,
-    initialValue: task?.description || '',
-    onChange: handleFieldChange,
-  });
-  const detailsEditorData = useMarkdownFieldEditor({
-    field: TaskField.DETAILS,
-    initialValue: task?.details || '',
-    onChange: handleFieldChange,
-  });
-  const testStrategyEditorData = useMarkdownFieldEditor({
-    field: TaskField.TEST_STRATEGY,
-    initialValue: task?.testStrategy || '',
-    onChange: handleFieldChange,
-  });
-
-  // Extract editors for compatibility
-  const descriptionEditor = descriptionEditorData.editor;
-  const detailsEditor = detailsEditorData.editor;
-  const testStrategyEditor = testStrategyEditorData.editor;
-
-  useEffect(() => {
-    if (editorMode === 'preview') {
-      descriptionEditor.setEditorMode('wysiwyg');
-      detailsEditor.setEditorMode('wysiwyg');
-      testStrategyEditor.setEditorMode('wysiwyg');
-    } else if (editorMode === 'editor') {
-      descriptionEditor.setEditorMode('markup');
-      detailsEditor.setEditorMode('markup');
-      testStrategyEditor.setEditorMode('markup');
-    }
-  }, [editorMode, descriptionEditor, detailsEditor, testStrategyEditor]);
 
   // Handle save button click - only update Redux, don't auto-save to file
   const handleSave = useCallback(async () => {
@@ -146,24 +113,56 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
       isDirty: fieldDirtyState.testStrategy,
       hasError: false,
     },
+    ...customFields.map((field) => ({
+      id: field.key,
+      title: field.name,
+      isDirty: false, // TODO: implement dirty tracking for custom fields
+      hasError: false,
+    })),
   ];
 
+  const { tabTypeGuard } = useGetTabTypeGuard();
+
   const handleTabsChange = (tab: string) => {
-    if (tabTypeGuard(tab)) {
+    const isCustomField = customFields.some((field) => field.key === tab);
+    if (tabTypeGuard(tab) || isCustomField) {
       dispatch(setActiveFieldTab(tab));
     }
   };
 
+  // Render custom field editor if active tab is a custom field
+  const renderCustomFieldEditor = () => {
+    const customField = customFields.find((field) => field.key === activeFieldTab);
+    if (!customField) {
+      return null;
+    }
+
+    const value = task[customField.key];
+    const initialValue = isString(value) ? value : '';
+
+    return (
+      <MarkdownEditorWrapper
+        editorMode={editorMode}
+        field={customField.key}
+        initialValue={initialValue}
+        onChange={handleFieldChange}
+        autofocus
+        stickyToolbar
+        key={`${customField.key}-editor`}
+      />
+    );
+  };
+
   const handleTitleChange = useCallback(
     (newTitle: string) => {
-      handleFieldChange('title', newTitle);
+      handleFieldChange(TaskField.TITLE, newTitle);
     },
     [handleFieldChange],
   );
 
   const handleTitleBlur = useCallback(() => {
     const currentTitle = localValues?.title || '';
-    const error = validateField('title', currentTitle);
+    const error = validateField(TaskField.TITLE, currentTitle);
     if (error) {
       setValidationErrors((prev) => ({ ...prev, title: error }));
     } else {
@@ -232,38 +231,37 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
             />
           </div>
         ) : activeFieldTab === 'testStrategy' ? (
-          <div className="test-strategy-editor">
-            <MarkdownEditorView
-              key={'test-strategy-editor'}
-              editor={testStrategyEditor}
-              autofocus
-              stickyToolbar
-              wysiwygToolbarConfig={testStrategyEditorData.toolbarConfigs.wysiwyg}
-              markupToolbarConfig={testStrategyEditorData.toolbarConfigs.markup}
-            />
-          </div>
+          <MarkdownEditorWrapper
+            field={TaskField.TEST_STRATEGY}
+            initialValue={task?.testStrategy || ''}
+            onChange={handleFieldChange}
+            editorMode={editorMode}
+            autofocus
+            stickyToolbar
+            key="test-strategy-editor"
+          />
         ) : activeFieldTab === 'description' ? (
-          <div className="markdown-editor-wrapper">
-            <MarkdownEditorView
-              key={'description-editor'}
-              editor={descriptionEditor}
-              autofocus
-              stickyToolbar
-              wysiwygToolbarConfig={descriptionEditorData.toolbarConfigs.wysiwyg}
-              markupToolbarConfig={descriptionEditorData.toolbarConfigs.markup}
-            />
-          </div>
+          <MarkdownEditorWrapper
+            field={TaskField.DESCRIPTION}
+            initialValue={task?.description || ''}
+            onChange={handleFieldChange}
+            editorMode={editorMode}
+            autofocus
+            stickyToolbar
+            key="description-editor"
+          />
+        ) : customFields.some((field) => field.key === activeFieldTab) ? (
+          renderCustomFieldEditor()
         ) : (
-          <div className="markdown-editor-wrapper">
-            <MarkdownEditorView
-              key={'details-editor'}
-              editor={detailsEditor}
-              autofocus
-              stickyToolbar
-              wysiwygToolbarConfig={detailsEditorData.toolbarConfigs.wysiwyg}
-              markupToolbarConfig={detailsEditorData.toolbarConfigs.markup}
-            />
-          </div>
+          <MarkdownEditorWrapper
+            field={TaskField.DETAILS}
+            initialValue={task?.details || ''}
+            onChange={handleFieldChange}
+            editorMode={editorMode}
+            autofocus
+            stickyToolbar
+            key="details-editor"
+          />
         )}
       </div>
 

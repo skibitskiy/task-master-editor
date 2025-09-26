@@ -1,6 +1,12 @@
-import type { Task } from '@app/shared';
+import type { Task, TaskField } from '@app/shared';
 
-export type TaskFieldTab = 'title' | 'description' | 'details' | 'dependencies' | 'testStrategy';
+export type TaskFieldTab =
+  | TaskField.TITLE
+  | TaskField.DESCRIPTION
+  | TaskField.DETAILS
+  | TaskField.DEPENDENCIES
+  | TaskField.TEST_STRATEGY
+  | string;
 
 export interface EditorContextType {
   // Current task
@@ -8,16 +14,16 @@ export interface EditorContextType {
   taskId: string | null;
 
   // Local values (frequently changing)
-  localValues: Record<TaskFieldTab, string>;
+  localValues: Record<string, string>;
 
   // Validation
   validationErrors: Record<string, string>;
 
   // Dirty state tracking
-  fieldDirtyState: Record<TaskFieldTab, boolean>;
+  fieldDirtyState: Record<string, boolean>;
 
   // Actions
-  handleFieldChange: (field: TaskFieldTab, value: string) => void;
+  handleFieldChange: (field: string, value: string) => void;
   validateField: (field: TaskFieldTab, value: string) => string | null;
   setValidationErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   clearLocalValues: () => void;

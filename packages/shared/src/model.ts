@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { CustomField } from './ipc.js';
+
 export enum TaskStatus {
   PENDING = 'pending',
   IN_PROGRESS = 'in-progress',
@@ -35,6 +37,7 @@ export interface Task {
   [TaskField.TEST_STRATEGY]?: string;
   [TaskField.PRIORITY]?: TaskPriority;
   [TaskField.DEPENDENCIES]?: Array<number | string>;
+  [key: string]: unknown;
 }
 
 type Branch = string;
@@ -46,21 +49,30 @@ export interface TasksFile {
       created?: string;
       updated?: string;
       description?: string;
+      customFields?: CustomField[];
     };
   };
 }
 
 // Zod schemas
-export const TaskSchema = z.object({
-  id: z.union([z.number(), z.string()]),
-  title: z.string().min(1),
-  description: z.string().optional(),
-  details: z.string().optional(),
-  status: z.enum(['pending', 'in-progress', 'done', 'deferred', 'cancelled', 'blocked']).optional(),
-  priority: z.enum(['low', 'medium', 'high']).optional(),
-  testStrategy: z.string().optional(),
-  dependencies: z.array(z.union([z.number(), z.string()])).optional(),
+const CustomFieldSchema = z.object({
+  name: z.string(),
+  key: z.string(),
+  type: z.literal('text'),
 });
+
+export const TaskSchema = z
+  .object({
+    id: z.union([z.number(), z.string()]),
+    title: z.string().min(1),
+    description: z.string().optional(),
+    details: z.string().optional(),
+    status: z.enum(['pending', 'in-progress', 'done', 'deferred', 'cancelled', 'blocked']).optional(),
+    priority: z.enum(['low', 'medium', 'high']).optional(),
+    testStrategy: z.string().optional(),
+    dependencies: z.array(z.union([z.number(), z.string()])).optional(),
+  })
+  .passthrough(); // Allow additional properties
 
 // Schema for branch object
 const BranchSchema = z.object({
@@ -70,6 +82,7 @@ const BranchSchema = z.object({
       created: z.string().optional(),
       updated: z.string().optional(),
       description: z.string().optional(),
+      customFields: z.array(CustomFieldSchema).optional(),
     })
     .optional(),
 });

@@ -48,6 +48,12 @@ export interface CustomModel {
   value: string;
 }
 
+export interface CustomField {
+  name: string;
+  key: string;
+  type: 'text';
+}
+
 export interface SettingsData {
   recentPaths: string[];
   preferences?: Record<string, unknown>;

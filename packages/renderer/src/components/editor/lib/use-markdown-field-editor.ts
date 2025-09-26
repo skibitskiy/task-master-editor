@@ -12,12 +12,11 @@ import cloneDeep from 'lodash/cloneDeep';
 import React from 'react';
 
 import { gptWidgetOptions } from './gpt-widget-config';
-import type { TaskFieldTab } from './types';
 
 interface UseMarkdownFieldEditorParams {
-  field: Extract<TaskFieldTab, 'description' | 'details' | 'testStrategy'>;
+  field: string;
   initialValue: string;
-  onChange: (field: TaskFieldTab, value: string) => void;
+  onChange: (field: string, value: string) => void;
 }
 
 // Configure wysiwyg toolbar with GPT

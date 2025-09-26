@@ -99,11 +99,6 @@ body {
   color: var(--g-color-text-secondary);
 }
 
-.markdown-editor-wrapper {
-  height: 100%;
-  min-height: 400px;
-}
-
 /* Editor tabs */
 .editor-tabs {
   border-bottom: 1px solid var(--g-color-line-generic);

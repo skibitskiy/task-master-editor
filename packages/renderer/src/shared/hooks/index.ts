@@ -1,5 +1,6 @@
 export { useAutoScroll } from './use-auto-scroll';
 export { useCombineRefs } from './use-combine-refs';
+export { useCustomFields } from './use-custom-fields';
 export { useDebounce } from './use-debounce';
 export { useDebounceCallback } from './use-debounce-callback';
 export { useEventCallback } from './use-event-callback';

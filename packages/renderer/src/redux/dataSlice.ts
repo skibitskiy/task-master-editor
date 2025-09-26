@@ -1,4 +1,4 @@
-import type { Task, TasksFile } from '@app/shared';
+import type { CustomField, Task, TasksFile } from '@app/shared';
 import { parseTasksJson } from '@app/shared';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -245,6 +245,20 @@ const dataSlice = createSlice({
       delete state.dirty.byTaskId[idStr];
       delete state.errors.byTaskId[idStr];
     },
+    updateCustomFields(state, action: PayloadAction<CustomField[]>) {
+      if (!state.tasksFile || !state.tasksFile[state.currentBranch]) {
+        return;
+      }
+
+      // Ensure metadata exists
+      if (!state.tasksFile[state.currentBranch].metadata) {
+        state.tasksFile[state.currentBranch].metadata = {};
+      }
+
+      // Update custom fields
+      state.tasksFile[state.currentBranch].metadata!.customFields = action.payload;
+      state.dirty.file = true;
+    },
   },
   extraReducers(builder) {
     builder.addCase(loadFromPath.fulfilled, (state, action) => {
@@ -296,6 +310,7 @@ export const {
   switchBranch,
   addNewTask,
   deleteTask,
+  updateCustomFields,
 } = dataSlice.actions;
 
 // Selectors

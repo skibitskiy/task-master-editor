@@ -46,7 +46,11 @@ async function loadSettings(): Promise<InternalSettings> {
     const raw = await fs.readFile(p, 'utf-8');
     cachedSettings = validateSettingsData(JSON.parse(raw));
   } catch (err) {
-    cachedSettings = { recentPaths: [], preferences: {}, customModels: [] };
+    cachedSettings = {
+      recentPaths: [],
+      preferences: {},
+      customModels: [],
+    };
   }
   return cachedSettings!;
 }

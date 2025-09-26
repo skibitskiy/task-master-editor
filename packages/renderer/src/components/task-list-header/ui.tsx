@@ -1,4 +1,4 @@
-import { ChevronLeft, Plus } from '@gravity-ui/icons';
+import { ChevronLeft, Gear, Plus } from '@gravity-ui/icons';
 import { Button, Flex, Icon, Select, Text } from '@gravity-ui/uikit';
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +7,7 @@ import { addNewTaskAsync, createBranch, switchBranch } from '../../redux/dataSli
 import type { AppDispatch, RootState } from '../../redux/store';
 import { clearSelectedTask, setSelectedTaskId } from '../../redux/task/taskSlice';
 import { CreateBranchModal } from '../create-branch-modal';
+import { ProjectSettingsModal } from '../project-settings';
 import { TaskPath } from '../task-path';
 import type { BranchOption } from './lib/types';
 import styles from './styles.module.css';
@@ -20,6 +21,7 @@ export const TaskListHeader: React.FC<TaskListHeaderProps> = ({ onBackToProjects
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
   const currentBranch = useSelector((state: RootState) => state.data.currentBranch);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Get list of available branches
   const branches = useMemo((): BranchOption[] => {
@@ -72,11 +74,18 @@ export const TaskListHeader: React.FC<TaskListHeaderProps> = ({ onBackToProjects
               <Text variant="header-1">Задачи</Text>
               <TaskPath />
             </Flex>
-            <Button view="action" size="s" title="Добавить задачу" onClick={handleAddNewTask}>
-              <Button.Icon>
-                <Plus />
-              </Button.Icon>
-            </Button>
+            <Flex gap={2}>
+              <Button view="flat" size="s" title="Добавить задачу" onClick={handleAddNewTask}>
+                <Button.Icon>
+                  <Plus />
+                </Button.Icon>
+              </Button>
+              <Button view="flat" size="s" title="Настройки проекта" onClick={() => setIsSettingsOpen(true)}>
+                <Button.Icon>
+                  <Gear />
+                </Button.Icon>
+              </Button>
+            </Flex>
           </Flex>
 
           <Flex alignItems="center" gap={2}>
@@ -114,6 +123,7 @@ export const TaskListHeader: React.FC<TaskListHeaderProps> = ({ onBackToProjects
       </div>
 
       <CreateBranchModal open={isModalOpen} onClose={() => setIsModalOpen(false)} onCreate={handleCreateBranch} />
+      <ProjectSettingsModal open={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </>
   );
 };

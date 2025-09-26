@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { TaskFieldTab } from '../../shared/editor-context/types';
+import type { TaskFieldTab } from '@/shared/editor-context';
 
 export interface TaskState {
   selectedTaskId: string | null;

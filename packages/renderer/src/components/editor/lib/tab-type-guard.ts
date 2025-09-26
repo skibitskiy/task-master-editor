@@ -1,5 +1,13 @@
-import { TaskFieldTab } from './types';
+import { TaskField } from '@app/shared';
+
+import { TaskFieldTab } from '@/shared/editor-context';
 
 export const tabTypeGuard = (tab: string): tab is TaskFieldTab => {
-  return ['title', 'description', 'details', 'dependencies', 'testStrategy'].includes(tab);
+  return [
+    TaskField.TITLE,
+    TaskField.DESCRIPTION,
+    TaskField.DETAILS,
+    TaskField.DEPENDENCIES,
+    TaskField.TEST_STRATEGY,
+  ].includes(tab as TaskField);
 };
