@@ -48,7 +48,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
 
   // Get current content for the active field
   const currentContent = React.useMemo(() => {
-    return localValues[activeFieldTab];
+    return localValues[activeFieldTab] ?? '';
   }, [localValues, activeFieldTab]);
 
   // Handle save button click - only update Redux, don't auto-save to file
@@ -137,7 +137,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
       return null;
     }
 
-    const value = task[customField.key];
+    const value = localValues?.[customField.key];
     const initialValue = isString(value) ? value : '';
 
     return (
@@ -233,7 +233,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
         ) : activeFieldTab === 'testStrategy' ? (
           <MarkdownEditorWrapper
             field={TaskField.TEST_STRATEGY}
-            initialValue={task?.testStrategy || ''}
+            initialValue={localValues?.testStrategy || ''}
             onChange={handleFieldChange}
             editorMode={editorMode}
             autofocus
@@ -243,7 +243,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
         ) : activeFieldTab === 'description' ? (
           <MarkdownEditorWrapper
             field={TaskField.DESCRIPTION}
-            initialValue={task?.description || ''}
+            initialValue={localValues?.description || ''}
             onChange={handleFieldChange}
             editorMode={editorMode}
             autofocus
@@ -255,7 +255,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
         ) : (
           <MarkdownEditorWrapper
             field={TaskField.DETAILS}
-            initialValue={task?.details || ''}
+            initialValue={localValues?.details || ''}
             onChange={handleFieldChange}
             editorMode={editorMode}
             autofocus
