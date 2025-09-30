@@ -2,7 +2,7 @@
   "master": {
     "tasks": [
       {
-        "id": "1",
+        "id": 1,
         "title": "Каркас Electron-приложения",
         "description": "Базовая структура main/preload/renderer, строгий TypeScript, безопасные флаги окна.",
         "details": "• Electron + TypeScript (strict) + Vite/webpack.\n• Настройки безопасности: contextIsolation: true, sandbox: true, nodeIntegration: false.\n• Логирование: electron-log.\n• Конфиг навигации наружу (allow-list для shell.openExternal).",
@@ -13,7 +13,7 @@
         "subtasks": []
       },
       {
-        "id": "2",
+        "id": 2,
         "title": "Контракты IPC и безопасность Preload",
         "description": "Единые каналы IPC и типизированный, минимальный API в preload.",
         "details": "• Каналы: workspace:select, file:read, file:write.\n• Валидация payload через zod/valibot.\n• contextBridge.exposeInMainWorld с минимальным API.",
@@ -26,7 +26,7 @@
         "subtasks": []
       },
       {
-        "id": "3",
+        "id": 3,
         "title": "Модель данных и глобальный стор",
         "description": "Типы Task и контейнера файла, единый стор, MRU последних путей, dirty-flags.",
         "details": "• Типы: Task, TasksFile ({ master: { tasks: Task[] } }).\n• React Context/Reducer или легковесный стор.\n• electron-store для настроек (MRU, предпочтения).",
@@ -40,7 +40,7 @@
         "subtasks": []
       },
       {
-        "id": "4",
+        "id": 4,
         "title": "Валидация JSON и атомарная запись",
         "description": "Схема валидации tasks.json, запись через temp→fsync→rename, бэкап.",
         "details": "• Схема zod для TasksFile. \n• fs/promises: временный файл + fsync + атомарный rename. \n• Автобэкап и откат при сбое.",
@@ -54,7 +54,7 @@
         "subtasks": []
       },
       {
-        "id": "5",
+        "id": 5,
         "title": "UI-скелет: двухколоночный лейаут",
         "description": "Слева список задач, справа редактор; плейсхолдер при отсутствии выбора.",
         "details": "• @gravity-ui/uikit: Layout/Flex, Tabs, Toaster. \n• @gravity-ui/markdown-editor для правой панели. \n• Адаптив: при узком экране переключение вида.",
@@ -67,7 +67,7 @@
         "subtasks": []
       },
       {
-        "id": "6",
+        "id": 6,
         "title": "Обработка ошибок и устойчивость",
         "description": "Глобальные перехватчики ошибок, уведомления и неизбыточные логи.",
         "details": "• React ErrorBoundary, window.onerror/unhandledrejection. \n• Утилита notify() на базе @gravity-ui/uikit Toaster. \n• electron-log с маскированием PII.",
@@ -81,7 +81,7 @@
         "subtasks": []
       },
       {
-        "id": "7",
+        "id": 7,
         "title": "Качество и DX",
         "description": "ESLint/Prettier, unit-тесты для парсинга/сериализации, smoke E2E.",
         "details": "• ESLint + Prettier. \n• Vitest/Jest для юнитов (парсинг, сериализация). \n• Playwright (Electron) smoke: окно открывается, UI-скелет виден.",
@@ -94,7 +94,7 @@
         "subtasks": []
       },
       {
-        "id": "8",
+        "id": 8,
         "title": "Сборка и поставка",
         "description": "Конфигурация сборки, артефакты под целевые ОС, sourcemaps.",
         "details": "• electron-builder или Forge. \n• Env-профили, версионирование, генерация артефактов. \n• Sourcemaps для prod-диагностики.",
@@ -107,7 +107,7 @@
         "subtasks": []
       },
       {
-        "id": "9",
+        "id": 9,
         "title": "Стартовый выбор файла задач",
         "description": "Диалог выбора tasks.json при запуске с обработкой отмены.",
         "details": "• Electron dialog.showOpenDialog (file). \n• IPC: workspace:select.\n• Экран «Выберите файл задач» при отмене.",
@@ -122,7 +122,7 @@
         "subtasks": []
       },
       {
-        "id": "10",
+        "id": 10,
         "title": "Чтение и валидация tasks.json",
         "description": "Загрузка файла, проверка схемы и наполнение стора.",
         "details": "• IPC: file:read. \n• Валидация схемой zod. \n• Ошибки — через Toaster с понятным текстом.",
@@ -137,7 +137,7 @@
         "subtasks": []
       },
       {
-        "id": "11",
+        "id": 11,
         "title": "Список задач (левая панель)",
         "description": "Рендер id, title, status; сортировка по id; выбор активной задачи.",
         "details": "• @gravity-ui/uikit: List/Table, Badge для статуса. \n• Стабильная сортировка по id. \n• Заглушка «Задач нет» при пустом массиве.",
@@ -151,7 +151,7 @@
         "subtasks": []
       },
       {
-        "id": "12",
+        "id": 12,
         "title": "Плейсхолдер редактора",
         "description": "Правый блок остаётся пустым до выбора задачи.",
         "details": "• Типографика @gravity-ui/uikit для подсказки. \n• Tabs скрыты, пока нет активной задачи.",
@@ -164,7 +164,7 @@
         "subtasks": []
       },
       {
-        "id": "13",
+        "id": 13,
         "title": "Табы полей задачи",
         "description": "Переключение между title, description, details над редактором.",
         "details": "• @gravity-ui/uikit Tabs. \n• По умолчанию активна description. \n• Отсутствующие поля скрываются.",
@@ -178,7 +178,7 @@
         "subtasks": []
       },
       {
-        "id": "14",
+        "id": 14,
         "title": "Редактирование контента",
         "description": "Title — однострочный ввод; description/details — Markdown-редактор.",
         "details": "• @gravity-ui/uikit TextInput для title. \n• @gravity-ui/markdown-editor для description и details. \n• Предпросмотр Markdown.",
@@ -191,7 +191,7 @@
         "subtasks": []
       },
       {
-        "id": "15",
+        "id": 15,
         "title": "Сохранение файла",
         "description": "Явная кнопка «Сохранить», запись текущего состояния в tasks.json.",
         "details": "• Toolbar над редактором с кнопкой «Сохранить». \n• IPC: file:write. \n• Атомарная запись из задачи 4.",
@@ -206,7 +206,7 @@
         "subtasks": []
       },
       {
-        "id": "16",
+        "id": 16,
         "title": "Индикаторы несохранённых изменений",
         "description": "Отслеживание dirty-state на уровне задачи и файла.",
         "details": "• Маркеры «●» на вкладках и в списке.\n• Диалог подтверждения при выходе при наличии несохранённых изменений.\\\n• Использовать компонент Modal из Gravity-UI\n• Добавить в модалку подтверждения кнопки \"сохранить\", \"не сохранять\"\n\n```\nimport {useState} from 'react';\nimport {Button, Modal} from '@gravity-ui/uikit';\n\nconst [open, setOpen] = useState(false);\n\n<Button onClick={() => setOpen(true)}>Open Modal</Button>\n<Modal open={open} onClose={() => setOpen(false)}>\n    Content\n</Modal>\n```\n\nОписание пропсов модалки в таблице\n\n<table><thead><tr><th align=\"left\">Имя</th><th align=\"left\">Описание</th><th align=\"center\">Тип</th><th align=\"center\">Значение по умолчанию</th></tr></thead><tbody><tr><td align=\"left\">autoFocus</td><td align=\"left\">В открытом состоянии фокус будет установлен на первый интерактивный элемент в содержимом.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>true</code></td></tr><tr><td align=\"left\">children</td><td align=\"left\">Любое содержимое React.</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">className</td><td align=\"left\">HTML-атрибут <code>class</code> для корневого узла.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">container</td><td align=\"left\">DOM-элемент, в который монтируется компонент через <code>Portal</code>.</td><td align=\"center\"><code>HTMLElement</code></td><td align=\"center\"><code>document.body</code></td></tr><tr><td align=\"left\">contentClassName</td><td align=\"left\">Атрибут <code>class</code> в HTML для узла с содержимым.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">disableBodyScrollLock</td><td align=\"left\">Отключает блокировку прокрутки, пока модальное окно открыто.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disableEscapeKeyDown</td><td align=\"left\">Отключает закрытие при нажатии на клавишу <code>Esc</code>.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disableOutsideClick</td><td align=\"left\">Отключает закрытие элемента по клику вне его области.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">disablePortal</td><td align=\"left\">Отключает использование <code>Portal</code></td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">focusTrap</td><td align=\"left\">Включает фиксацию фокуса внутри элемента.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>true</code></td></tr><tr><td align=\"left\">keepMounted</td><td align=\"left\">Компонент <code>Modal</code> не будет удален из DOM при скрытии.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">onClose</td><td align=\"left\">Обработчик события закрытия <code>Modal</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onEnterKeyDown</td><td align=\"left\">Обработчик события нажатия на клавишу <code>Enter</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onEscapeKeyDown</td><td align=\"left\">Обработчик события нажатия на клавишу <code>Esc</code>.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionEnter</td><td align=\"left\">Обработчик начала анимации открытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionExit</td><td align=\"left\">Обработчик начала анимации закрытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionEntered</td><td align=\"left\">Обработчик завершения анимации открытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onTransitionExited</td><td align=\"left\">Обработчик завершения анимации закрытия.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">onOutsideClick</td><td align=\"left\">Обработчик события клика вне элемента.</td><td align=\"center\"><code>Function</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">open</td><td align=\"left\">Управляет видимостью <code>Modal</code>.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>false</code></td></tr><tr><td align=\"left\">qa</td><td align=\"left\">Атрибут для тестирования (<code>data-qa</code>).</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">restoreFocusRef</td><td align=\"left\">Элемент, на который вернется фокус.</td><td align=\"center\"><code>React.RefObject</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">style</td><td align=\"left\">HTML-атрибут <code>style</code> для корневого узла.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">aria-label</td><td align=\"left\">HTML-атрибут <code>aria-label</code> для описания <code>Modal</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">aria-labelledby</td><td align=\"left\">Идентификатор видимого элемента заголовка в <code>Modal</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\">contentOverflow</td><td align=\"left\">Определяет, имеет ли <code>Modal</code> внутреннюю полосу прокрутки или увеличивается в размерах вместе с содержимым.</td><td align=\"center\"><code>visible</code> <code>auto</code></td><td align=\"center\"><code>visible</code></td></tr></tbody></table>\n",
@@ -221,7 +221,7 @@
         "subtasks": []
       },
       {
-        "id": "17",
+        "id": 17,
         "title": "Синхронизация списка и редактора",
         "description": "Живое обновление левой панели при редактировании title.",
         "details": "• Единый источник данных в renderer. \n• Мгновенный ререндер списка при изменении title активной задачи.",
@@ -235,7 +235,7 @@
         "subtasks": []
       },
       {
-        "id": "18",
+        "id": 18,
         "title": "Меню «Файл» и хоткеи",
         "description": "Пункты «Открыть другой файл…», «Сохранить», «Выход» + шорткаты.",
         "details": "• Electron Menu, globalShortcut/accelerators. \n• Cmd/Ctrl+O, Cmd/Ctrl+S. \n• Переоткрытие файла — замена текущего документа и состояния.",
@@ -251,7 +251,7 @@
         "subtasks": []
       },
       {
-        "id": "19",
+        "id": 19,
         "title": "Производительность списка задач",
         "description": "Плавный скролл 1–2 тыс. задач за счёт оптимизаций/виртуализации.",
         "details": "• Мемоизация элементов, batched updates. \n• При необходимости — лёгкая виртуализация списка.",
@@ -264,7 +264,7 @@
         "subtasks": []
       },
       {
-        "id": "20",
+        "id": 20,
         "title": "Режимы запуска и окружения",
         "description": "Единый UX в dev/prod, корректная работа переменных окружения.",
         "details": "• npm-скрипты для dev и prod. \n• Env-профили и чтение переменных. \n• Согласованность поведения с задачами выбора/редактирования/сохранения.",
@@ -277,7 +277,7 @@
         "subtasks": []
       },
       {
-        "id": "21",
+        "id": 21,
         "title": "Настройка показа модалки подтверждения при выходе",
         "description": "Настройка показа модалки подтверждения при выходе",
         "details": "- Добавить в модалку кнопку \"не спрашивать\"\n- Добавить в шапку списка задач кнопку с иконкой (import \\{Gear\\} from '@gravity-ui/icons'), которая будет открывать DropdownMenu из gravity-ui. В меню будет единственная кнопка – Не спрашивать о сохранении. Если пользователь когда-либо нажимал \"не спрашивать\", то этот пункт активируется.\n- Надо завести redux стейт и редюсеры для настроек.\n\n```\n<DropdownMenu\n    renderSwitcher={(props) => (\n        <Button {...props} view=\"flat\">\n            <Icon size={16} data={Bars} />\n        </Button>\n    )}\n    items={[\n        {\n            iconStart: <Icon size={16} data={Pencil} />,\n            action: () => console.log('Rename'),\n            text: 'Rename',\n        },\n        {\n            iconStart: <Icon size={16} data={TrashBin} />,\n            action: () => console.log('Delete'),\n            text: 'Delete',\n            theme: 'danger',\n        },\n    ]}\n/>\n```\n\n<table><thead><tr><th align=\"left\">Имя</th><th align=\"left\">Описание</th><th align=\"center\">Тип</th><th align=\"center\">Значение по умолчанию</th></tr></thead><tbody><tr><td align=\"left\"><code>items</code></td><td align=\"left\">Массив элементов. Вложенные массивы элементов представляют визуально разделенные группы.</td><td align=\"center\"><code>(DropdownMenuItem | DropdownMenuItem[])[] | []</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>data</code></td><td align=\"left\">Данные, которые передаются в действия, вызываемые из меню (это может быть полезно для контекстных меню).</td><td align=\"center\"><code>any</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>icon</code></td><td align=\"left\">Иконка дефолтного переключателя (<code>switcher</code>).</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\">Иконка многоточия.</td></tr><tr><td align=\"left\"><code>size</code></td><td align=\"left\">Применяется как к дефолтному <code>switcher</code>, так и к меню.</td><td align=\"center\"><code>'s' | 'm' | 'l' | 'xl'</code></td><td align=\"center\"><code>'m'</code></td></tr><tr><td align=\"left\"><code>disabled</code></td><td align=\"left\">Значение <code>true</code> для этого свойства отключает кнопку <code>switcher</code> и блокирует открытие меню.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>renderSwitcher</code></td><td align=\"left\">Функция рендеринга для контрола переключения меню.</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>switcherWrapperClassName</code></td><td align=\"left\">Значение для свойства <code>className</code> родительского компонента <code>switcher</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>defaultSwitcherProps</code></td><td align=\"left\">Свойства дефолтного <code>switcher</code>.</td><td align=\"center\"><code>ButtonProps</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>defaultSwitcherClassName</code></td><td align=\"left\">Значение для свойства <code>className</code> дефолтного <code>switcher</code>.</td><td align=\"center\"><code>string</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>menuProps</code></td><td align=\"left\">Переопределяет свойства выпадающего меню по умолчанию.</td><td align=\"center\"><code>MenuProps</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>popupProps</code></td><td align=\"left\">Переопределяет свойства всплывающего окна по умолчанию.</td><td align=\"center\"><code>PopupProps</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>open</code></td><td align=\"left\">Переключает видимость выпадающего меню.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>onOpenToggle</code></td><td align=\"left\">Вызывается при открытии или закрытии меню.</td><td align=\"center\"><code>() =&gt; void</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>onSwitcherClick</code></td><td align=\"left\">Вызывается при клике по переключателю.</td><td align=\"center\"><code>React.MouseEventHandler&lt;HTMLElement&gt;</code></td><td align=\"center\"></td></tr><tr><td align=\"left\"><code>hideOnScroll</code></td><td align=\"left\">Указывает, нужно ли скрывать меню при прокрутке родительского элемента.</td><td align=\"center\"><code>boolean</code></td><td align=\"center\"><code>true</code></td></tr><tr><td align=\"left\"><code>children</code></td><td align=\"left\">Пользовательский контент внутри всплывающего окна с меню.</td><td align=\"center\"><code>React.ReactNode</code></td><td align=\"center\"></td></tr></tbody></table>\n",
@@ -290,7 +290,7 @@
         "subtasks": []
       },
       {
-        "id": "22",
+        "id": 22,
         "title": "Добавить языки программирования для выбора в блоке Code",
         "description": "",
         "details": "",
@@ -303,7 +303,7 @@
         "subtasks": []
       },
       {
-        "id": "23",
+        "id": 23,
         "title": "Добавить режим GPT в markdown editor",
         "description": "##### Extensions / GPT\n\n## How to connect GPT extensions to editor\n\nFirst to integrate this extension, you need to use the following versions of the packages:\n\n    @gravity-ui/markdown-editor version 13.18.0 or higher\n\n\nFeatures:\n\n<img src=\"https://raw.githubusercontent.com/gravity-ui/markdown-editor/refs/heads/main/docs/assets/gifs/custom-prompt-preset-gpt.gif\" width=\"470\"/>\n\n\n<img src=\"https://raw.githubusercontent.com/gravity-ui/markdown-editor/refs/heads/main/docs/assets/gifs/prompt-preset-gpt.gif\" width=\"470\"/>\n\n### 1. Add extension usage and extensions props\n\n```ts\nimport React from 'react';\n\nimport {\n    gptExtension,\n    MarkdownEditorView,\n    useMarkdownEditor,\n    markupToolbarConfigs,\n    mGptExtension,\n} from '@gravity-ui/markdown-editor';\n\nexport const Editor: React.FC<EditorProps> = (props) => {\n    // add a plugin to the markup mode\n    const markupGptExtension = mGptExtension(gptWidgetProps);\n\n    const mdEditor = useMarkdownEditor({\n        // ...\n\n        markupConfig: {\n            extensions: markupGptExtension,\n        },\n\n        extraExtensions: (builder) =>\n            builder.use(\n                ...\n                // add GPT extension\n                gptExtension,\n                // The next step we show implementation gptWidgetProps\n                gptWidgetProps,\n            ),\n    });\n\n    // add a plugin to the markup toolbar mode\n    const mToolbarConfig = markupToolbarConfigs.mToolbarConfig;\n\n    mToolbarConfig.push([mGptToolbarItem]);\n\n    return <MarkdownEditorView\n        ...\n        editor={mdEditor}\n        markupToolbarConfig={mToolbarConfig}\n    />\n};\n```\n### 2. Implementation ```gptWidgetProps```\n\n```ts\nimport React from 'react';\nimport {type GptWidgetOptions} from '@gravity-ui/markdown-editor';\n\n// Your function to implement GPT response\nconst gptRequestHandler = async ({\n    markup,\n    customPrompt,\n    promptData,\n}: {\n    markup: string;\n    customPrompt?: string;\n    promptData: unknown;\n}) => {\n    await new Promise((resolve) => setTimeout(resolve, 1000));\n\n    let gptResponseMarkup = markup;\n\n    if (customPrompt) {\n        gptResponseMarkup = markup + ` \\`enhanced with ${customPrompt}\\``;\n    } else if (promptData === 'do-uno-reverse') {\n        gptResponseMarkup = gptResponseMarkup.replace(/[\\wа-яА-ЯёЁ]+/g, (match) =>\n            match.split('').reverse().join(''),\n        );\n    } else if (promptData === 'do-shout-out') {\n        gptResponseMarkup = gptResponseMarkup.toLocaleUpperCase();\n    }\n\n    return {\n        rawText: gptResponseMarkup,\n    };\n};\n\nfunction renderAnswer(data: {rawText: string}) {\n    return <div>{data.rawText}</div>;\n}\n\nexport const gptWidgetProps: GptWidgetOptions = {\n    answerRender: renderAnswer,\n    customPromptPlaceholder: 'Ask Yandex GPT to edit the text highlighted text',\n    disabledPromptPlaceholder: 'Ask Yandex GPT to generate the text',\n    gptAlertProps: {\n        showedGptAlert: true,\n        onCloseGptAlert: () => {},\n    },\n    promptPresets: [\n        {\n            hotKey: 'control+3',\n            data: 'do-uno-reverse',\n            display: 'Use the uno card',\n            key: 'do-uno-reverse',\n        },\n        {\n            hotKey: 'control+4',\n            data: 'do-shout-out',\n            display: 'Make the text flashy',\n            key: 'do-shout-out',\n        },\n    ],\n    onCustomPromptApply: async ({markup, customPrompt, promptData}) => {\n        return gptRequestHandler({markup, customPrompt, promptData});\n    },\n    onPromptPresetClick: async ({markup, customPrompt, promptData}) => {\n        return gptRequestHandler({markup, customPrompt, promptData});\n    },\n    onTryAgain: async ({markup, customPrompt, promptData}) => {\n        return gptRequestHandler({markup, customPrompt, promptData});\n    },\n    onApplyResult: (markup) => {\n        // add your callback for apply GPT result text\n        console.log(markup);\n    },\n    onUpdate: (event) => {\n        if (event?.rawText) {\n            // add your callback for any text updates\n            console.log(event.rawText);\n        }\n    },\n    onLike: async () => {}, // function to track feedback for good\n    onDislike: async () => {}, // and bad GPT answers\n};\n```\n### 3. Add extension to menubar and toolbar and command menu config for editor\n\nAdd in tool bar\n\n```ts\nimport {\n    ...\n    wGptItemData,\n    wysiwygToolbarConfigs,\n} from '@gravity-ui/markdown-editor';\n\nimport {cloneDeep} from '@gravity-ui/markdown-editor/_/lodash';\n\nexport const Editor: React.FC<EditorProps> = (props) => {\n    ...\n    const wToolbarConfig = cloneDeep(wysiwygToolbarConfigs.wToolbarConfig);\n    wToolbarConfig.unshift([wGptItemData]);\n\n    ...\n\n    return <MarkdownEditorView\n        ...\n        wysiwygToolbarConfig={wToolbarConfig}\n        ...\n    />\n};\n```\nAdd in menu bar\n\n```ts\nexport const Editor: React.FC<EditorProps> = (props) => {\n    ...\n    const wSelectionMenuConfig = [[wGptItemData], ...wysiwygToolbarConfigs.wSelectionMenuConfig];\n\n    const mdEditor = useMarkdownEditor({\n        ...\n        extensionOptions: {\n            selectionContext: {config: wSelectionMenuConfig},\n        },\n        ...\n    })\n    ...\n};\n```\n\nAdd in command menu config (/)\n\n```ts\nexport const Editor: React.FC<EditorProps> = (props) => {\n    ...\n    const wCommandMenuConfig = wysiwygToolbarConfigs.wCommandMenuConfig // main commands\n    wCommandMenuConfig.unshift(wGptItemData); // add GPT command\n\n    const mdEditor = useMarkdownEditor({\n        ...\n        extensionOptions: {\n            ...\n            commandMenu: {actions: wCommandMenuConfig},\n        },\n    })\n    ...\n};\n```\n### 4. Done, You can use the extension!\n\nВelow is an example of all code in one place\n\n```ts\nimport React from 'react';\n\nimport {\n    gptExtension,\n    MarkdownEditorView,\n    wysiwygToolbarConfigs,\n    useMarkdownEditor,\n} from '@gravity-ui/markdown-editor';\nimport {cloneDeep} from '@gravity-ui/markdown-editor/_/lodash';\n\nimport {gptWidgetProps} from './gptWidgetProps';\n\nexport const Editor: React.FC<EditorProps> = (props) => {\n    const wToolbarConfig = cloneDeep(wysiwygToolbarConfigs.wToolbarConfig);\n    wToolbarConfig.unshift([wGptItemData]);\n\n    const wSelectionMenuConfig = [[wGptItemData], ...wysiwygToolbarConfigs.wSelectionMenuConfig];\n\n    const wCommandMenuConfig = wysiwygToolbarConfigs.wCommandMenuConfig // main commands\n    wCommandMenuConfig.unshift(wGptItemData); // add GPT command\n\n    const mdEditor = useMarkdownEditor({\n        // ...\n        extraExtensions: (builder) => {\n            builder.use(\n                ...\n                // Add GPT extension\n                gptExtension,\n                // How to make gptWidgetProps, we will tell you in the next chapter\n                gptWidgetProps,\n            );\n        },\n        extensionOptions: {\n            selectionContext: {config: wSelectionMenuConfig},\n            commandMenu: {actions: wCommandMenuConfig},\n        },\n    });\n\n    return <MarkdownEditorView\n        ...\n        wysiwygToolbarConfig={wToolbarConfig}\n        editor={mdEditor}\n        ...\n    />\n};\n```",
         "details": "Добавить плагин (https://preview.gravity-ui.com/md-editor/?path=/docs/docs-extensions-gpt--docs) и добавить меню для хранения api ключей. Подумать о секьюрности",
@@ -317,7 +317,7 @@
         "subtasks": []
       },
       {
-        "id": "24",
+        "id": 24,
         "title": "Добавить чат с ИИ в приложение",
         "description": "",
         "details": "Надо внедрить этот компонент чата, но переписать его стили на styles.module.css\n\nВместо lucide-react использовать пакет @gravity-ui/icons\n\nВместо кнопок и прочих компонентов используй компоненты из @gravity-ui/components\n\nЗапроси доку по @gravity-ui/components в mcp context7\n\nКомпоненты хранятся тут: packages/renderer/src/components\\\nСтруктура компонента описана тут: docs/component-structure.mdc\n\nВ коде ниже описано много файлов, для каждого из них должен быть создан компонент в соответствие со структурой\n\nДля запросов к AI используй packages/renderer/src/services/gpt-service.ts\n\nРендерить чат необходимо в packages/renderer/src/components/editor-panel/ui.tsx в низу экрана с position:fixed bottom: 24px; right: 24px; По умолчанию кнопка прозрачна на 50%. При наведении opacity = 1;\n\n```tsx\nexpandable-chat.tsx\n\"use client\";\n\nimport React, { useRef, useState } from \"react\";\nimport { X, MessageCircle } from \"lucide-react\";\nimport { cn } from \"@/lib/utils\";\nimport { Button } from \"@/components/ui/button\";\n\nexport type ChatPosition = \"bottom-right\" | \"bottom-left\";\nexport type ChatSize = \"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\";\n\nconst chatConfig = {\n  dimensions: {\n    sm: \"sm:max-w-sm sm:max-h-[500px]\",\n    md: \"sm:max-w-md sm:max-h-[600px]\",\n    lg: \"sm:max-w-lg sm:max-h-[700px]\",\n    xl: \"sm:max-w-xl sm:max-h-[800px]\",\n    full: \"sm:w-full sm:h-full\",\n  },\n  positions: {\n    \"bottom-right\": \"bottom-5 right-5\",\n    \"bottom-left\": \"bottom-5 left-5\",\n  },\n  chatPositions: {\n    \"bottom-right\": \"sm:bottom-[calc(100%+10px)] sm:right-0\",\n    \"bottom-left\": \"sm:bottom-[calc(100%+10px)] sm:left-0\",\n  },\n  states: {\n    open: \"pointer-events-auto opacity-100 visible scale-100 translate-y-0\",\n    closed:\n      \"pointer-events-none opacity-0 invisible scale-100 sm:translate-y-5\",\n  },\n};\n\ninterface ExpandableChatProps extends React.HTMLAttributes<HTMLDivElement> {\n  position?: ChatPosition;\n  size?: ChatSize;\n  icon?: React.ReactNode;\n}\n\nconst ExpandableChat: React.FC<ExpandableChatProps> = ({\n  className,\n  position = \"bottom-right\",\n  size = \"md\",\n  icon,\n  children,\n  ...props\n}) => {\n  const [isOpen, setIsOpen] = useState(false);\n  const chatRef = useRef<HTMLDivElement>(null);\n\n  const toggleChat = () => setIsOpen(!isOpen);\n\n  return (\n    <div\n      className={cn(`fixed ${chatConfig.positions[position]} z-50`, className)}\n      {...props}\n    >\n      <div\n        ref={chatRef}\n        className={cn(\n          \"flex flex-col bg-background border sm:rounded-lg shadow-md overflow-hidden transition-all duration-250 ease-out sm:absolute sm:w-[90vw] sm:h-[80vh] fixed inset-0 w-full h-full sm:inset-auto\",\n          chatConfig.chatPositions[position],\n          chatConfig.dimensions[size],\n          isOpen ? chatConfig.states.open : chatConfig.states.closed,\n          className,\n        )}\n      >\n        {children}\n        <Button\n          variant=\"ghost\"\n          size=\"icon\"\n          className=\"absolute top-2 right-2 sm:hidden\"\n          onClick={toggleChat}\n        >\n          <X className=\"h-4 w-4\" />\n        </Button>\n      </div>\n      <ExpandableChatToggle\n        icon={icon}\n        isOpen={isOpen}\n        toggleChat={toggleChat}\n      />\n    </div>\n  );\n};\n\nExpandableChat.displayName = \"ExpandableChat\";\n\nconst ExpandableChatHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({\n  className,\n  ...props\n}) => (\n  <div\n    className={cn(\"flex items-center justify-between p-4 border-b\", className)}\n    {...props}\n  />\n);\n\nExpandableChatHeader.displayName = \"ExpandableChatHeader\";\n\nconst ExpandableChatBody: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({\n  className,\n  ...props\n}) => <div className={cn(\"flex-grow overflow-y-auto\", className)} {...props} />;\n\nExpandableChatBody.displayName = \"ExpandableChatBody\";\n\nconst ExpandableChatFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({\n  className,\n  ...props\n}) => <div className={cn(\"border-t p-4\", className)} {...props} />;\n\nExpandableChatFooter.displayName = \"ExpandableChatFooter\";\n\ninterface ExpandableChatToggleProps\n  extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  icon?: React.ReactNode;\n  isOpen: boolean;\n  toggleChat: () => void;\n}\n\nconst ExpandableChatToggle: React.FC<ExpandableChatToggleProps> = ({\n  className,\n  icon,\n  isOpen,\n  toggleChat,\n  ...props\n}) => (\n  <Button\n    variant=\"default\"\n    onClick={toggleChat}\n    className={cn(\n      \"w-14 h-14 rounded-full shadow-md flex items-center justify-center hover:shadow-lg hover:shadow-black/30 transition-all duration-300\",\n      className,\n    )}\n    {...props}\n  >\n    {isOpen ? (\n      <X className=\"h-6 w-6\" />\n    ) : (\n      icon || <MessageCircle className=\"h-6 w-6\" />\n    )}\n  </Button>\n);\n\nExpandableChatToggle.displayName = \"ExpandableChatToggle\";\n\nexport {\n  ExpandableChat,\n  ExpandableChatHeader,\n  ExpandableChatBody,\n  ExpandableChatFooter,\n};\n\n\ndemo.tsx\n\"use client\"\n\nimport { useState, FormEvent } from \"react\"\nimport { Send, Bot, Paperclip, Mic, CornerDownLeft } from \"lucide-react\"\nimport { Button } from \"@/components/ui/button\"\nimport {\n  ChatBubble,\n  ChatBubbleAvatar,\n  ChatBubbleMessage,\n} from \"@/components/ui/chat-bubble\"\nimport { ChatInput } from \"@/components/ui/chat-input\"\nimport {\n  ExpandableChat,\n  ExpandableChatHeader,\n  ExpandableChatBody,\n  ExpandableChatFooter,\n} from \"@/components/ui/expandable-chat\"\nimport { ChatMessageList } from \"@/components/ui/chat-message-list\"\n\nexport function ExpandableChatDemo() {\n  const [messages, setMessages] = useState([\n    {\n      id: 1,\n      content: \"Hello! How can I help you today?\",\n      sender: \"ai\",\n    },\n    {\n      id: 2,\n      content: \"I have a question about the component library.\",\n      sender: \"user\",\n    },\n    {\n      id: 3,\n      content: \"Sure! I'd be happy to help. What would you like to know?\",\n      sender: \"ai\",\n    },\n  ])\n\n  const [input, setInput] = useState(\"\")\n  const [isLoading, setIsLoading] = useState(false)\n\n  const handleSubmit = (e: FormEvent) => {\n    e.preventDefault()\n    if (!input.trim()) return\n\n    setMessages((prev) => [\n      ...prev,\n      {\n        id: prev.length + 1,\n        content: input,\n        sender: \"user\",\n      },\n    ])\n    setInput(\"\")\n    setIsLoading(true)\n\n    setTimeout(() => {\n      setMessages((prev) => [\n        ...prev,\n        {\n          id: prev.length + 1,\n          content: \"This is an AI response to your message.\",\n          sender: \"ai\",\n        },\n      ])\n      setIsLoading(false)\n    }, 1000)\n  }\n\n  const handleAttachFile = () => {\n    //\n  }\n\n  const handleMicrophoneClick = () => {\n    //\n  }\n\n  return (\n    <div className=\"h-[600px] relative\">\n      <ExpandableChat\n        size=\"lg\"\n        position=\"bottom-right\"\n        icon={<Bot className=\"h-6 w-6\" />}\n      >\n        <ExpandableChatHeader className=\"flex-col text-center justify-center\">\n          <h1 className=\"text-xl font-semibold\">Chat with AI ✨</h1>\n          <p className=\"text-sm text-muted-foreground\">\n            Ask me anything about the components\n          </p>\n        </ExpandableChatHeader>\n\n        <ExpandableChatBody>\n          <ChatMessageList>\n            {messages.map((message) => (\n              <ChatBubble\n                key={message.id}\n                variant={message.sender === \"user\" ? \"sent\" : \"received\"}\n              >\n                <ChatBubbleAvatar\n                  className=\"h-8 w-8 shrink-0\"\n                  src={\n                    message.sender === \"user\"\n                      ? \"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&q=80&crop=faces&fit=crop\"\n                      : \"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop\"\n                  }\n                  fallback={message.sender === \"user\" ? \"US\" : \"AI\"}\n                />\n                <ChatBubbleMessage\n                  variant={message.sender === \"user\" ? \"sent\" : \"received\"}\n                >\n                  {message.content}\n                </ChatBubbleMessage>\n              </ChatBubble>\n            ))}\n\n            {isLoading && (\n              <ChatBubble variant=\"received\">\n                <ChatBubbleAvatar\n                  className=\"h-8 w-8 shrink-0\"\n                  src=\"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&q=80&crop=faces&fit=crop\"\n                  fallback=\"AI\"\n                />\n                <ChatBubbleMessage isLoading />\n              </ChatBubble>\n            )}\n          </ChatMessageList>\n        </ExpandableChatBody>\n\n        <ExpandableChatFooter>\n          <form\n            onSubmit={handleSubmit}\n            className=\"relative rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring p-1\"\n          >\n            <ChatInput\n              value={input}\n              onChange={(e) => setInput(e.target.value)}\n              placeholder=\"Type your message...\"\n              className=\"min-h-12 resize-none rounded-lg bg-background border-0 p-3 shadow-none focus-visible:ring-0\"\n            />\n            <div className=\"flex items-center p-3 pt-0 justify-between\">\n              <div className=\"flex\">\n                <Button\n                  variant=\"ghost\"\n                  size=\"icon\"\n                  type=\"button\"\n                  onClick={handleAttachFile}\n                >\n                  <Paperclip className=\"size-4\" />\n                </Button>\n\n                <Button\n                  variant=\"ghost\"\n                  size=\"icon\"\n                  type=\"button\"\n                  onClick={handleMicrophoneClick}\n                >\n                  <Mic className=\"size-4\" />\n                </Button>\n              </div>\n              <Button type=\"submit\" size=\"sm\" className=\"ml-auto gap-1.5\">\n                Send Message\n                <CornerDownLeft className=\"size-3.5\" />\n              </Button>\n            </div>\n          </form>\n        </ExpandableChatFooter>\n      </ExpandableChat>\n    </div>\n  )\n}\n\n```\n\nCopy-paste these files for dependencies:\n\n```tsx\nshadcn/button\nimport * as React from \"react\"\nimport { Slot } from \"@radix-ui/react-slot\"\nimport { cva, type VariantProps } from \"class-variance-authority\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst buttonVariants = cva(\n  \"inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-primary text-primary-foreground hover:bg-primary/90\",\n        destructive:\n          \"bg-destructive text-destructive-foreground hover:bg-destructive/90\",\n        outline:\n          \"border border-input bg-background hover:bg-accent hover:text-accent-foreground\",\n        secondary:\n          \"bg-secondary text-secondary-foreground hover:bg-secondary/80\",\n        ghost: \"hover:bg-accent hover:text-accent-foreground\",\n        link: \"text-primary underline-offset-4 hover:underline\",\n      },\n      size: {\n        default: \"h-10 px-4 py-2\",\n        sm: \"h-9 rounded-md px-3\",\n        lg: \"h-11 rounded-md px-8\",\n        icon: \"h-10 w-10\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  },\n)\n\nexport interface ButtonProps\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>,\n    VariantProps<typeof buttonVariants> {\n  asChild?: boolean\n}\n\nconst Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\n  ({ className, variant, size, asChild = false, ...props }, ref) => {\n    const Comp = asChild ? Slot : \"button\"\n    return (\n      <Comp\n        className={cn(buttonVariants({ variant, size, className }))}\n        ref={ref}\n        {...props}\n      />\n    )\n  },\n)\nButton.displayName = \"Button\"\n\nexport { Button, buttonVariants }\n\n```\n\n```tsx\njakobhoeg/chat-bubble\n\"use client\"\n\nimport * as React from \"react\"\nimport { cn } from \"@/lib/utils\"\nimport { Avatar, AvatarFallback, AvatarImage } from \"@/components/ui/avatar\"\nimport { Button } from \"@/components/ui/button\"\nimport { MessageLoading } from \"@/components/ui/message-loading\";\n\ninterface ChatBubbleProps {\n  variant?: \"sent\" | \"received\"\n  layout?: \"default\" | \"ai\"\n  className?: string\n  children: React.ReactNode\n}\n\nexport function ChatBubble({\n  variant = \"received\",\n  layout = \"default\",\n  className,\n  children,\n}: ChatBubbleProps) {\n  return (\n    <div\n      className={cn(\n        \"flex items-start gap-2 mb-4\",\n        variant === \"sent\" && \"flex-row-reverse\",\n        className,\n      )}\n    >\n      {children}\n    </div>\n  )\n}\n\ninterface ChatBubbleMessageProps {\n  variant?: \"sent\" | \"received\"\n  isLoading?: boolean\n  className?: string\n  children?: React.ReactNode\n}\n\nexport function ChatBubbleMessage({\n  variant = \"received\",\n  isLoading,\n  className,\n  children,\n}: ChatBubbleMessageProps) {\n  return (\n    <div\n      className={cn(\n        \"rounded-lg p-3\",\n        variant === \"sent\" ? \"bg-primary text-primary-foreground\" : \"bg-muted\",\n        className\n      )}\n    >\n      {isLoading ? (\n        <div className=\"flex items-center space-x-2\">\n          <MessageLoading />\n        </div>\n      ) : (\n        children\n      )}\n    </div>\n  )\n}\n\ninterface ChatBubbleAvatarProps {\n  src?: string\n  fallback?: string\n  className?: string\n}\n\nexport function ChatBubbleAvatar({\n  src,\n  fallback = \"AI\",\n  className,\n}: ChatBubbleAvatarProps) {\n  return (\n    <Avatar className={cn(\"h-8 w-8\", className)}>\n      {src && <AvatarImage src={src} />}\n      <AvatarFallback>{fallback}</AvatarFallback>\n    </Avatar>\n  )\n}\n\ninterface ChatBubbleActionProps {\n  icon?: React.ReactNode\n  onClick?: () => void\n  className?: string\n}\n\nexport function ChatBubbleAction({\n  icon,\n  onClick,\n  className,\n}: ChatBubbleActionProps) {\n  return (\n    <Button\n      variant=\"ghost\"\n      size=\"icon\"\n      className={cn(\"h-6 w-6\", className)}\n      onClick={onClick}\n    >\n      {icon}\n    </Button>\n  )\n}\n\nexport function ChatBubbleActionWrapper({\n  className,\n  children,\n}: {\n  className?: string\n  children: React.ReactNode\n}) {\n  return (\n    <div className={cn(\"flex items-center gap-1 mt-2\", className)}>\n      {children}\n    </div>\n  )\n}\n\n```\n\n```tsx\njakobhoeg/message-loading\n// @hidden\nfunction MessageLoading() {\n  return (\n    <svg\n      width=\"24\"\n      height=\"24\"\n      viewBox=\"0 0 24 24\"\n      xmlns=\"http://www.w3.org/2000/svg\"\n      className=\"text-foreground\"\n    >\n      <circle cx=\"4\" cy=\"12\" r=\"2\" fill=\"currentColor\">\n        <animate\n          id=\"spinner_qFRN\"\n          begin=\"0;spinner_OcgL.end+0.25s\"\n          attributeName=\"cy\"\n          calcMode=\"spline\"\n          dur=\"0.6s\"\n          values=\"12;6;12\"\n          keySplines=\".33,.66,.66,1;.33,0,.66,.33\"\n        />\n      </circle>\n      <circle cx=\"12\" cy=\"12\" r=\"2\" fill=\"currentColor\">\n        <animate\n          begin=\"spinner_qFRN.begin+0.1s\"\n          attributeName=\"cy\"\n          calcMode=\"spline\"\n          dur=\"0.6s\"\n          values=\"12;6;12\"\n          keySplines=\".33,.66,.66,1;.33,0,.66,.33\"\n        />\n      </circle>\n      <circle cx=\"20\" cy=\"12\" r=\"2\" fill=\"currentColor\">\n        <animate\n          id=\"spinner_OcgL\"\n          begin=\"spinner_qFRN.begin+0.2s\"\n          attributeName=\"cy\"\n          calcMode=\"spline\"\n          dur=\"0.6s\"\n          values=\"12;6;12\"\n          keySplines=\".33,.66,.66,1;.33,0,.66,.33\"\n        />\n      </circle>\n    </svg>\n  );\n}\n\nexport { MessageLoading };\n\n```\n\n```tsx\nshadcn/avatar\n\"use client\"\n\nimport * as React from \"react\"\nimport * as AvatarPrimitive from \"@radix-ui/react-avatar\"\n\nimport { cn } from \"@/lib/utils\"\n\nconst Avatar = React.forwardRef<\n  React.ElementRef<typeof AvatarPrimitive.Root>,\n  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>\n>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Root\n    ref={ref}\n    className={cn(\n      \"relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full\",\n      className,\n    )}\n    {...props}\n  />\n))\nAvatar.displayName = AvatarPrimitive.Root.displayName\n\nconst AvatarImage = React.forwardRef<\n  React.ElementRef<typeof AvatarPrimitive.Image>,\n  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>\n>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Image\n    ref={ref}\n    className={cn(\"aspect-square h-full w-full\", className)}\n    {...props}\n  />\n))\nAvatarImage.displayName = AvatarPrimitive.Image.displayName\n\nconst AvatarFallback = React.forwardRef<\n  React.ElementRef<typeof AvatarPrimitive.Fallback>,\n  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>\n>(({ className, ...props }, ref) => (\n  <AvatarPrimitive.Fallback\n    ref={ref}\n    className={cn(\n      \"flex h-full w-full items-center justify-center rounded-full bg-muted\",\n      className,\n    )}\n    {...props}\n  />\n))\nAvatarFallback.displayName = AvatarPrimitive.Fallback.displayName\n\nexport { Avatar, AvatarImage, AvatarFallback }\n\n```\n\n```tsx\njakobhoeg/chat-input\nimport * as React from \"react\";\nimport { Textarea } from \"@/components/ui/textarea\";\nimport { cn } from \"@/lib/utils\";\n\ninterface ChatInputProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement>{}\n\nconst ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(\n  ({ className, ...props }, ref) => (\n    <Textarea\n      autoComplete=\"off\"\n      ref={ref}\n      name=\"message\"\n      className={cn(\n        \"max-h-12 px-4 py-3 bg-background text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 w-full rounded-md flex items-center h-16 resize-none\",\n        className,\n      )}\n      {...props}\n    />\n  ),\n);\nChatInput.displayName = \"ChatInput\";\n\nexport { ChatInput };\n```\n\n```tsx\nshadcn/textarea\nimport * as React from \"react\"\n\nimport { cn } from \"@/lib/utils\"\n\nexport interface TextareaProps\n  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}\n\nconst Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(\n  ({ className, ...props }, ref) => {\n    return (\n      <textarea\n        className={cn(\n          \"flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50\",\n          className\n        )}\n        ref={ref}\n        {...props}\n      />\n    )\n  }\n)\nTextarea.displayName = \"Textarea\"\n\nexport { Textarea }\n\n```\n\n```tsx\njakobhoeg/chat-message-list\nimport * as React from \"react\";\nimport { ArrowDown } from \"lucide-react\";\nimport { Button } from \"@/components/ui/button\";\nimport { useAutoScroll } from \"@/components/hooks/use-auto-scroll\";\n\ninterface ChatMessageListProps extends React.HTMLAttributes<HTMLDivElement> {\n  smooth?: boolean;\n}\n\nconst ChatMessageList = React.forwardRef<HTMLDivElement, ChatMessageListProps>(\n  ({ className, children, smooth = false, ...props }, _ref) => {\n    const {\n      scrollRef,\n      isAtBottom,\n      autoScrollEnabled,\n      scrollToBottom,\n      disableAutoScroll,\n    } = useAutoScroll({\n      smooth,\n      content: children,\n    });\n\n    return (\n      <div className=\"relative w-full h-full\">\n        <div\n          className={`flex flex-col w-full h-full p-4 overflow-y-auto ${className}`}\n          ref={scrollRef}\n          onWheel={disableAutoScroll}\n          onTouchMove={disableAutoScroll}\n          {...props}\n        >\n          <div className=\"flex flex-col gap-6\">{children}</div>\n        </div>\n\n        {!isAtBottom && (\n          <Button\n            onClick={() => {\n              scrollToBottom();\n            }}\n            size=\"icon\"\n            variant=\"outline\"\n            className=\"absolute bottom-2 left-1/2 transform -translate-x-1/2 inline-flex rounded-full shadow-md\"\n            aria-label=\"Scroll to bottom\"\n          >\n            <ArrowDown className=\"h-4 w-4\" />\n          </Button>\n        )}\n      </div>\n    );\n  }\n);\n\nChatMessageList.displayName = \"ChatMessageList\";\n\nexport { ChatMessageList };\n\n```\n\n```tsx\njakobhoeg/use-auto-scroll\n// @hidden\nimport { useCallback, useEffect, useRef, useState } from \"react\";\n\ninterface ScrollState {\n  isAtBottom: boolean;\n  autoScrollEnabled: boolean;\n}\n\ninterface UseAutoScrollOptions {\n  offset?: number;\n  smooth?: boolean;\n  content?: React.ReactNode;\n}\n\nexport function useAutoScroll(options: UseAutoScrollOptions = {}) {\n  const { offset = 20, smooth = false, content } = options;\n  const scrollRef = useRef<HTMLDivElement>(null);\n  const lastContentHeight = useRef(0);\n  const userHasScrolled = useRef(false);\n\n  const [scrollState, setScrollState] = useState<ScrollState>({\n    isAtBottom: true,\n    autoScrollEnabled: true,\n  });\n\n  const checkIsAtBottom = useCallback(\n    (element: HTMLElement) => {\n      const { scrollTop, scrollHeight, clientHeight } = element;\n      const distanceToBottom = Math.abs(\n        scrollHeight - scrollTop - clientHeight\n      );\n      return distanceToBottom <= offset;\n    },\n    [offset]\n  );\n\n  const scrollToBottom = useCallback(\n    (instant?: boolean) => {\n      if (!scrollRef.current) return;\n\n      const targetScrollTop =\n        scrollRef.current.scrollHeight - scrollRef.current.clientHeight;\n\n      if (instant) {\n        scrollRef.current.scrollTop = targetScrollTop;\n      } else {\n        scrollRef.current.scrollTo({\n          top: targetScrollTop,\n          behavior: smooth ? \"smooth\" : \"auto\",\n        });\n      }\n\n      setScrollState({\n        isAtBottom: true,\n        autoScrollEnabled: true,\n      });\n      userHasScrolled.current = false;\n    },\n    [smooth]\n  );\n\n  const handleScroll = useCallback(() => {\n    if (!scrollRef.current) return;\n\n    const atBottom = checkIsAtBottom(scrollRef.current);\n\n    setScrollState((prev) => ({\n      isAtBottom: atBottom,\n      // Re-enable auto-scroll if at the bottom\n      autoScrollEnabled: atBottom ? true : prev.autoScrollEnabled,\n    }));\n  }, [checkIsAtBottom]);\n\n  useEffect(() => {\n    const element = scrollRef.current;\n    if (!element) return;\n\n    element.addEventListener(\"scroll\", handleScroll, { passive: true });\n    return () => element.removeEventListener(\"scroll\", handleScroll);\n  }, [handleScroll]);\n\n  useEffect(() => {\n    const scrollElement = scrollRef.current;\n    if (!scrollElement) return;\n\n    const currentHeight = scrollElement.scrollHeight;\n    const hasNewContent = currentHeight !== lastContentHeight.current;\n\n    if (hasNewContent) {\n      if (scrollState.autoScrollEnabled) {\n        requestAnimationFrame(() => {\n          scrollToBottom(lastContentHeight.current === 0);\n        });\n      }\n      lastContentHeight.current = currentHeight;\n    }\n  }, [content, scrollState.autoScrollEnabled, scrollToBottom]);\n\n  useEffect(() => {\n    const element = scrollRef.current;\n    if (!element) return;\n\n    const resizeObserver = new ResizeObserver(() => {\n      if (scrollState.autoScrollEnabled) {\n        scrollToBottom(true);\n      }\n    });\n\n    resizeObserver.observe(element);\n    return () => resizeObserver.disconnect();\n  }, [scrollState.autoScrollEnabled, scrollToBottom]);\n\n  const disableAutoScroll = useCallback(() => {\n    const atBottom = scrollRef.current\n      ? checkIsAtBottom(scrollRef.current)\n      : false;\n\n    // Only disable if not at bottom\n    if (!atBottom) {\n      userHasScrolled.current = true;\n      setScrollState((prev) => ({\n        ...prev,\n        autoScrollEnabled: false,\n      }));\n    }\n  }, [checkIsAtBottom]);\n\n  return {\n    scrollRef,\n    isAtBottom: scrollState.isAtBottom,\n    autoScrollEnabled: scrollState.autoScrollEnabled,\n    scrollToBottom: () => scrollToBottom(false),\n    disableAutoScroll,\n  };\n}\n\n```\n\nInstall NPM dependencies:\n\n```bash\nlucide-react, @radix-ui/react-slot, class-variance-authority, @radix-ui/react-avatar\n```",
@@ -331,7 +331,7 @@
         "subtasks": []
       },
       {
-        "id": "25",
+        "id": 25,
         "title": "Добавить недавние проекты в стартовый экран",
         "description": "",
         "details": "",
@@ -344,7 +344,7 @@
         "subtasks": []
       },
       {
-        "id": "26",
+        "id": 26,
         "title": "Сделать заголовок задачи редактируемым",
         "description": "Убрать таб для изменения заголовка задачи и перенести логику изменения заголовка в шапку редактора",
         "details": "При клике на заголовок задачи в шапке, он должен превращаться в Input из gravity-ui. Заголовок должен сохраняться при потере фокуса или при клике на enter. При клике на escape, заголовок должен возвращаться к исходному значению. Если оставить поле пустым, то под ним должна появиться ошибка \"Название задачи не может быть пустым\".\n\nКомпонент: packages/renderer/src/components/editor-panel-header/ui.tsx\\\nInput из gravity-ui: size=m. Сверху и снизу добавь паддинг по 1px, чтобы высота инпута совпадала с высотой заголовка",
@@ -357,7 +357,7 @@
         "subtasks": []
       },
       {
-        "id": "27",
+        "id": 27,
         "title": "Добавить возможность создания и выбора ветки",
         "description": "Добавить возможность создания и выбора ветки",
         "details": "",
@@ -368,7 +368,7 @@
         "subtasks": []
       },
       {
-        "id": "28",
+        "id": 28,
         "title": "Исправить механизм сохранения задач",
         "description": "Исправить механизм сохранения задач",
         "details": "",
@@ -379,7 +379,7 @@
         "subtasks": []
       },
       {
-        "id": "29",
+        "id": 29,
         "title": "Добавить возможность создавать новую задачу",
         "description": "Добавить возможность создавать новую задачу\n\nВ шапке TaskList есть кнопка с иконкой плюс\nПри нажатии на кнопку должна создаваться задача  в текущей ветке с id равным последнему id в ветке \\+ 1. Все остальные поля у таски пустые, кроме тайтла. В тайтле написано \"Новая задача\"",
         "details": "",
@@ -392,7 +392,7 @@
         "subtasks": []
       },
       {
-        "id": "30",
+        "id": 30,
         "title": "Добавить в шапку списка текущую директорию",
         "description": "В шапке должен быть путь текущего файла.\nПусть путь будет обрезан слева и состоять из максимум 30 символов.\nШрифт мелкий, но не слишком. При наведении появляется тултип с полным путем (import \\{Popup\\} from '@gravity-ui/uikit').\n\n```\nconst [buttonElement, setButtonElement] = React.useState(null);\nconst [open, setOpen] = React.useState(false);\n\n<Button ref={setButtonElement} onClick={() => setOpen((prevOpen) => !prevOpen)}>\n  Toggle Popup\n</Button>\n<Popup anchorElement={buttonElement} open={open} placement=\"bottom\">\n  Content\n</Popup>\n```",
         "details": "",
@@ -402,7 +402,7 @@
         "subtasks": []
       },
       {
-        "id": "31",
+        "id": 31,
         "title": "Добавить стейт кнопки редактор/предпросмотр в Redux Store. ",
         "description": "Добавить стейт кнопки редактор/предпросмотр из шапки редактора в Redux Store. Сделать так, чтоб он сохранял состояние при переходе между задачами\nПусть дефолтным значением для кнопки будет **предпросмотр**.",
         "details": "",
@@ -412,7 +412,7 @@
         "subtasks": []
       },
       {
-        "id": "32",
+        "id": 32,
         "title": "Исправить сохранение недавних проектов",
         "description": "Ранее открытые проекты не сохраняются в недавних проектах и не отображаются в интерфейсе на стартовой страницы",
         "details": "",
@@ -422,7 +422,7 @@
         "subtasks": []
       },
       {
-        "id": "33",
+        "id": 33,
         "title": "Починить работу горячих клавиш",
         "description": "Горячие клавиши для открытия задачи и сохранения задачи не всегда срабатывают. Они работают до определенного момента, затем перестают работать. Необходимо найти причину и исправить её.",
         "details": "",
@@ -432,7 +432,7 @@
         "subtasks": []
       },
       {
-        "id": "34",
+        "id": 34,
         "title": "Добавить возможность добавления собственной модели.",
         "description": "",
         "details": "Давай добавим в селект модельки ('/Users/moskibitskiy/pets/task-master-editor/packages/renderer/src/components/gpt-settings/ui.tsx') возможность\nуказания другой модели из Open Router.\n\nПредлагаю под baseUrl выводить список из лейблов тех моделей, которые были добавлены пользователем. (import \\{Label\\} from '@gravity-ui/uikit';) size = s, type = close\n\nХранить добавленные модельки предлагаю в сторе settings (packages/renderer/src/redux/settingsSlice.ts). Кажется, эти действия заденут validateSettingsUpdateInput, поэтому поправь тесты (packages/shared/tests/ipcSchemas.test.ts) по необходимости\n\nПеренеси все инлайн стили из gpt-settings/ui.tsx в styles.module.css",
@@ -442,7 +442,7 @@
         "subtasks": []
       },
       {
-        "id": "35",
+        "id": 35,
         "title": "[Перенести в бэклог] Добавить возможность прикрепления файлов в чат с AI",
         "description": "Добавить функцию прикрепления файлов к сообщениям в AI чате для анализа содержимого файлов",
         "details": "### Функциональность прикрепления файлов в AI чат\n\n**Требования:**\n1. **Кнопка прикрепления** - добавить кнопку с иконкой Paperclip в футер чата\n2. **Выбор файлов** - открывать диалог выбора файлов при клике\n3. **Поддерживаемые форматы** - текстовые файлы (.txt, .md, .js, .ts, .tsx, .json, .css, .html), изображения (.png, .jpg, .jpeg, .gif, .webp)\n4. **Превью файлов** - показывать прикрепленные файлы в интерфейсе сообщения\n5. **Передача в GPT** - включать содержимое файлов в запрос к AI\n6. **Ограничения** - максимум 5 файлов на сообщение, размер файла до 2MB\n\n**Компоненты для изменения:**\n- `ai-chat/ui.tsx` - добавить кнопку и логику выбора файлов\n- `chat-bubble/ui.tsx` - поддержка отображения прикрепленных файлов\n- `gpt-service.ts` - передача файлов в запрос\n\n**Интерфейс:**\n- Прикрепленные файлы отображаются как теги с именем файла и кнопкой удаления\n- При отправке сообщения файлы включаются в контекст для AI\n- Поддержка drag&drop для удобства",
@@ -455,7 +455,7 @@
         "subtasks": []
       },
       {
-        "id": "36",
+        "id": 36,
         "title": "[Перенести в бэклог] Добавить возможность редактирования последнего сообщения в чате с ИИ",
         "description": "",
         "details": "Необходимо добавить иконку \"карандашик\" (import \\{Pencil\\} from '@gravity-ui/icons')\n\n- при нажатии на икноку включается режим редактирования\n- бабл с сообщением пользователя расширяется на всю ширину окна, внутри рендерится TextArea и кнопки: \"отменить\" и \"отправить\"",
@@ -464,7 +464,7 @@
         "subtasks": []
       },
       {
-        "id": "38",
+        "id": 38,
         "title": "Добавить возможность изменения статуса задачи",
         "description": "",
         "details": "1. Убрать кружочек, обозначающий изменения в задаче, внутри кнопки \"Сохранить\" в шапке редактора\n2. Добавить справа от заголовка задачи селект, у которого control и элементы списка будут лейблом, как в списке задач.\n\n```javascript\n<Select\n  renderControl={({onClick, onKeyDown, ref}) => {\n    return <button ref={ref} onClick={onClick} extraProps={{onKeyDown}}>Custom control</button>\n  }}\n  renderOption={(option) => {\n  return (\n    <div style={{color: option.data.color}}>\n      {option.children}\n    </div>\n  );\n}}\n>\n```",
@@ -474,7 +474,7 @@
         "subtasks": []
       },
       {
-        "id": "39",
+        "id": 39,
         "title": "Добавить возможность возвращения к предыдущим ИИ чатам в рамках проекта",
         "description": "",
         "details": "1. Добавить в шапку чата кнопки с иконками (из @gravity-ui/icons) Plus (будет открывать новый чат), ClockArrowRotateLeft (будет открывать селект с чатами)\n2. Элементы селекта с предыдущими чатами представляют собой название чата (по умолчанию New Chat, логика автоматического подставления названия чата будет реализована потом), кнопка для редактирования названия и кнопка удалить чат.\n3. Чаты необходимо хранить в Redux, сохранять и подгружать с диска по аналогии с редюсером настроек. Ключом для доступа к чатам должен быть путь до файла с задачами. Чаты можно хранить в sqlite3 БД.\n4. Чат можно удалить (кнопка с иконкой Trash в элементе селекта)\n5. Чату присвоено имя, которое пользователь может отредактировать с помощью кнопки-иконки Pencil в элементе селекта. При нажатии на иконку, в элементе селекта появляется сфокусированный TextInput, в который можно сразу ввести название чата. Название сохраняется с некоторым дебаунсом.",
@@ -485,7 +485,7 @@
         "subtasks": []
       },
       {
-        "id": "40",
+        "id": 40,
         "title": "Научиться добавлять контекст в чат с ИИ по задаче",
         "description": "",
         "details": "В чат с ai вместо textarea надо использовать продвинутый редактор tiptap: <https://tiptap.dev/docs/editor/getting-started/install/react> и добавить расширение с упоминаниями: <https://tiptap.dev/docs/editor/extensions/nodes/mention?utm_source=chatgpt.com>\n\nХочется, чтобы при вводе @context в сообщение с ии передавался контекст задачи, а именно json со всеми полями как в tasks.json",
@@ -496,7 +496,7 @@
         "subtasks": []
       },
       {
-        "id": "41",
+        "id": 41,
         "title": "Исправить баг из-за которого данные задачи на другой бранче не обновляются",
         "description": "",
         "details": "При переключении между бранчами могут дублироваться значения в редакторе из старой задачи. Это происходит потому, что редактор не обновляет значения и не перерендеривается, так как taskId остается прежним. ",
@@ -507,7 +507,7 @@
         "subtasks": []
       },
       {
-        "id": "42",
+        "id": 42,
         "title": "Добавить кнопку расширения чата с ИИ на весь экран",
         "description": "",
         "details": "Добавить кнопку в компонент ChatHistoryControls (packages/renderer/src/components/chat-history-controls/ui.tsx), перед XMark. В качестве иконки используй ChevronsCollapseUpRight из гравити. Сейчас ширину и высоту ограничивают с помощью @media (min-width: 768px) тут (packages/renderer/src/components/expandable-chat/styles.module.css)",
@@ -517,7 +517,7 @@
         "subtasks": []
       },
       {
-        "id": "43",
+        "id": 43,
         "title": "Добавить переключение ИИ-шки в чат",
         "description": "- Надо добавить кнопку с иконкой настроек в чат с ИИ, чтобы она открывала модалку как в редакторе.\n- Из редактора убрать кнопку открытия этой модалки\n- В редактор добавить селект с помощью которого можно переключать модель (как в модалке). Этот селект с логикой можно вынести в общий компонент, чтобы использовать и в модалке, и в чате",
         "details": "",
@@ -528,18 +528,18 @@
         "subtasks": []
       },
       {
-        "id": "44",
+        "id": 44,
         "title": "[Перенести в bugs] Исправить уменьшение иконки файла на стартовой странице в списке проектов, если путь до проекта большой и не разделяется",
         "description": "",
         "details": "",
+        "status": "pending",
         "priority": "low",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": [],
-        "status": "pending"
+        "subtasks": []
       },
       {
-        "id": "45",
+        "id": 45,
         "title": "Не удалять кастомные поля в файле",
         "description": "**Проблема:** При сохранении задач автоматически удаляются все пользовательские поля (например, `completionNotes`), не входящие в стандартный набор полей системы.\n\n**Требования:**\n\n1. Добавить в настройках проекта раздел для управления пользовательскими полями\n\n2. Реализовать механизм сохранения значений пользовательских полей при сохранении задач\n\n3. В визуальном редакторе задач добавить новую вкладку для отображения и редактирования пользовательских полей\n\n4. Поля должны динамически подгружаться из настроек проекта\n\n**Конкретный пример:**\n\n* Поле `completionNotes` должно сохраняться при сохранении задачи\n\n* В редакторе задач должна появиться вкладка \"Дополнительные поля\" с возможностью редактирования этого поля\n\n**Технические требования:**\n\n* Система должна быть расширяемой для добавления новых полей через настройки\n\n* Поддержка различных типов полей (текст, число, дата и т.д.)\n\n* Сохранение данных должно быть совместимо с существующей структурой данных",
         "details": "",
@@ -550,18 +550,18 @@
         "subtasks": []
       },
       {
-        "id": "46",
+        "id": 46,
         "title": "Добавить возможность перетаскивать задачу из одной ветки в другую",
         "description": "Надо изучить документацию Таскмастера и найти там нужную команду.",
         "details": "",
+        "status": "pending",
         "priority": "medium",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": [],
-        "status": "pending"
+        "subtasks": []
       },
       {
-        "id": "47",
+        "id": 47,
         "title": "Добавить трекинг файла с задачами",
         "description": "Добавить трекинг файла с задачами – при изменении списка задач подтягивать его в редактор. Если файл редактируемой задачи изменился, необходимо подсветить это в интерфейсе.",
         "details": "",
@@ -572,7 +572,7 @@
         "subtasks": []
       },
       {
-        "id": "48",
+        "id": 48,
         "title": "Добавить возможность добавлять приоритет задачам",
         "description": "В редакторе рядом с бейджом статуса добавлен бейдж для редактирования приоритета задачи. Реализовано аналогично компоненту StatusSelect.",
         "details": "Реализованные компоненты:\n\n• **TaskPriority enum** в shared/src/model.ts с тремя уровнями приоритета\n• **getPriorityLabelProps** функция для получения цветовых стилей приоритетов\n• **priorityTypeGuard** guard-функция для валидации типов приоритетов\n• **PrioritySelect компонент** аналогичный StatusSelect для выбора приоритета\n• **Интеграция в editor-panel-header** рядом с компонентом StatusSelect\n• **Логика сохранения** через существующий updateTask action\n\nКомпонент поддерживает три уровня приоритета (низкий, средний, высокий) с соответствующими цветовыми темами.",
@@ -583,7 +583,7 @@
         "subtasks": []
       },
       {
-        "id": "49",
+        "id": 49,
         "title": "Добавить в настройки проекта настройки ИИ",
         "description": "",
         "details": "",
@@ -593,7 +593,7 @@
         "subtasks": []
       },
       {
-        "id": "50",
+        "id": 50,
         "title": "Добавить к задачам в список задач label, который будет показывать, что все зависимости задачи решены",
         "description": "",
         "details": "",
@@ -603,29 +603,29 @@
         "subtasks": []
       },
       {
-        "id": "51",
+        "id": 51,
         "title": "Исправить рассинхрон между полями выбора модели ИИ в чате и настройках",
         "description": "",
         "details": "",
+        "status": "pending",
         "priority": "high",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": [],
-        "status": "pending"
+        "subtasks": []
       },
       {
-        "id": "52",
+        "id": 52,
         "title": "Добавить возможность накидывать контекст любой задачи в чат с ии (полностью, своей в том числе)",
         "description": "",
         "details": "",
+        "status": "pending",
         "priority": "high",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": [],
-        "status": "pending"
+        "subtasks": []
       },
       {
-        "id": "53",
+        "id": 53,
         "title": "Исправить баг, из-за которого сбрасываются значения в табе с маркдаун редактором при переключении табов",
         "description": "",
         "details": "Скорее всего дело в том, что в MarkdownEditorWrapper в качесвте initialValue попадает знаение из таски, а должно из localValues\n\n```typescriptreact\n// packages/renderer/src/components/editor/ui.tsx строка 50\n\n  const currentContent = React.useMemo(() => {\n  return localValues[activeFieldTab];\n}, [localValues, activeFieldTab]);\n```",
@@ -637,7 +637,7 @@
         "updatedAt": "2025-09-29T19:29:00.242Z"
       },
       {
-        "id": "54",
+        "id": 54,
         "title": "Добавить поддержку отображения саб тасок",
         "description": "У задачи может быть поле subtasks, которое содержит в себе массив из таких же тасок, как в корне\n\nНадо научиться отображать их в списке слева, редактировать их и сохранять.",
         "details": "Идентификатор задачи строится следующим образом – `{id корневой задачи}.{порядковый номер подзадачи}`. Например, для задачи 12 будут подзадачи с идентификаторами: 12.1, 12.2, 12.3 и т.д.",
@@ -649,18 +649,18 @@
         "updatedAt": "2025-09-29T19:45:14.639Z"
       },
       {
-        "id": "55",
+        "id": 55,
         "title": "Не работает сохранение при нажатии cmd + s и открытие файлов при нажатии cmd + 0",
         "description": "",
         "details": "",
+        "status": "pending",
         "priority": "medium",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": [],
-        "status": "pending"
+        "subtasks": []
       },
       {
-        "id": "56",
+        "id": 56,
         "title": "Добавить фильтр по статусу под веткой в шапке списка задач",
         "description": "Пускай это будет компонент как в шапке у Editor, то есть селект с лейблами, но рядом с селектом должна быть надпись статус, а над панелью с фильтрами должен быть подзаголовок \"фильтры\", такой же как и заголовок \"Задачи\"\n\nФильтры должны сохраняться между перезапусками приложения, причем для каждого проекта индфивидуальная настройка",
         "details": "",
@@ -670,9 +670,23 @@
         "dependencies": [],
         "subtasks": [],
         "updatedAt": "2025-09-30T06:44:08.993Z"
+      },
+      {
+        "id": 57,
+        "title": "Исправить баг из-за которого в маркдаун полях редактора отображаются значения из предыдущей открытой таски",
+        "description": "Шаги для воспроизведения:\n\n1. Открыть задачку 1 с заполненными маркдаун полями.\n\n2. Открыть задачку 2.\n\nОжидание: в задаче два отображаются значения принадлежащие задаче 2\n\nФактическое поведение: в задаче два отображаются значения принадлежащие задаче 1",
+        "details": "",
+        "status": "done",
+        "priority": "high",
+        "testStrategy": "",
+        "dependencies": []
       }
     ],
-    "metadata": {}
+    "metadata": {
+      "created": "2025-09-30T14:23:40.371Z",
+      "description": "Tasks for master context",
+      "updated": "2025-09-30T14:23:40.372Z"
+    }
   },
   "backlog": {
     "tasks": [

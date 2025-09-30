@@ -21,8 +21,7 @@ export const TaskPath: React.FC = () => {
   return (
     <Flex direction="column" gap={1}>
       <Text
-        variant="caption-2"
-        color="secondary"
+        variant="header-1"
         className={styles.pathText}
         ref={setPathElement}
         onMouseEnter={() => setIsPopupOpen(true)}

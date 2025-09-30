@@ -40,6 +40,13 @@ export const MarkdownEditorWrapper: React.FC<MarkdownEditorWrapperProps> = ({
     }
   }, [editorMode, fieldEditor]);
 
+  useEffect(() => {
+    // Keep editor content in sync with the active task value to avoid leaking data
+    if (fieldEditor.getValue() !== initialValue) {
+      fieldEditor.replace(initialValue);
+    }
+  }, [fieldEditor, initialValue]);
+
   return (
     <div className={styles.markdownEditorWrapper}>
       <MarkdownEditorView
