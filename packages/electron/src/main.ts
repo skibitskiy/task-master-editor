@@ -43,6 +43,7 @@ export function setupSecurityHandlers(contents: WebContents) {
 
 // Resolve dirname for both ESM (tsc) and bundled CJS (webpack)
 const __DIRNAME = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+export const APP_ICON = path.resolve(__DIRNAME, '../assets/icon_1024.png');
 
 export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
   const preloadPath = path.join(__DIRNAME, 'preload.cjs');
@@ -55,7 +56,7 @@ export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
     fileExists: existsSync(preloadPath),
   });
 
-  return {
+  const windowOptions: BrowserWindowConstructorOptions = {
     width: 1024,
     height: 768,
     show: true,
@@ -66,6 +67,12 @@ export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
       preload: preloadPath,
     },
   };
+
+  if (process.platform !== 'darwin') {
+    windowOptions.icon = APP_ICON;
+  }
+
+  return windowOptions;
 }
 
 export function createWindow() {

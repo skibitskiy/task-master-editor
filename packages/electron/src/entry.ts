@@ -1,8 +1,8 @@
 import * as electron from 'electron';
-const { app, BrowserWindow, ipcMain } = electron;
+const { app, BrowserWindow, ipcMain, nativeImage } = electron;
 import { registerIpcHandlers } from './ipcHandlers.js';
 import { logger } from './logger.js';
-import { createWindow } from './main.js';
+import { APP_ICON, createWindow } from './main.js';
 import { createApplicationMenu, setDirtyState, setMainWindow } from './menu.js';
 
 logger.info('Task Master Editor starting');
@@ -33,6 +33,15 @@ ipcMain.on('editor:dirty-state', (_event, isDirty: boolean) => {
 });
 
 app.on('ready', () => {
+  if (process.platform === 'darwin') {
+    const dockIcon = nativeImage.createFromPath(APP_ICON);
+    if (!dockIcon.isEmpty()) {
+      app.dock.setIcon(dockIcon);
+    } else {
+      logger.warn('Dock icon image missing or invalid', { iconPath: APP_ICON });
+    }
+  }
+
   createApplicationMenu();
   const window = createWindow();
   setMainWindow(window);

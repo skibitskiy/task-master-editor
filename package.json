@@ -56,6 +56,7 @@
     "files": [
       "package.json",
       "packages/electron/dist/**",
+      "packages/electron/assets/**",
       "packages/renderer/dist/**",
       "packages/shared/dist/**",
       "node_modules/better-sqlite3/**/*"
@@ -68,18 +69,21 @@
     },
     "npmRebuild": true,
     "mac": {
+      "icon": "packages/electron/assets/app-icon.icns",
       "target": [
         "dmg",
         "zip"
       ]
     },
     "win": {
+      "icon": "packages/electron/assets/icon_1024.png",
       "target": [
         "nsis",
         "zip"
       ]
     },
     "linux": {
+      "icon": "packages/electron/assets/icon_1024.png",
       "target": [
         "AppImage",
         "deb",
