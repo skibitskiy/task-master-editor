@@ -535,7 +535,8 @@
         "priority": "low",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": []
+        "subtasks": [],
+        "status": "pending"
       },
       {
         "id": "45",
@@ -556,7 +557,8 @@
         "priority": "medium",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": []
+        "subtasks": [],
+        "status": "pending"
       },
       {
         "id": "47",
@@ -608,7 +610,8 @@
         "priority": "high",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": []
+        "subtasks": [],
+        "status": "pending"
       },
       {
         "id": "52",
@@ -618,7 +621,8 @@
         "priority": "high",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": []
+        "subtasks": [],
+        "status": "pending"
       },
       {
         "id": "53",
@@ -652,30 +656,23 @@
         "priority": "medium",
         "testStrategy": "",
         "dependencies": [],
-        "subtasks": []
+        "subtasks": [],
+        "status": "pending"
       },
       {
         "id": "56",
         "title": "Добавить фильтр по статусу под веткой в шапке списка задач",
         "description": "Пускай это будет компонент как в шапке у Editor, то есть селект с лейблами, но рядом с селектом должна быть надпись статус, а над панелью с фильтрами должен быть подзаголовок \"фильтры\", такой же как и заголовок \"Задачи\"\n\nФильтры должны сохраняться между перезапусками приложения, причем для каждого проекта индфивидуальная настройка",
         "details": "",
+        "status": "done",
         "priority": "medium",
         "testStrategy": "",
         "dependencies": [],
         "subtasks": [],
-        "status": "done",
         "updatedAt": "2025-09-30T06:44:08.993Z"
       }
     ],
-    "metadata": {
-      "version": "1.0.0",
-      "lastModified": "2025-09-30T06:44:08.994Z",
-      "taskCount": 55,
-      "completedCount": 41,
-      "tags": [
-        "master"
-      ]
-    }
+    "metadata": {}
   },
   "backlog": {
     "tasks": [

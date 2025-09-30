@@ -1,5 +1,5 @@
-import type { CustomField, Task, TasksFile } from '@app/shared';
-import { parseTasksJson } from '@app/shared';
+import { CustomField, Task, TasksFile, TaskStatus } from '@app/shared';
+import { parseTasksJson, TaskPriority } from '@app/shared';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { deleteTaskInPlace, findTaskEntry, forEachTask, updateTaskInPlace } from '@/shared/lib';
@@ -124,6 +124,8 @@ export const addNewTaskAsync = createAsyncThunk(
     const newTask: Task = {
       id: nextId,
       title: 'Новая задача',
+      status: TaskStatus.PENDING,
+      priority: TaskPriority.MEDIUM,
     };
 
     // Add task to state via regular action
