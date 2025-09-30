@@ -2,6 +2,7 @@ import { Flex, List, Text } from '@gravity-ui/uikit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectTaskStatusFilter } from '@/redux/settingsSelectors';
 import type { FlattenedTask } from '@/shared/lib';
 import { flattenTasks, sortTasksRecursively } from '@/shared/lib';
 
@@ -15,6 +16,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
   const tasksFile = useSelector((state: RootState) => state.data.tasksFile);
   const currentBranch = useSelector((state: RootState) => state.data.currentBranch);
   const dirtyState = useSelector((state: RootState) => state.data.dirty);
+  const statusFilter = useSelector(selectTaskStatusFilter);
 
   const tasks = useMemo(() => {
     if (!tasksFile || !currentBranch) {
@@ -31,6 +33,15 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
     const sorted = sortTasksRecursively(tasks);
     return flattenTasks(sorted);
   }, [tasks]);
+
+  const filteredTasks = React.useMemo(() => {
+    if (!statusFilter.length) {
+      return flattenedTasks;
+    }
+
+    const allowed = new Set(statusFilter);
+    return flattenedTasks.filter((item) => (item.task.status ? allowed.has(item.task.status) : false));
+  }, [flattenedTasks, statusFilter]);
 
   // Memoized render function for List component
   const renderTaskItem = React.useCallback(
@@ -70,13 +81,13 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
     <Flex direction="column" className={styles.taskList} grow gap={4}>
       <TaskListHeader onBackToProjects={onBackToProjects} />
       <Flex className={styles.taskListContent} direction="column" grow>
-        {flattenedTasks.length === 0 ? (
+        {filteredTasks.length === 0 ? (
           <div className="editor-placeholder">
             <Text color="secondary">Задач нет</Text>
           </div>
         ) : (
           <List
-            items={flattenedTasks}
+            items={filteredTasks}
             renderItem={renderTaskItem}
             itemHeight={100}
             itemsHeight={(items) => Math.min(items.length * 80, 600)}

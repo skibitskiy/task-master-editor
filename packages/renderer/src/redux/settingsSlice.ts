@@ -1,6 +1,34 @@
 import type { CustomModel, SettingsData, SettingsGetResult } from '@app/shared';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value);
+
+const mergePreferences = (
+  base: Record<string, unknown> | undefined,
+  incoming: Record<string, unknown>,
+): Record<string, unknown> => {
+  const result: Record<string, unknown> = isPlainObject(base) ? { ...base } : {};
+
+  Object.entries(incoming).forEach(([key, value]) => {
+    if (value === undefined) {
+      delete result[key];
+      return;
+    }
+
+    const current = result[key];
+
+    if (isPlainObject(current) && isPlainObject(value)) {
+      result[key] = mergePreferences(current, value);
+      return;
+    }
+
+    result[key] = value;
+  });
+
+  return result;
+};
+
 export interface SettingsState {
   data: SettingsData;
   loaded: boolean;
@@ -89,6 +117,28 @@ export const removeCustomModel = createAsyncThunk(
   },
 );
 
+export const savePreferences = createAsyncThunk(
+  'settings/savePreferences',
+  async (preferencesUpdate: Record<string, unknown>, { getState }) => {
+    const state = getState() as { settings: SettingsState };
+    const mergedPreferences = mergePreferences(
+      state.settings.data.preferences as Record<string, unknown> | undefined,
+      preferencesUpdate,
+    );
+
+    const res = await window.api?.settings.update({ settings: { preferences: mergedPreferences } });
+    if (res?.settings) {
+      return res.settings;
+    }
+
+    return {
+      recentPaths: state.settings.data.recentPaths,
+      preferences: mergedPreferences,
+      customModels: state.settings.data.customModels,
+    };
+  },
+);
+
 const settingsSlice = createSlice({
   name: 'settings',
   initialState,
@@ -113,6 +163,9 @@ const settingsSlice = createSlice({
       state.data = action.payload;
     });
     builder.addCase(removeCustomModel.fulfilled, (state, action) => {
+      state.data = action.payload;
+    });
+    builder.addCase(savePreferences.fulfilled, (state, action) => {
       state.data = action.payload;
     });
   },

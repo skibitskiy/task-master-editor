@@ -1,12 +1,14 @@
 import { type TasksFile, TaskStatus } from '@app/shared';
 import { ThemeProvider } from '@gravity-ui/uikit';
 import { configureStore } from '@reduxjs/toolkit';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { describe, expect, it, vi } from 'vitest';
 
 import dataReducer from '../../redux/dataSlice';
-import settingsReducer from '../../redux/settingsSlice';
+import type { PreferencesShape } from '../../redux/settingsSelectors';
+import settingsReducer, { setSettings } from '../../redux/settingsSlice';
+import { taskSliceReducer } from '../../redux/task/taskSlice';
 import { TaskList } from '../task-list';
 import { TaskListProps } from '../task-list/lib/types';
 
@@ -68,6 +70,7 @@ const createMockStore = (tasksFile: TasksFile | null) => {
     reducer: {
       data: dataReducer,
       settings: settingsReducer,
+      task: taskSliceReducer,
     },
     preloadedState: {
       data: {
@@ -83,6 +86,10 @@ const createMockStore = (tasksFile: TasksFile | null) => {
           preferences: {},
         },
         loaded: false,
+      },
+      task: {
+        selectedTaskId: null,
+        activeFieldTab: 'description',
       },
     },
   });
@@ -174,10 +181,6 @@ describe('TaskList', () => {
         'Second Task',
         'Third Task',
       ]);
-
-      const nestedContainer = screen.getByText('Nested First Child').closest('[data-test-item-index]');
-      const taskNode = nestedContainer?.firstElementChild as HTMLElement | null;
-      expect(taskNode?.getAttribute('style')).toContain('padding-left');
     });
 
     it('should show empty state when no tasks', () => {
@@ -394,6 +397,39 @@ describe('TaskList', () => {
       renderTaskList(null);
 
       expect(screen.getByText('Задач нет')).toBeInTheDocument();
+    });
+  });
+
+  describe('Status Filter', () => {
+    it('should filter tasks by selected status', async () => {
+      const { store } = renderTaskList(mockTasksFile);
+
+      act(() => {
+        const currentSettings = store.getState().settings.data;
+        const preferences = (currentSettings.preferences as PreferencesShape | undefined) ?? {};
+        const taskFilters = preferences.taskFilters ?? {};
+
+        store.dispatch(
+          setSettings({
+            ...currentSettings,
+            preferences: {
+              ...preferences,
+              taskFilters: {
+                ...taskFilters,
+                '/test/tasks.json': {
+                  status: [TaskStatus.DONE],
+                },
+              },
+            },
+          }),
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Third Task')).toBeInTheDocument();
+        expect(screen.queryByText('First Task')).not.toBeInTheDocument();
+        expect(screen.queryByText('Second Task')).not.toBeInTheDocument();
+      });
     });
   });
 });

@@ -9,6 +9,7 @@ import { clearSelectedTask, setSelectedTaskId } from '../../redux/task/taskSlice
 import { CreateBranchModal } from '../create-branch-modal';
 import { ProjectSettingsModal } from '../project-settings';
 import { TaskPath } from '../task-path';
+import { TaskStatusFilter } from '../task-status-filter';
 import type { BranchOption } from './lib/types';
 import styles from './styles.module.css';
 
@@ -70,10 +71,7 @@ export const TaskListHeader: React.FC<TaskListHeaderProps> = ({ onBackToProjects
         </Text>
         <Flex direction="column" gap={3}>
           <Flex alignItems="center" justifyContent="space-between">
-            <Flex direction="column" gap={1}>
-              <Text variant="header-1">Задачи</Text>
-              <TaskPath />
-            </Flex>
+            <TaskPath />
             <Flex gap={2}>
               <Button view="flat" size="s" title="Добавить задачу" onClick={handleAddNewTask}>
                 <Button.Icon>
@@ -87,7 +85,6 @@ export const TaskListHeader: React.FC<TaskListHeaderProps> = ({ onBackToProjects
               </Button>
             </Flex>
           </Flex>
-
           <Flex alignItems="center" gap={2}>
             <Text variant="body-2" color="secondary">
               Ветка:
@@ -119,6 +116,7 @@ export const TaskListHeader: React.FC<TaskListHeaderProps> = ({ onBackToProjects
               ))}
             </Select>
           </Flex>
+          <TaskStatusFilter />
         </Flex>
       </div>
 
