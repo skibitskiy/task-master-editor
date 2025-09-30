@@ -174,15 +174,19 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
     }
     const values = getTaskValues(localValues, customFields);
 
+    const normalizedId = /^\d+$/.test(taskId) ? Number(taskId) : taskId;
+    const dependencies = values.dependencies
+      .split(',')
+      .map((d) => d.trim())
+      .filter(Boolean)
+      .map((dep) => (/^\d+$/.test(dep) ? Number(dep) : dep));
+
     dispatch(
       updateTask({
-        id: parseInt(taskId),
+        id: normalizedId,
         patch: {
           ...values,
-          dependencies: values.dependencies
-            .split(',')
-            .map((d) => parseInt(d.trim()))
-            .filter((d) => !isNaN(d)),
+          dependencies,
         },
       }),
     );

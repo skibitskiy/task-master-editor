@@ -1,5 +1,6 @@
 import { isNil, TaskStatus } from '@app/shared';
 import { Flex, Label, Text } from '@gravity-ui/uikit';
+import classNames from 'classnames';
 import React from 'react';
 
 import { getPriorityLabelProps, getStatusLabelProps } from '@/shared/lib';
@@ -7,7 +8,7 @@ import { getPriorityLabelProps, getStatusLabelProps } from '@/shared/lib';
 import type { TaskItemProps } from './lib/types';
 import styles from './styles.module.css';
 
-export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, isTaskDirty, onSelectTask }) => {
+export const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, isTaskDirty, isSubtask, onSelectTask }) => {
   const statusProps = getStatusLabelProps(task.status);
   const priorityProps = getPriorityLabelProps(task.priority);
 
@@ -19,7 +20,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isActive, isSelected, 
 
   return (
     <div
-      className={`${styles.taskItem} ${isSelected ? styles.selected : ''} ${isActive ? 'active' : ''}`}
+      className={classNames(styles.taskItem, { [styles.selected]: isSelected, [styles.subtask]: isSubtask })}
       onClick={() => onSelectTask(String(task.id))}
     >
       <Flex direction="column" gap={1}>

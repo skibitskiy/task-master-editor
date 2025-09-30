@@ -9,4 +9,5 @@ export const TaskFieldWords = {
   [TaskField.PRIORITY]: 'Приоритет',
   [TaskField.TITLE]: 'Заголовок',
   [TaskField.ID]: 'ID',
+  [TaskField.SUBTASKS]: 'Подзадачи',
 } as const;

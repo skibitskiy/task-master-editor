@@ -1,4 +1,5 @@
 import { RootState } from '@/redux/store';
+import { findTaskEntry } from '@/shared/lib';
 
 export const findTask = ({
   taskId,
@@ -9,7 +10,11 @@ export const findTask = ({
   tasksFile: RootState['data']['tasksFile'];
   currentBranch: RootState['data']['currentBranch'];
 }) => {
-  return taskId && tasksFile && tasksFile[currentBranch]
-    ? tasksFile[currentBranch].tasks.find((t) => String(t.id) === taskId) || null
-    : null;
+  if (!taskId || !tasksFile || !tasksFile[currentBranch]) {
+    return null;
+  }
+
+  const entry = findTaskEntry(tasksFile[currentBranch].tasks, taskId);
+
+  return entry?.task ?? null;
 };

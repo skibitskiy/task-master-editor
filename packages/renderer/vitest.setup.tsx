@@ -3,6 +3,19 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { vi } from 'vitest';
 
+if (typeof window !== 'undefined' && !window.matchMedia) {
+  window.matchMedia = (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => undefined,
+    removeListener: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+    dispatchEvent: () => false,
+  });
+}
+
 // Mock CSS modules - return kebab-case class names for testing
 vi.mock('*.module.css', () => {
   return new Proxy(
@@ -52,7 +65,11 @@ vi.mock('@gravity-ui/uikit', async () => {
             {filteredItems.length === 0
               ? emptyPlaceholder
               : filteredItems.map((item: unknown, index: number) => (
-                  <div key={String((item as { id: unknown }).id) || index} onClick={() => onItemClick?.(item, index)}>
+                  <div
+                    key={getItemKey(item, index)}
+                    onClick={() => onItemClick?.(item, index)}
+                    data-test-item-index={index}
+                  >
                     {renderItem(item, false, index)}
                   </div>
                 ))}
@@ -62,3 +79,21 @@ vi.mock('@gravity-ui/uikit', async () => {
     },
   };
 });
+
+function getItemKey(item: unknown, fallback: number): string {
+  if (item && typeof item === 'object') {
+    const maybeTaskContainer = item as { task?: { id?: unknown }; id?: unknown };
+    if (maybeTaskContainer.task && typeof maybeTaskContainer.task === 'object') {
+      const inner = maybeTaskContainer.task as { id?: unknown };
+      if (inner.id != null) {
+        return String(inner.id);
+      }
+    }
+
+    if (maybeTaskContainer.id != null) {
+      return String(maybeTaskContainer.id);
+    }
+  }
+
+  return String(fallback);
+}

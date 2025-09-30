@@ -25,6 +25,18 @@ const mockTasksFile: TasksFile = {
         title: 'First Task',
         description: 'This should be first when sorted',
         status: TaskStatus.PENDING,
+        subtasks: [
+          {
+            id: '1.2',
+            title: 'Nested Second Child',
+            description: 'Ensures recursive sorting respects ID order',
+          },
+          {
+            id: '1.1',
+            title: 'Nested First Child',
+            description: 'Should appear immediately after parent',
+          },
+        ],
       },
       {
         id: 2,
@@ -122,7 +134,7 @@ describe('TaskList', () => {
       // Check first task (ID 1)
       expect(screen.getByText('#1')).toBeInTheDocument();
       expect(screen.getByText('First Task')).toBeInTheDocument();
-      expect(screen.getByText('Ожидает')).toBeInTheDocument(); // pending status
+      expect(screen.getAllByText('Ожидает')[0]).toBeInTheDocument(); // pending status
 
       // Check second task (ID 2)
       expect(screen.getByText('#2')).toBeInTheDocument();
@@ -141,6 +153,31 @@ describe('TaskList', () => {
       expect(screen.getByText('This should be first when sorted')).toBeInTheDocument();
       expect(screen.getByText('This should be second when sorted')).toBeInTheDocument();
       expect(screen.getByText('This should be third when sorted')).toBeInTheDocument();
+    });
+
+    it('should render subtasks directly after their parent with hierarchical identifiers', async () => {
+      renderTaskList(mockTasksFile);
+
+      await waitFor(() => {
+        expect(screen.getByText('#1.1')).toBeInTheDocument();
+        expect(screen.getByText('#1.2')).toBeInTheDocument();
+      });
+
+      const orderedTitles = screen
+        .getAllByText(/First Task|Second Task|Third Task|Nested First Child|Nested Second Child/)
+        .map((el) => el.textContent);
+
+      expect(orderedTitles).toEqual([
+        'First Task',
+        'Nested First Child',
+        'Nested Second Child',
+        'Second Task',
+        'Third Task',
+      ]);
+
+      const nestedContainer = screen.getByText('Nested First Child').closest('[data-test-item-index]');
+      const taskNode = nestedContainer?.firstElementChild as HTMLElement | null;
+      expect(taskNode?.getAttribute('style')).toContain('padding-left');
     });
 
     it('should show empty state when no tasks', () => {
@@ -175,6 +212,19 @@ describe('TaskList', () => {
       fireEvent.click(screen.getByText('First Task'));
 
       expect(onSelectTask).toHaveBeenCalledWith('1');
+    });
+
+    it('should call onSelectTask with subtask id when subtask is clicked', async () => {
+      const onSelectTask = vi.fn();
+      renderTaskList(mockTasksFile, { onSelectTask });
+
+      await waitFor(() => {
+        expect(screen.getByText('Nested First Child')).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByText('Nested First Child'));
+
+      expect(onSelectTask).toHaveBeenCalledWith('1.1');
     });
 
     it('should render with selected task', async () => {

@@ -1,7 +1,9 @@
-import type { Task } from '@app/shared';
 import { Flex, List, Text } from '@gravity-ui/uikit';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+
+import type { FlattenedTask } from '@/shared/lib';
+import { flattenTasks, sortTasksRecursively } from '@/shared/lib';
 
 import type { RootState } from '../../redux/store';
 import { TaskItem } from '../task-item';
@@ -21,27 +23,28 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
     return tasksFile[currentBranch]?.tasks || [];
   }, [tasksFile, currentBranch]);
 
-  // Stable sorting by ID (convert to number for proper numeric sorting)
-  const sortedTasks = React.useMemo(() => {
-    return [...tasks].sort((a, b) => {
-      const aId = typeof a.id === 'number' ? a.id : parseInt(String(a.id), 10) || 0;
-      const bId = typeof b.id === 'number' ? b.id : parseInt(String(b.id), 10) || 0;
-      return aId - bId;
-    });
+  const flattenedTasks = React.useMemo(() => {
+    if (!tasks.length) {
+      return [];
+    }
+
+    const sorted = sortTasksRecursively(tasks);
+    return flattenTasks(sorted);
   }, [tasks]);
 
   // Memoized render function for List component
   const renderTaskItem = React.useCallback(
-    (task: Task, isActive: boolean, _index: number) => {
+    (item: FlattenedTask) => {
+      const { task, depth } = item;
       const isSelected = selectedTaskId === String(task.id);
       const isTaskDirty = dirtyState.byTaskId[String(task.id)] || false;
 
       return (
         <TaskItem
           task={task}
-          isActive={isActive}
           isSelected={isSelected}
           isTaskDirty={isTaskDirty}
+          isSubtask={depth > 0}
           onSelectTask={onSelectTask}
         />
       );
@@ -51,7 +54,8 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
 
   // Custom filter function for List component
   const filterTask = React.useCallback((query: string) => {
-    return (task: Task): boolean => {
+    return (item: FlattenedTask): boolean => {
+      const { task } = item;
       if (!query.trim()) {
         return true;
       }
@@ -66,13 +70,13 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
     <Flex direction="column" className={styles.taskList} grow gap={4}>
       <TaskListHeader onBackToProjects={onBackToProjects} />
       <Flex className={styles.taskListContent} direction="column" grow>
-        {sortedTasks.length === 0 ? (
+        {flattenedTasks.length === 0 ? (
           <div className="editor-placeholder">
             <Text color="secondary">Задач нет</Text>
           </div>
         ) : (
           <List
-            items={sortedTasks}
+            items={flattenedTasks}
             renderItem={renderTaskItem}
             itemHeight={100}
             itemsHeight={(items) => Math.min(items.length * 80, 600)}
@@ -85,7 +89,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
               </div>
             }
             virtualized={true}
-            onItemClick={(task, _index) => onSelectTask(String(task.id))}
+            onItemClick={(item, _index) => onSelectTask(String(item.task.id))}
           />
         )}
       </Flex>

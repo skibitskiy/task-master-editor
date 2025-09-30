@@ -89,6 +89,7 @@
     }
   },
   "dependencies": {
-    "better-sqlite3": "^12.4.1"
+    "better-sqlite3": "^12.4.1",
+    "classnames": "^2.5.1"
   }
 }

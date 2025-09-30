@@ -4,3 +4,4 @@ export * from './get-status-label-props';
 export * from './parse-rich-text-to-plain';
 export * from './priority-type-guard';
 export * from './status-type-guard';
+export * from './task-tree';

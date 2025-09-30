@@ -1,5 +1,7 @@
 import type { Task, TasksFile } from '@app/shared';
 
+import { forEachTask } from '@/shared/lib';
+
 export function validateTask(t: unknown): string[] {
   const errs: string[] = [];
   const o = (t ?? {}) as Record<string, unknown>;
@@ -17,11 +19,17 @@ export function validateTask(t: unknown): string[] {
 
 export function collectTaskErrors(tf: TasksFile): Record<string, string[]> {
   const map: Record<string, string[]> = {};
-  for (const t of tf.master.tasks) {
-    const errs = validateTask(t);
-    if (errs.length) {
-      map[String((t as Task).id)] = errs;
-    }
-  }
+  const branches = Object.values(tf);
+
+  branches.forEach((branch) => {
+    const branchTasks = branch.tasks || [];
+    forEachTask(branchTasks, (task) => {
+      const errs = validateTask(task);
+      if (errs.length) {
+        map[String((task as Task).id)] = errs;
+      }
+    });
+  });
+
   return map;
 }

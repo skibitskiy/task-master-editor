@@ -2,6 +2,8 @@ import type { CustomField, Task, TasksFile } from '@app/shared';
 import { parseTasksJson } from '@app/shared';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { deleteTaskInPlace, findTaskEntry, forEachTask, updateTaskInPlace } from '@/shared/lib';
+
 import { collectTaskErrors, validateTask } from './helpers.js';
 
 export interface DataState {
@@ -150,16 +152,15 @@ const dataSlice = createSlice({
       const { id, patch } = action.payload;
       const idStr = String(id);
       const currentBranchTasks = state.tasksFile[state.currentBranch]?.tasks || [];
-      const idx = currentBranchTasks.findIndex((t: Task) => String(t.id) === idStr);
+      const next = updateTaskInPlace(currentBranchTasks, idStr, (prev) => ({
+        ...prev,
+        ...patch,
+      }));
 
-      if (idx === -1) {
+      if (!next) {
         return;
       }
 
-      const prev = currentBranchTasks[idx];
-      const next: Task = { ...prev, ...patch };
-
-      state.tasksFile[state.currentBranch].tasks[idx] = next;
       state.dirty.file = true;
       state.dirty.byTaskId[idStr] = true;
 
@@ -229,21 +230,31 @@ const dataSlice = createSlice({
       const taskId = action.payload;
       const idStr = String(taskId);
       const currentBranchTasks = state.tasksFile[state.currentBranch].tasks;
-      const taskIndex = currentBranchTasks.findIndex((t: Task) => String(t.id) === idStr);
+      const entry = findTaskEntry(currentBranchTasks, idStr);
 
-      if (taskIndex === -1) {
+      if (!entry) {
         return;
       }
 
-      // Remove task from the list
-      state.tasksFile[state.currentBranch].tasks.splice(taskIndex, 1);
+      const removedIds: string[] = [];
+      forEachTask([entry.task], (task) => {
+        removedIds.push(String(task.id));
+      });
+
+      const removed = deleteTaskInPlace(currentBranchTasks, idStr);
+
+      if (!removed) {
+        return;
+      }
 
       // Mark file as dirty
       state.dirty.file = true;
 
       // Remove task from dirty tracking and errors
-      delete state.dirty.byTaskId[idStr];
-      delete state.errors.byTaskId[idStr];
+      removedIds.forEach((removedId) => {
+        delete state.dirty.byTaskId[removedId];
+        delete state.errors.byTaskId[removedId];
+      });
     },
     updateCustomFields(state, action: PayloadAction<CustomField[]>) {
       if (!state.tasksFile || !state.tasksFile[state.currentBranch]) {

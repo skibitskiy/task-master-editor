@@ -154,6 +154,7 @@ const AiChat: React.FC = () => {
       [TaskField.PRIORITY]: task?.priority,
       [TaskField.ID]: task?.id,
       [TaskField.STATUS]: task?.status,
+      [TaskField.SUBTASKS]: task?.subtasks,
     };
 
     return isNil(map[id]) ? '' : String(map[id]);

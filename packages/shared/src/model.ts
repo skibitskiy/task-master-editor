@@ -26,6 +26,7 @@ export enum TaskField {
   TEST_STRATEGY = 'testStrategy',
   DEPENDENCIES = 'dependencies',
   PRIORITY = 'priority',
+  SUBTASKS = 'subtasks',
 }
 
 export interface Task {
@@ -37,8 +38,11 @@ export interface Task {
   [TaskField.TEST_STRATEGY]?: string;
   [TaskField.PRIORITY]?: TaskPriority;
   [TaskField.DEPENDENCIES]?: Array<number | string>;
+  [TaskField.SUBTASKS]?: SubTask[];
   [key: string]: unknown;
 }
+
+export type SubTask = Omit<Task, 'subtasks'>;
 
 type Branch = string;
 
@@ -61,18 +65,25 @@ const CustomFieldSchema = z.object({
   type: z.literal('text'),
 });
 
-export const TaskSchema = z
-  .object({
-    id: z.union([z.number(), z.string()]),
-    title: z.string().min(1),
-    description: z.string().optional(),
-    details: z.string().optional(),
-    status: z.enum(['pending', 'in-progress', 'done', 'deferred', 'cancelled', 'blocked']).optional(),
-    priority: z.enum(['low', 'medium', 'high']).optional(),
-    testStrategy: z.string().optional(),
-    dependencies: z.array(z.union([z.number(), z.string()])).optional(),
-  })
-  .passthrough(); // Allow additional properties
+// Базовая схема задачи без поля subtasks
+const BaseTaskSchema = z.object({
+  id: z.union([z.number(), z.string()]),
+  title: z.string().min(1),
+  description: z.string().optional(),
+  details: z.string().optional(),
+  status: z.enum(['pending', 'in-progress', 'done', 'deferred', 'cancelled', 'blocked']).optional(),
+  priority: z.enum(['low', 'medium', 'high']).optional(),
+  testStrategy: z.string().optional(),
+  dependencies: z.array(z.union([z.number(), z.string()])).optional(),
+});
+
+// Схема подзадачи - базовая схема без поля subtasks
+export const SubTaskSchema = BaseTaskSchema;
+
+// Схема основной задачи - базовая схема с добавлением поля subtasks
+export const TaskSchema = BaseTaskSchema.extend({
+  subtasks: z.array(SubTaskSchema).optional(),
+}).passthrough(); // Allow additional properties
 
 // Schema for branch object
 const BranchSchema = z.object({
