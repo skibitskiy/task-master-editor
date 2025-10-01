@@ -10,11 +10,13 @@ import log from 'electron-log/main.js';
 import { isUrlAllowed } from './security.js';
 
 const isDev = process.env.NODE_ENV === 'development';
+const ICON_FILENAME = isDev ? 'icon_1024_dev.png' : 'icon_1024.png';
 
 // Debug logging
 log.info('Electron startup:', {
   NODE_ENV: process.env.NODE_ENV,
   isDev,
+  iconFilename: ICON_FILENAME,
   VITE_DEV_SERVER_URL: process.env.VITE_DEV_SERVER_URL,
 });
 
@@ -43,7 +45,7 @@ export function setupSecurityHandlers(contents: WebContents) {
 
 // Resolve dirname for both ESM (tsc) and bundled CJS (webpack)
 const __DIRNAME = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
-export const APP_ICON = path.resolve(__DIRNAME, '../assets/icon_1024.png');
+export const APP_ICON = path.resolve(__DIRNAME, `../assets/${ICON_FILENAME}`);
 
 export function getBrowserWindowOptions(): BrowserWindowConstructorOptions {
   const preloadPath = path.join(__DIRNAME, 'preload.cjs');
