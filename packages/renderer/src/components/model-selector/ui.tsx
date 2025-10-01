@@ -1,5 +1,5 @@
 import { Select } from '@gravity-ui/uikit';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { RootState } from '../../redux/store';
@@ -33,19 +33,30 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   popupRef,
 }) => {
   const customModels = useSelector((state: RootState) => state.settings.data.customModels || []);
-  const [currentModel, setCurrentModel] = useState(value || 'anthropic/claude-3.5-sonnet');
+  const [currentModel, setCurrentModel] = useState(() => {
+    if (typeof value === 'string' && value.length > 0) {
+      return value;
+    }
+
+    return gptService.config.model;
+  });
 
   useEffect(() => {
-    const config = gptService.getConfig();
-    if (config && !value) {
-      setCurrentModel(config.model);
+    if (typeof value === 'string') {
+      setCurrentModel(value);
     }
   }, [value]);
 
   useEffect(() => {
-    if (value) {
-      setCurrentModel(value);
+    if (value !== undefined) {
+      return;
     }
+
+    const unsubscribe = gptService.subscribe((config) => {
+      setCurrentModel(config.model);
+    });
+
+    return unsubscribe;
   }, [value]);
 
   const handleModelChange = (values: string[]) => {
@@ -55,39 +66,29 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     if (onUpdate) {
       onUpdate(newModel);
     } else {
-      // If no custom handler, update gptService directly
-      const config = gptService.getConfig();
-      if (config) {
-        gptService.setConfig({
-          ...config,
-          model: newModel,
-        });
-        // Store in localStorage for persistence
-        localStorage.setItem(
-          'gptConfig',
-          JSON.stringify({
-            ...config,
-            model: newModel,
-          }),
-        );
-      }
+      gptService.setModel(newModel);
     }
   };
 
   // Combine default models with custom models
-  const allModels = [
-    ...DEFAULT_MODELS,
-    ...customModels.map((customModel) => ({
-      value: customModel.value,
-      content: customModel.name,
-    })),
-  ];
+  const allModels = useMemo(
+    () => [
+      ...DEFAULT_MODELS,
+      ...customModels.map((customModel) => ({
+        value: customModel.value,
+        content: customModel.name,
+      })),
+    ],
+    [customModels],
+  );
+
+  const selectValue = currentModel ? [currentModel] : [];
 
   return (
     <Select
       className={className}
       placeholder="Выберите модель"
-      value={[currentModel]}
+      value={selectValue}
       onUpdate={handleModelChange}
       options={allModels}
       size={size}

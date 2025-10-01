@@ -4,7 +4,7 @@ import { streamText } from 'ai';
 export interface GptConfig {
   apiKey: string;
   model: string;
-  baseUrl?: string;
+  baseUrl: string;
 }
 
 export interface GptResponse {
@@ -18,6 +18,16 @@ export interface GptRequest {
   messages?: ChatMessage[];
 }
 
+type ConfigListener = (config: GptConfig) => void;
+
+const DEFAULT_GPT_MODEL = 'anthropic/claude-3.5-sonnet';
+const DEFAULT_BASE_URL = 'https://openrouter.ai/api/v1';
+
+interface SetConfigOptions {
+  notify?: boolean;
+  persist?: boolean;
+}
+
 export enum ChatRole {
   USER = 'user',
   ASSISTANT = 'assistant',
@@ -29,7 +39,8 @@ export interface ChatMessage {
 }
 
 class GptService {
-  private config: GptConfig | null = null;
+  private _config: GptConfig | null = null;
+  private listeners = new Set<ConfigListener>();
 
   constructor() {
     this.loadConfigFromStorage();
@@ -39,19 +50,77 @@ class GptService {
     try {
       const stored = localStorage.getItem('gptConfig');
       if (stored) {
-        this.config = JSON.parse(stored);
+        const parsed: GptConfig = JSON.parse(stored);
+        this.setConfig(parsed, { persist: false });
       }
     } catch (error) {
       console.warn('Failed to load GPT config from localStorage:', error);
     }
   }
 
-  setConfig(config: GptConfig) {
+  setConfig(config: GptConfig | null, options?: SetConfigOptions) {
     this.config = config;
+
+    const shouldPersist = options?.persist ?? true;
+    if (shouldPersist) {
+      if (config) {
+        localStorage.setItem('gptConfig', JSON.stringify(config));
+      } else {
+        localStorage.removeItem('gptConfig');
+      }
+    }
+
+    const shouldNotify = options?.notify ?? true;
+    if (shouldNotify) {
+      this.notifyListeners();
+    }
   }
 
-  getConfig(): GptConfig | null {
-    return this.config;
+  setModel(model: string) {
+    this.config = {
+      ...this.config,
+      model,
+    };
+  }
+
+  get config(): GptConfig {
+    const model = this._config?.model || DEFAULT_GPT_MODEL;
+    const apiKey = this._config?.apiKey || '';
+    const baseUrl = this._config?.baseUrl || DEFAULT_BASE_URL;
+
+    return {
+      apiKey,
+      model,
+      baseUrl,
+    };
+  }
+
+  set config(config: GptConfig | null) {
+    this._config = config;
+  }
+
+  subscribe(listener: ConfigListener): () => void {
+    this.listeners.add(listener);
+
+    try {
+      listener(this.config);
+    } catch (error) {
+      console.error('GPT config listener failed:', error);
+    }
+
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
+  private notifyListeners() {
+    this.listeners.forEach((listener) => {
+      try {
+        listener(this.config);
+      } catch (error) {
+        console.error('GPT config listener failed:', error);
+      }
+    });
   }
 
   async makeRequest({ markup, customPrompt, promptData, messages }: GptRequest): Promise<GptResponse> {

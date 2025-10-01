@@ -607,7 +607,7 @@
         "title": "Исправить рассинхрон между полями выбора модели ИИ в чате и настройках",
         "description": "",
         "details": "",
-        "status": "pending",
+        "status": "done",
         "priority": "high",
         "testStrategy": "",
         "dependencies": [],

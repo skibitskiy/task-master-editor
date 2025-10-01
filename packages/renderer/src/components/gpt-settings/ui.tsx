@@ -1,6 +1,6 @@
 import type { CustomModel } from '@app/shared';
 import { Alert, Button, Card, Flex, Label, Modal, Text, TextInput } from '@gravity-ui/uikit';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { addCustomModel, removeCustomModel } from '../../redux/settingsSlice';
@@ -19,24 +19,39 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
   const dispatch = useDispatch<AppDispatch>();
   const customModels = useSelector((state: RootState) => state.settings.data.customModels || []);
 
-  const [apiKey, setApiKey] = useState('');
-  const [model, setModel] = useState('anthropic/claude-3.5-sonnet');
-  const [baseUrl, setBaseUrl] = useState('');
+  const [apiKey, setApiKey] = useState(() => gptService.config.apiKey);
+  const [model, setModel] = useState(() => gptService.config.model);
+  const [baseUrl, setBaseUrl] = useState(() => gptService.config.baseUrl);
   const [isLoading, setIsLoading] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
 
   const [customModelValue, setCustomModelValue] = useState('');
+  const isDirtyRef = useRef(false);
 
   useEffect(() => {
-    if (open) {
-      const config = gptService.getConfig();
-      if (config) {
-        setApiKey(config.apiKey);
-        setModel(config.model);
-        setBaseUrl(config.baseUrl || 'https://openrouter.ai/api/v1');
-      }
-      setTestResult(null);
+    if (!open) {
+      isDirtyRef.current = false;
+      return;
     }
+
+    setTestResult(null);
+    isDirtyRef.current = false;
+
+    const unsubscribe = gptService.subscribe((config) => {
+      if (isDirtyRef.current) {
+        return;
+      }
+
+      setApiKey(config.apiKey);
+      setModel(config.model);
+      if (config) {
+        setBaseUrl(config.baseUrl);
+      } else {
+        setBaseUrl('');
+      }
+    });
+
+    return unsubscribe;
   }, [open]);
 
   const handleSave = () => {
@@ -48,20 +63,32 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
     const config: GptConfig = {
       apiKey: apiKey.trim(),
       model,
-      baseUrl: baseUrl.trim() || undefined,
+      baseUrl: baseUrl.trim(),
     };
 
     try {
       gptService.setConfig(config);
-
-      // Store configuration in localStorage for persistence
-      localStorage.setItem('gptConfig', JSON.stringify(config));
 
       notifySuccess('Настройки сохранены', 'Конфигурация GPT успешно сохранена');
       onClose();
     } catch (error) {
       notifyError('Ошибка сохранения', 'Не удалось сохранить настройки GPT');
     }
+  };
+
+  const handleApiKeyChange = (value: string) => {
+    isDirtyRef.current = true;
+    setApiKey(value);
+  };
+
+  const handleModelChange = (value: string) => {
+    isDirtyRef.current = true;
+    setModel(value);
+  };
+
+  const handleBaseUrlChange = (value: string) => {
+    isDirtyRef.current = true;
+    setBaseUrl(value);
   };
 
   const handleTest = async () => {
@@ -73,34 +100,29 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
     setIsLoading(true);
     setTestResult(null);
 
+    const tempConfig: GptConfig = {
+      apiKey: apiKey.trim(),
+      model,
+      baseUrl: baseUrl.trim() || '',
+    };
+
+    const originalConfig = gptService.config;
+    gptService.setConfig(tempConfig, { notify: false, persist: false });
+
     try {
-      const tempConfig: GptConfig = {
-        apiKey: apiKey.trim(),
-        model,
-        baseUrl: baseUrl.trim() || undefined,
-      };
-
-      // Temporarily set config for test
-      const originalConfig = gptService.getConfig();
-      gptService.setConfig(tempConfig);
-
       await gptService.makeRequest({
         markup: 'Test message',
         promptData: 'test',
       });
 
       setTestResult({ success: true, message: 'Соединение успешно!' });
-
-      // Restore original config if test was successful
-      if (originalConfig) {
-        gptService.setConfig(originalConfig);
-      }
     } catch (error) {
       setTestResult({
         success: false,
         message: error instanceof Error ? error.message : 'Ошибка соединения',
       });
     } finally {
+      gptService.setConfig(originalConfig, { notify: false, persist: false });
       setIsLoading(false);
     }
   };
@@ -166,7 +188,7 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
               <TextInput
                 placeholder="sk-or-v1-..."
                 value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
+                onChange={(e) => handleApiKeyChange(e.target.value)}
                 type="password"
                 size="l"
               />
@@ -174,7 +196,7 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
 
             <Flex direction="column" gap={2}>
               <Text variant="subheader-1">Модель</Text>
-              <ModelSelector value={model} onUpdate={(value) => setModel(value)} size="l" width="max" />
+              <ModelSelector value={model} onUpdate={handleModelChange} size="l" width="max" />
             </Flex>
 
             <Flex direction="column" gap={2}>
@@ -182,7 +204,7 @@ export const GptSettingsModal: React.FC<GptSettingsModalProps> = ({ open, onClos
               <TextInput
                 placeholder="https://openrouter.ai/api/v1"
                 value={baseUrl}
-                onChange={(e) => setBaseUrl(e.target.value)}
+                onChange={(e) => handleBaseUrlChange(e.target.value)}
                 size="l"
               />
             </Flex>
