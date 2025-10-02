@@ -9,7 +9,7 @@
     "prebuild": "npm --workspace @app/shared run build",
     "build": "cross-env NODE_ENV=production vite build --mode production",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "vite build && vitest run",
+    "test": "vite build >> /dev/null && vitest run",
     "kill": "lsof -ti:5173 | xargs kill -9"
   },
   "devDependencies": {

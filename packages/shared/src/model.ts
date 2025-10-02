@@ -78,10 +78,10 @@ const BaseTaskSchema = z.object({
 });
 
 // Схема подзадачи - базовая схема без поля subtasks
-export const SubTaskSchema = BaseTaskSchema;
+export const SubTaskSchema = BaseTaskSchema.passthrough();
 
 // Схема основной задачи - базовая схема с добавлением поля subtasks
-export const TaskSchema = BaseTaskSchema.extend({
+export const TaskSchema = SubTaskSchema.extend({
   subtasks: z.array(SubTaskSchema).optional(),
 }).passthrough(); // Allow additional properties
 

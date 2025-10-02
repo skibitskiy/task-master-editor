@@ -22,7 +22,8 @@ export const StatusSelect = ({ className }: StatusSelectProps) => {
   const currentTask = useCurrentTask();
 
   const taskStatus = currentTask.task?.status || TaskStatus.PENDING;
-  const taskId = currentTask.taskId;
+  const taskPath = currentTask.taskId;
+  const task = currentTask.task;
 
   const statusOptions: Array<{ value: TaskStatus; content: string }> = [
     { value: TaskStatus.PENDING, content: 'Ожидает' },
@@ -35,13 +36,14 @@ export const StatusSelect = ({ className }: StatusSelectProps) => {
 
   const handleStatusChange = useCallback(
     (newStatus: TaskStatus) => {
-      if (!taskId || !statusTypeGuard(newStatus)) {
+      if (!task || !taskPath || !statusTypeGuard(newStatus)) {
         return;
       }
 
       dispatch(
         updateTask({
-          id: parseInt(taskId),
+          id: task.id,
+          path: taskPath,
           patch: {
             status: newStatus,
           },
@@ -50,7 +52,7 @@ export const StatusSelect = ({ className }: StatusSelectProps) => {
       dispatch(saveFile());
       notifySuccess('Изменения применены');
     },
-    [taskId, dispatch],
+    [task, taskPath, dispatch],
   );
 
   const renderControl: SelectRenderControl<HTMLDivElement> = useCallback(

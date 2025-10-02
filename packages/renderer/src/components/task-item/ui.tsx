@@ -8,7 +8,14 @@ import { getPriorityLabelProps, getStatusLabelProps } from '@/shared/lib';
 import type { TaskItemProps } from './lib/types';
 import styles from './styles.module.css';
 
-export const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, isTaskDirty, isSubtask, onSelectTask }) => {
+export const TaskItem: React.FC<TaskItemProps> = ({
+  task,
+  isSelected,
+  isTaskDirty,
+  isSubtask,
+  taskPath,
+  onSelectTask,
+}) => {
   const statusProps = getStatusLabelProps(task.status);
   const priorityProps = getPriorityLabelProps(task.priority);
 
@@ -21,7 +28,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({ task, isSelected, isTaskDirt
   return (
     <div
       className={classNames(styles.taskItem, { [styles.selected]: isSelected, [styles.subtask]: isSubtask })}
-      onClick={() => onSelectTask(String(task.id))}
+      onClick={() => onSelectTask(taskPath)}
     >
       <Flex direction="column" gap={1}>
         <Flex alignItems="center" gap={2} className={styles.taskItemTitleContainer}>

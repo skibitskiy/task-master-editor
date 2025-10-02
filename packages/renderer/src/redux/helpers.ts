@@ -1,4 +1,4 @@
-import type { Task, TasksFile } from '@app/shared';
+import type { TasksFile } from '@app/shared';
 
 import { forEachTask } from '@/shared/lib';
 
@@ -23,10 +23,10 @@ export function collectTaskErrors(tf: TasksFile): Record<string, string[]> {
 
   branches.forEach((branch) => {
     const branchTasks = branch.tasks || [];
-    forEachTask(branchTasks, (task) => {
+    forEachTask(branchTasks, (task, path) => {
       const errs = validateTask(task);
       if (errs.length) {
-        map[String((task as Task).id)] = errs;
+        map[path] = errs;
       }
     });
   });

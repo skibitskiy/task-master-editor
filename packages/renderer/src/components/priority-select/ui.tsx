@@ -22,7 +22,8 @@ export const PrioritySelect = ({ className }: PrioritySelectProps) => {
   const currentTask = useCurrentTask();
 
   const taskPriority = currentTask.task?.priority;
-  const taskId = currentTask.taskId;
+  const taskPath = currentTask.taskId;
+  const task = currentTask.task;
 
   const priorityOptions: Array<{ value: TaskPriority; content: string }> = [
     { value: TaskPriority.LOW, content: 'Низкий' },
@@ -32,13 +33,14 @@ export const PrioritySelect = ({ className }: PrioritySelectProps) => {
 
   const handlePriorityChange = useCallback(
     (newPriority: TaskPriority) => {
-      if (!taskId || !priorityTypeGuard(newPriority)) {
+      if (!task || !taskPath || !priorityTypeGuard(newPriority)) {
         return;
       }
 
       dispatch(
         updateTask({
-          id: parseInt(taskId),
+          id: task.id,
+          path: taskPath,
           patch: {
             priority: newPriority,
           },
@@ -47,7 +49,7 @@ export const PrioritySelect = ({ className }: PrioritySelectProps) => {
       dispatch(saveFile());
       notifySuccess('Изменения применены');
     },
-    [taskId, dispatch],
+    [task, taskPath, dispatch],
   );
 
   const renderControl: SelectRenderControl<HTMLDivElement> = useCallback(

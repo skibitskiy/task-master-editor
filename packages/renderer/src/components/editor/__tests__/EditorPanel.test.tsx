@@ -36,12 +36,17 @@ vi.mock('../../../utils/notify', () => ({
 }));
 
 // Mock the debounce hook
-vi.mock('../../../shared/hooks', () => ({
-  useDebounce: vi.fn((callback) => {
-    // Execute callback immediately for tests
-    callback();
-  }),
-}));
+vi.mock('../../../shared/hooks', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../shared/hooks')>();
+  return {
+    ...actual,
+    useDebounce: vi.fn((callback: () => void) => {
+      // Execute callback immediately for tests
+      callback();
+    }),
+    useCustomFields: vi.fn(() => []),
+  };
+});
 
 // Mock the useMarkdownFieldEditor hook
 vi.mock('../lib/use-markdown-field-editor', () => ({

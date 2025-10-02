@@ -227,7 +227,7 @@ describe('TaskList', () => {
 
       fireEvent.click(screen.getByText('Nested First Child'));
 
-      expect(onSelectTask).toHaveBeenCalledWith('1.1');
+      expect(onSelectTask).toHaveBeenCalledWith('1/1.1');
     });
 
     it('should render with selected task', async () => {

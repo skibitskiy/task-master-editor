@@ -2,7 +2,7 @@ import { CustomField, Task, TasksFile, TaskStatus } from '@app/shared';
 import { parseTasksJson, TaskPriority } from '@app/shared';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { deleteTaskInPlace, findTaskEntry, forEachTask, updateTaskInPlace } from '@/shared/lib';
+import { deleteTaskInPlace, findTaskEntryByPath, forEachTask, updateTaskInPlace } from '@/shared/lib';
 
 import { collectTaskErrors, validateTask } from './helpers.js';
 
@@ -146,15 +146,16 @@ const dataSlice = createSlice({
   name: 'data',
   initialState,
   reducers: {
-    updateTask(state, action: PayloadAction<{ id: number | string; patch: Partial<Task> }>) {
+    updateTask(state, action: PayloadAction<{ id: number | string; patch: Partial<Task>; path?: string }>) {
       if (!state.tasksFile) {
         return;
       }
 
-      const { id, patch } = action.payload;
+      const { id, patch, path } = action.payload;
       const idStr = String(id);
+      const taskPath = path ?? idStr;
       const currentBranchTasks = state.tasksFile[state.currentBranch]?.tasks || [];
-      const next = updateTaskInPlace(currentBranchTasks, idStr, (prev) => ({
+      const next = updateTaskInPlace(currentBranchTasks, taskPath, (prev) => ({
         ...prev,
         ...patch,
       }));
@@ -164,14 +165,14 @@ const dataSlice = createSlice({
       }
 
       state.dirty.file = true;
-      state.dirty.byTaskId[idStr] = true;
+      state.dirty.byTaskId[taskPath] = true;
 
       const errs = validateTask(next);
 
       if (errs.length) {
-        state.errors.byTaskId[idStr] = errs;
+        state.errors.byTaskId[taskPath] = errs;
       } else {
-        delete state.errors.byTaskId[idStr];
+        delete state.errors.byTaskId[taskPath];
       }
     },
     replaceTasksFile(state, action: PayloadAction<TasksFile>) {
@@ -232,16 +233,21 @@ const dataSlice = createSlice({
       const taskId = action.payload;
       const idStr = String(taskId);
       const currentBranchTasks = state.tasksFile[state.currentBranch].tasks;
-      const entry = findTaskEntry(currentBranchTasks, idStr);
+      const entry = findTaskEntryByPath(currentBranchTasks, idStr);
 
       if (!entry) {
         return;
       }
 
       const removedIds: string[] = [];
-      forEachTask([entry.task], (task) => {
-        removedIds.push(String(task.id));
-      });
+      const parentPath = idStr.includes('/') ? idStr.slice(0, idStr.lastIndexOf('/')) : null;
+      forEachTask(
+        [entry.task],
+        (_task, path) => {
+          removedIds.push(path);
+        },
+        parentPath,
+      );
 
       const removed = deleteTaskInPlace(currentBranchTasks, idStr);
 

@@ -174,7 +174,7 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
     }
     const values = getTaskValues(localValues, customFields);
 
-    const normalizedId = /^\d+$/.test(taskId) ? Number(taskId) : taskId;
+    const normalizedId = task.id;
     const dependencies = values.dependencies
       .split(',')
       .map((d) => d.trim())
@@ -184,6 +184,7 @@ export const EditorProvider: React.FC<EditorProviderProps> = ({ children }) => {
     dispatch(
       updateTask({
         id: normalizedId,
+        path: taskId,
         patch: {
           ...values,
           dependencies,

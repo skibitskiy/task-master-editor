@@ -27,15 +27,11 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
 
   const editorMode = useSelector((state: RootState) => state.editor.mode);
 
-  const taskId = task?.id.toString();
-
   const activeFieldTab = useSelector((state: RootState) => {
     return state.task.activeFieldTab;
   });
 
   const dirtyState = useSelector((state: RootState) => state.data.dirty);
-  const isTaskDirty = taskId ? dirtyState.byTaskId[taskId] : false;
-
   const {
     localValues,
     validationErrors,
@@ -44,7 +40,10 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
     validateField,
     fieldDirtyState,
     updateCurrentTask,
+    taskId,
   } = useEditorContext();
+
+  const isTaskDirty = taskId ? dirtyState.byTaskId[taskId] : false;
 
   // Get current content for the active field
   const currentContent = React.useMemo(() => {
@@ -86,7 +85,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
     }
 
     try {
-      dispatch(deleteTask(task.id));
+      dispatch(deleteTask(taskId));
       dispatch(clearSelectedTask());
       dispatch(saveFile());
       notifySuccess('Задача удалена', 'Задача была успешно удалена');
@@ -94,7 +93,7 @@ export const Editor: React.FC<EditorProps> = ({ task }) => {
       console.error('Delete task error:', error);
       notifyError('Ошибка удаления', 'Произошла ошибка при удалении задачи');
     }
-  }, [taskId, task.id, dispatch]);
+  }, [taskId, dispatch]);
 
   // EditorPanelTabs props
   const availableTabs = [

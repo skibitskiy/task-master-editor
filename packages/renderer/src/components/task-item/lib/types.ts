@@ -5,5 +5,6 @@ export interface TaskItemProps {
   isSelected: boolean;
   isSubtask: boolean;
   isTaskDirty: boolean;
-  onSelectTask: (taskId: string) => void;
+  taskPath: string;
+  onSelectTask: (taskPath: string) => void;
 }

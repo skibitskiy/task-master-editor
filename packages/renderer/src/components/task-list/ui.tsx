@@ -46,9 +46,9 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
   // Memoized render function for List component
   const renderTaskItem = React.useCallback(
     (item: FlattenedTask) => {
-      const { task, depth } = item;
-      const isSelected = selectedTaskId === String(task.id);
-      const isTaskDirty = dirtyState.byTaskId[String(task.id)] || false;
+      const { task, depth, path } = item;
+      const isSelected = selectedTaskId === path;
+      const isTaskDirty = dirtyState.byTaskId[path] || false;
 
       return (
         <TaskItem
@@ -56,6 +56,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
           isSelected={isSelected}
           isTaskDirty={isTaskDirty}
           isSubtask={depth > 0}
+          taskPath={path}
           onSelectTask={onSelectTask}
         />
       );
@@ -100,7 +101,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedTaskId, onSelectTask
               </div>
             }
             virtualized={true}
-            onItemClick={(item, _index) => onSelectTask(String(item.task.id))}
+            onItemClick={(item, _index) => onSelectTask(item.path)}
           />
         )}
       </Flex>

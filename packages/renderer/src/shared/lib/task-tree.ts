@@ -4,7 +4,13 @@ export interface FlattenedTask {
   task: Task;
   depth: number;
   parentId: string | null;
+  path: string;
 }
+
+const buildTaskPath = (parentPath: string | null, id: Task['id']): string => {
+  const selfId = String(id);
+  return parentPath ? `${parentPath}/${selfId}` : selfId;
+};
 
 export const getTaskSubtasks = (task: Task): Task[] => {
   const maybe = (task as Task).subtasks;
@@ -15,12 +21,19 @@ export const getTaskSubtasks = (task: Task): Task[] => {
   return maybe as Task[];
 };
 
-export const flattenTasks = (tasks: Task[], depth = 0, parentId: string | null = null): FlattenedTask[] => {
+export const flattenTasks = (
+  tasks: Task[],
+  depth = 0,
+  parentId: string | null = null,
+  parentPath: string | null = null,
+): FlattenedTask[] => {
   return tasks.flatMap((task) => {
+    const path = buildTaskPath(parentPath, task.id);
     const current: FlattenedTask = {
       task,
       depth,
       parentId,
+      path,
     };
 
     const children = getTaskSubtasks(task);
@@ -29,7 +42,7 @@ export const flattenTasks = (tasks: Task[], depth = 0, parentId: string | null =
       return [current];
     }
 
-    return [current, ...flattenTasks(children, depth + 1, String(task.id))];
+    return [current, ...flattenTasks(children, depth + 1, String(task.id), path)];
   });
 };
 
@@ -81,8 +94,43 @@ const findTaskEntryInSubtree = (tasks: Task[], id: string, parentId: Task['id'])
   return null;
 };
 
-export const updateTaskInPlace = (tasks: Task[], id: string, updater: (task: Task) => Task): Task | null => {
-  const entry = findTaskEntry(tasks, id);
+export const findTaskEntryByPath = (tasks: Task[], path: string): TaskEntry | null => {
+  const segments = path.split('/');
+  let currentTasks = tasks;
+  let parentId: string | null = null;
+
+  for (let index = 0; index < segments.length; index += 1) {
+    const segment = segments[index];
+    const taskIndex = currentTasks.findIndex((task) => String(task.id) === segment);
+    if (taskIndex === -1) {
+      return null;
+    }
+
+    const task = currentTasks[taskIndex];
+    const isLast = index === segments.length - 1;
+
+    if (isLast) {
+      return {
+        task,
+        parentList: currentTasks,
+        index: taskIndex,
+        parentId,
+      };
+    }
+
+    parentId = String(task.id);
+    currentTasks = getTaskSubtasks(task);
+  }
+
+  return null;
+};
+
+const resolveEntry = (tasks: Task[], idOrPath: string): TaskEntry | null => {
+  return idOrPath.includes('/') ? findTaskEntryByPath(tasks, idOrPath) : findTaskEntry(tasks, idOrPath);
+};
+
+export const updateTaskInPlace = (tasks: Task[], idOrPath: string, updater: (task: Task) => Task): Task | null => {
+  const entry = resolveEntry(tasks, idOrPath);
   if (!entry) {
     return null;
   }
@@ -94,8 +142,8 @@ export const updateTaskInPlace = (tasks: Task[], id: string, updater: (task: Tas
   return next;
 };
 
-export const deleteTaskInPlace = (tasks: Task[], id: string): boolean => {
-  const entry = findTaskEntry(tasks, id);
+export const deleteTaskInPlace = (tasks: Task[], idOrPath: string): boolean => {
+  const entry = resolveEntry(tasks, idOrPath);
   if (!entry) {
     return false;
   }
@@ -105,12 +153,17 @@ export const deleteTaskInPlace = (tasks: Task[], id: string): boolean => {
   return true;
 };
 
-export const forEachTask = (tasks: Task[], iteratee: (task: Task) => void): void => {
+export const forEachTask = (
+  tasks: Task[],
+  iteratee: (task: Task, path: string) => void,
+  parentPath: string | null = null,
+): void => {
   tasks.forEach((task) => {
-    iteratee(task);
+    const currentPath = buildTaskPath(parentPath, task.id);
+    iteratee(task, currentPath);
     const subtasks = getTaskSubtasks(task);
     if (subtasks.length) {
-      forEachTask(subtasks, iteratee);
+      forEachTask(subtasks, iteratee, currentPath);
     }
   });
 };

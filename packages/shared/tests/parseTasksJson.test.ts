@@ -64,6 +64,41 @@ describe('parseTasksJson', () => {
     expect(result.dev.metadata?.description).toBe('Development branch');
   });
 
+  it('should preserve custom fields on subtasks', () => {
+    const input = JSON.stringify({
+      master: {
+        metadata: {
+          customFields: [
+            {
+              name: 'Completion notes',
+              key: 'completionNotes',
+              type: 'text',
+            },
+          ],
+        },
+        tasks: [
+          {
+            id: 1,
+            title: 'Parent task',
+            completionNotes: 'Parent notes',
+            subtasks: [
+              {
+                id: '1.1',
+                title: 'Child task',
+                completionNotes: 'Child notes',
+              },
+            ],
+          },
+        ],
+      },
+    });
+
+    const result = parseTasksJson(input);
+    const parentTask = result.master.tasks[0];
+    expect(parentTask.completionNotes).toBe('Parent notes');
+    expect(parentTask.subtasks?.[0]?.completionNotes).toBe('Child notes');
+  });
+
   it('should parse multiple branches with different task types', () => {
     const input = JSON.stringify({
       master: {

@@ -1,5 +1,5 @@
 import { RootState } from '@/redux/store';
-import { findTaskEntry } from '@/shared/lib';
+import { findTaskEntryByPath } from '@/shared/lib';
 
 export const findTask = ({
   taskId,
@@ -14,7 +14,7 @@ export const findTask = ({
     return null;
   }
 
-  const entry = findTaskEntry(tasksFile[currentBranch].tasks, taskId);
+  const entry = findTaskEntryByPath(tasksFile[currentBranch].tasks, taskId);
 
   return entry?.task ?? null;
 };
