@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "npm --workspace @app/shared run build",
     "dev": "cross-env NODE_ENV=development vite --mode development",
+    "prebuild": "npm --workspace @app/shared run build",
     "build": "cross-env NODE_ENV=production vite build --mode production",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vite build && vitest run",

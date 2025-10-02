@@ -11,7 +11,7 @@ module.exports = {
   ignorePatterns: ['dist', 'node_modules', 'packages/**/dist'],
   rules: {
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    '@typescript-eslint/no-shadow': ['warn'],
+    '@typescript-eslint/no-shadow': ['error'],
     curly: 'error',
     'brace-style': ['error', '1tbs', { allowSingleLine: false }],
     'max-statements-per-line': ['error', { max: 1 }],

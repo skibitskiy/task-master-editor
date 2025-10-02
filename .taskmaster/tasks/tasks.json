@@ -5,7 +5,7 @@
         "id": 1,
         "title": "Каркас Electron-приложения",
         "description": "Базовая структура main/preload/renderer, строгий TypeScript, безопасные флаги окна.",
-        "details": "• Electron + TypeScript (strict) + Vite/webpack.\n• Настройки безопасности: contextIsolation: true, sandbox: true, nodeIntegration: false.\n• Логирование: electron-log.\n• Конфиг навигации наружу (allow-list для shell.openExternal).",
+        "details": "• Electron \\+ TypeScript (strict) \\+ Vite/webpack.\n• Настройки безопасности: contextIsolation: true, sandbox: true, nodeIntegration: false.\n• Логирование: electron-log.\n• Конфиг навигации наружу (allow-list для shell.openExternal).",
         "status": "done",
         "priority": "high",
         "testStrategy": "1) Приложение стартует в dev одной командой и показывает окно. \n2) Prod-сборка запускается и поведение идентично dev. \n3) Проверка, что nodeIntegration=false, contextIsolation=true, sandbox=true. \n4) Внешние ссылки блокируются, кроме явно разрешённых.",
@@ -29,13 +29,13 @@
         "id": 3,
         "title": "Модель данных и глобальный стор",
         "description": "Типы Task и контейнера файла, единый стор, MRU последних путей, dirty-flags.",
-        "details": "• Типы: Task, TasksFile ({ master: { tasks: Task[] } }).\n• React Context/Reducer или легковесный стор.\n• electron-store для настроек (MRU, предпочтения).",
+        "details": "• Типы: Task, TasksFile (\\{ master: \\{ tasks: Task\\[\\] \\} \\}).\n• React Context/Reducer или легковесный стор.\n• electron-store для настроек (MRU, предпочтения).",
         "status": "done",
         "priority": "high",
         "testStrategy": "1) Парсинг валидного файла формирует корректное состояние. \n2) Частично битые поля не роняют UI — задачи с ошибками помечаются/игнорируются. \n3) Dirty-статусы корректно обновляются на уровне задачи и файла. \n4) MRU хранит и возвращает последний путь, если опция включена.",
         "dependencies": [
-          "1",
-          "2"
+          1,
+          2
         ],
         "subtasks": []
       },
@@ -680,12 +680,32 @@
         "priority": "high",
         "testStrategy": "",
         "dependencies": []
+      },
+      {
+        "id": 58,
+        "title": "Не читается completionNotes в best-ugc из подзадач",
+        "description": "Скорее всего, баг связан с тем, что ID подзадачи такой же, как у ID одной из основных задач.\n\nПоэтому в поля попадают значения задач первого уровня вместо значений из подзадач.",
+        "details": "",
+        "status": "pending",
+        "priority": "high",
+        "testStrategy": "",
+        "dependencies": []
+      },
+      {
+        "id": 59,
+        "title": "Исправить баг из-за которого поля с переносами строк становятся dirty при их открытии",
+        "description": "",
+        "details": "Все дело в packages/renderer/src/components/markdown-editor-wrapper/ui.tsx\n\n```typescriptreact\n  useEffect(() => {\n  // Keep editor content in sync with the active task value to avoid leaking data\n  if (fieldEditor.getValue() !== initialValue) {\n    fieldEditor.replace(initialValue);\n  }\n}, [fieldEditor, initialValue]);\n```\n\nВызов этого кода заменяет переносы строк двойными переносами строк\n\nИли например \n\nИсходное поле\n\n```jsonc\n\"• Типы: Task, TasksFile ({ master: { tasks: Task[] } }).\\n• React Context/Reducer или легковесный стор.\\n• electron-store для настроек (MRU, предпочтения).\",\n```\n\nПревращается в\n\n```jsonc\n\"• Типы: Task, TasksFile (\\\\{ master: \\\\{ tasks: Task\\\\[\\\\] \\\\} \\\\}).\\n• React Context/Reducer или легковесный стор.\\n• electron-store для настроек (MRU, предпочтения).\",\n```",
+        "status": "pending",
+        "priority": "medium",
+        "testStrategy": "",
+        "dependencies": []
       }
     ],
     "metadata": {
       "created": "2025-09-30T14:23:40.371Z",
-      "description": "Tasks for master context",
-      "updated": "2025-09-30T14:23:40.372Z"
+      "updated": "2025-09-30T14:23:40.372Z",
+      "description": "Tasks for master context"
     }
   },
   "backlog": {
