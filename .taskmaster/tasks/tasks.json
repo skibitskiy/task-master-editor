@@ -568,7 +568,9 @@
         "status": "pending",
         "priority": "high",
         "testStrategy": "",
-        "dependencies": [],
+        "dependencies": [
+          63
+        ],
         "subtasks": []
       },
       {
@@ -686,7 +688,7 @@
         "title": "Не читается completionNotes в best-ugc из подзадач",
         "description": "Скорее всего, баг связан с тем, что ID подзадачи такой же, как у ID одной из основных задач.\n\nПоэтому в поля попадают значения задач первого уровня вместо значений из подзадач.",
         "details": "",
-        "status": "pending",
+        "status": "done",
         "priority": "high",
         "testStrategy": "",
         "dependencies": []
@@ -695,9 +697,49 @@
         "id": 59,
         "title": "Исправить баг из-за которого поля с переносами строк становятся dirty при их открытии",
         "description": "",
-        "details": "Все дело в packages/renderer/src/components/markdown-editor-wrapper/ui.tsx\n\n```typescriptreact\n  useEffect(() => {\n  // Keep editor content in sync with the active task value to avoid leaking data\n  if (fieldEditor.getValue() !== initialValue) {\n    fieldEditor.replace(initialValue);\n  }\n}, [fieldEditor, initialValue]);\n```\n\nВызов этого кода заменяет переносы строк двойными переносами строк\n\nИли например \n\nИсходное поле\n\n```jsonc\n\"• Типы: Task, TasksFile ({ master: { tasks: Task[] } }).\\n• React Context/Reducer или легковесный стор.\\n• electron-store для настроек (MRU, предпочтения).\",\n```\n\nПревращается в\n\n```jsonc\n\"• Типы: Task, TasksFile (\\\\{ master: \\\\{ tasks: Task\\\\[\\\\] \\\\} \\\\}).\\n• React Context/Reducer или легковесный стор.\\n• electron-store для настроек (MRU, предпочтения).\",\n```",
+        "details": "Все дело в packages/renderer/src/components/markdown-editor-wrapper/ui.tsx\n\n```typescriptreact\n  useEffect(() => {\n  // Keep editor content in sync with the active task value to avoid leaking data\n  if (fieldEditor.getValue() !== initialValue) {\n    fieldEditor.replace(initialValue);\n  }\n}, [fieldEditor, initialValue]);\n```\n\nВызов этого кода заменяет переносы строк двойными переносами строк\n\nИли например\n\nИсходное поле\n\n```jsonc\n\"• Типы: Task, TasksFile ({ master: { tasks: Task[] } }).\\n• React Context/Reducer или легковесный стор.\\n• electron-store для настроек (MRU, предпочтения).\",\n```\n\nПревращается в\n\n```jsonc\n\"• Типы: Task, TasksFile (\\\\{ master: \\\\{ tasks: Task\\\\[\\\\] \\\\} \\\\}).\\n• React Context/Reducer или легковесный стор.\\n• electron-store для настроек (MRU, предпочтения).\",\n```",
         "status": "pending",
         "priority": "medium",
+        "testStrategy": "",
+        "dependencies": []
+      },
+      {
+        "id": 60,
+        "title": "Добавить поддержку переноса строк в сообщения пользователя чат с ИИ",
+        "description": "",
+        "details": "",
+        "status": "pending",
+        "priority": "low",
+        "testStrategy": "",
+        "dependencies": []
+      },
+      {
+        "id": 61,
+        "title": "Перенести чат с ИИ в боковую панель справа от редактора",
+        "description": "",
+        "details": "",
+        "status": "pending",
+        "priority": "medium",
+        "testStrategy": "",
+        "dependencies": []
+      },
+      {
+        "id": 62,
+        "title": "Задача не становится dirty при изменении значений в кастомных полях",
+        "description": "",
+        "details": "",
+        "status": "pending",
+        "priority": "high",
+        "testStrategy": "",
+        "dependencies": []
+      },
+      {
+        "id": 63,
+        "title": "Переделать механизм сохранения и апдейта задач",
+        "description": "",
+        "details": "",
+        "status": "pending",
+        "priority": "high",
         "testStrategy": "",
         "dependencies": []
       }
@@ -725,7 +767,8 @@
         "details": "Сделать так, чтобы он занимал доступную высоту и не больше. Для этого надо с помощью useMeasure измерять доступную высоту и прокидывать значение высоты в itemsHeight списка задач. Это значение должно пересчитываться при изменении размера окна.",
         "priority": "medium",
         "testStrategy": "",
-        "dependencies": []
+        "dependencies": [],
+        "status": "done"
       }
     ],
     "metadata": {

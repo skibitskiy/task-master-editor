@@ -1,5 +1,6 @@
 .taskList {
   padding: var(--g-spacing-3);
+  height: 100%;
 }
 
 .taskListHeader {
